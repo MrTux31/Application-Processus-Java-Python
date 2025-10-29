@@ -28,7 +28,7 @@ public class ProcessParser implements FileParser<Process>{
      * @throws Exception : si le format du fichier est incompatible
      */
     @Override
-    public List<Process> parse(String cheminFichier) throws Exception{
+    public List<Process> parse(String cheminFichier){
         return strategie.parse(cheminFichier);
         
     }

@@ -1,15 +1,19 @@
 package com.ordonnancement.service.parser.implementation.process.strategie;
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.ordonnancement.model.Process;
 import com.ordonnancement.service.parser.FileParserStrategy;
+import com.ordonnancement.service.parser.FileParsingException;
 
 /**
  * Stratégie de parsing JSON pour les objets Process.
@@ -36,25 +40,45 @@ public class InitialProcessParser implements FileParserStrategy<Process>{
     * ]
      */
     @Override
-    public List<Process> parse(String cheminFichier) throws Exception {
+    public List<Process> parse(String cheminFichier){
     
-        List<Process> liste = new ArrayList<>();
-        
-        String contenu = new String(Files.readAllBytes(Paths.get(cheminFichier))); //Lire le contenu du fichier 
+        if (cheminFichier == null || cheminFichier.isBlank()) {
+            throw new FileParsingException("Le chemin du fichier à parser doit être spécifié.");
+        }
+        Path path = Paths.get(cheminFichier);
 
-        JSONArray tableauJson = new JSONArray(contenu); //Un tableau JSON à partir du contenu du fichier
-        
-        for(int i = 0; i<tableauJson.length(); i++){ //Parcours de chaque élément du tableau JSON (itère sur des processus représentés en JSON)
-
-            JSONObject objetProcessusJSON = tableauJson.getJSONObject(i); //Récupération de l'élément actuel
-            
-            //Lecure des données de l'objet JSON et création d'un objet Process
-            Process p = new Process(objetProcessusJSON.getInt("idProcessus"),objetProcessusJSON.getInt("dateSoumission"),objetProcessusJSON.getInt("tempsExecution"),objetProcessusJSON.getInt("requiredRam"),objetProcessusJSON.getInt("deadline"),objetProcessusJSON.getInt("priority"));
-            liste.add(p); //On ajoute le processus créé à la liste
-
+        if (!Files.exists(path)) {
+            throw new FileParsingException("Le fichier spécifié n'existe pas : " + cheminFichier);
         }
 
+        if (Files.isDirectory(path)) {
+            throw new FileParsingException("Le chemin spécifié pointe vers un dossier, pas un fichier : " + cheminFichier);
+        }
+
+       try {
+            List<Process> liste = new ArrayList<>();
+        
+            String contenu = new String(Files.readAllBytes(Paths.get(cheminFichier))); //Lire le contenu du fichier 
+
+            JSONArray tableauJson = new JSONArray(contenu); //Un tableau JSON à partir du contenu du fichier
+            
+            for(int i = 0; i<tableauJson.length(); i++){ //Parcours de chaque élément du tableau JSON (itère sur des processus représentés en JSON)
+
+                JSONObject objetProcessusJSON = tableauJson.getJSONObject(i); //Récupération de l'élément actuel
+                
+                //Lecure des données de l'objet JSON et création d'un objet Process
+                Process p = new Process(objetProcessusJSON.getInt("idProcessus"),objetProcessusJSON.getInt("dateSoumission"),objetProcessusJSON.getInt("tempsExecution"),objetProcessusJSON.getInt("requiredRam"),objetProcessusJSON.getInt("deadline"),objetProcessusJSON.getInt("priority"));
+                liste.add(p); //On ajoute le processus créé à la liste
+
+            }
+
         return liste;
+        }catch (IOException e) {
+            throw new FileParsingException("Impossible de lire le fichier : " + cheminFichier, e);
+        } catch (JSONException e) {
+            throw new FileParsingException("Le fichier n'est pas un JSON valide : " + cheminFichier, e);
+        }
+       
     
     
     

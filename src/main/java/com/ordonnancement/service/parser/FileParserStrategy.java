@@ -17,7 +17,7 @@ public interface FileParserStrategy<T> {
      * @return une liste d'objets de type T
      * @throws Exception si une erreur de lecture ou de parsing survient
      */
-    public List<T> parse(String cheminFichier) throws Exception;
+    public List<T> parse(String cheminFichier);
 
 
 }

@@ -18,6 +18,6 @@ public interface FileParser<T> {
      * @throws Exception : en cas d'erreur de lecture du fichier
      * @return une liste de T
      */
-    public List<T> parse(String cheminFichier) throws Exception;
+    public List<T> parse(String cheminFichier);
 
 }
