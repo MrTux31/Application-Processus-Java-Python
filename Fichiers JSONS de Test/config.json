@@ -1,0 +1,19 @@
+{
+  "fichierProcessus": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json",
+  "fichierRessourcesDisponibles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources",
+  "fichierMetriquesGlobales": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Metriques",
+  "listeAlgorithmes": [
+    {
+      "nomAlgorithme": "ROUND ROBIN",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultDetailles",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultGlobaux",
+      "quantum": 9
+    },
+    {
+      "nomAlgorithme": "FIFO",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultDetailles2",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultGlobaux2",
+      "quantum": null
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+[
+      {"nomAlgorithme": "Round-Robin", "tempsReponseMoyen": 5.3, "tempsAttenteMoyen": 4.6, "makespan": 40},
+      {"nomAlgorithme": "FIFO", "tempsReponseMoyen": 2.3, "tempsAttenteMoyen": 5.4, "makespan": 30}
+     ]

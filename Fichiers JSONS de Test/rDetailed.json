@@ -1,0 +1,15 @@
+[
+          {
+              "idProcessus": 1,
+              "executions": [
+              {"dateDebut": 2, "dateFin": 5, "idCpu": "CPU1"},
+              {"dateDebut": 10, "dateFin": 12, "idCpu": "CPU2"}
+              ]
+          },
+          {
+              "idProcessus": 2,
+              "executions": [
+              {"dateDebut": 3, "dateFin": 7, "idCpu": "CPU1"}
+              ]
+          }
+      ]
