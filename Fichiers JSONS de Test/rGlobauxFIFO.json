@@ -1,0 +1,21 @@
+ {
+    "nomAlgorithme": "FIFO",
+    "processus": [
+        {
+            "idProcessus": 1,
+            "dateSoumission": 0,
+            "dateDebut": 0,
+            "dateFin": 5,
+            "requiredRam": 1024,
+            "usedRam": 1024
+        },
+        {
+            "idProcessus": 2,
+            "dateSoumission": 3,
+            "dateDebut": 5,
+            "dateFin": 9,
+            "requiredRam": 512,
+            "usedRam": 512
+        }
+    ]
+}

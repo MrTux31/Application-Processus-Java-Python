@@ -1,0 +1,21 @@
+{
+    
+    "nomAlgorithme": "ROUNDROBIN",
+    "processus": [
+        {
+            "idProcessus": 1,
+            "executions": [
+            {"dateDebut": 5, "dateFin": 7, "idCpu": "CPU1"},
+            {"dateDebut": 7, "dateFin": 10, "idCpu": "CPU2"}
+            ]
+        },
+        {
+            "idProcessus": 2,
+            "executions": [
+            {"dateDebut": 9, "dateFin": 13, "idCpu": "CPU1"}
+            ]
+        }
+    
+    ]
+    
+}

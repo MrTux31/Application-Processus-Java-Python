@@ -1,4 +1,0 @@
- [
-       {"idProcessus": 1, "dateSoumission": 0, "dateDebut": 5,"dateFin": 10, "requiredRam": 1024, "usedRam":"1024"},
-       {"idProcessus": 2, "dateSoumission": 3,  "dateDebut": 9,"dateFin": 14,"requiredRam": 1024, "usedRam":"1024"}
-     ]
