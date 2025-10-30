@@ -37,18 +37,8 @@ public class ProcessValidator {
             if (p.getPriority() <= 0) {
                 throw new FileParsingException("Le processus " + p.getId() + " a une priorité <= 0");
             }
-            if (p.getDateDebut() != -1 && p.getDateFin() != -1) {
-                if (p.getDateDebut() > p.getDateFin()) {
-                    throw new FileParsingException("Le processus " + p.getId() + " a une date de début supérieure à la date de fin");
-                }
-                if((p.getDateFin() - p.getDateDebut()) < p.getTempsExecution()){
-                    throw new FileParsingException("Le processus " + p.getId() + " a une date de début  : "+p.getDateDebut() +" et de fin "+p.getDateFin()+ " inchohérente. "+
-                    "Ce n'est pas assez pour un temps d'execution de total "+p.getTempsExecution());
-
-                }
-
-            }
-            ScheduleValidator.valider(p, p.getListSchedules()); //Vérifier les assignations du processus (les schedules)
+           
+            ExecutionValidator.valider(p); //Vérifier les assignations du processus (les schedules)
             
         }
     }

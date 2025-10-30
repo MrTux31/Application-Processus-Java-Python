@@ -1,7 +1,6 @@
 package com.ordonnancement.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Représente un processus exécuté
@@ -20,12 +19,9 @@ public class Process {
     private final int deadline; //Date butoire (la date à laquelle le processus doit être fini)
     private final int priority;
 
-    private List<Schedule> listeSchedules; //La liste des différentes assignation du processus à un processeur réalisées
+    private HashMap<String,ExecutionInfo> executionsParAlgo; //La liste des executions de ce processus par différents algo d'ordonnancement
 
-
-    //Calculé par python
-    private int dateDebut; //Date de début d'exécution du processus;
-    private int dateFin; //Date de fin d'exécution du processus
+   
 
     /**
      * Constructeur, permet d'initialiser le processus
@@ -37,25 +33,18 @@ public class Process {
      * @param tempsExecution : Le temps d'execution total du processus
      */
     public Process( int id, int dateSoumission, int tempsExecution, int requiredRam, int deadline, int priority ) {
-        this.dateDebut = -1; //Valeur par défaut (pas encore calculée)
-        this.dateFin = -1; //Valeur par défaut (pas encore calculée)
+       
         this.dateSoumission = dateSoumission;
         this.deadline = deadline;
         this.id = id;
         this.priority = priority;
         this.requiredRam = requiredRam;
         this.tempsExecution = tempsExecution;
-        this.listeSchedules = new ArrayList<>();
+        
+        this.executionsParAlgo = new HashMap<>();
     }
 
-    public void setDateDebut(int dateDebut) {
-        this.dateDebut = dateDebut;
-    }
-
-    public void setDateFin(int dateFin) {
-        this.dateFin = dateFin;
-    }
-
+    
     public int getId() {
         return id;
     }
@@ -80,45 +69,30 @@ public class Process {
         return priority;
     }
 
-    public int getDateDebut() {
-        return dateDebut;
-    }
+    
 
-    public int getDateFin() {
-        return dateFin;
+    /**
+     * Permet d'obtenir la liste des différentes executions réalisées sur différents algos d'ordonnancement
+     */
+    public ExecutionInfo getExecutionInfo(String nomAlgo){
+        return this.executionsParAlgo.get(nomAlgo);
     }
 
     /**
-     * Permet de savoir si le processus est terminé
-     * @return true si fini, false sinon
+     * Permet d'ajouter une execution du processus sur un algo d'ordonnancement différent
+     * @param e : L'execution du processus sur un algo d'ordonnancement
      */
-    public boolean isFinished(){
-        return dateFin != -1;
-
+    public void addExecution(String nomAlgo,ExecutionInfo e){
+        this.executionsParAlgo.put(nomAlgo,e);
     }
-
+    
     /**
-     * Permet d'obtenir la liste des assignation du processus aux différents processeurs
+     * Permet de récupérer toutes les executions du processus par algos d'ordonnancement
+     * @param e : L'execution du processus sur un algo d'ordonnancement
      */
-    public List<Schedule> getListSchedules(){
-        return this.listeSchedules;
+    public HashMap<String,ExecutionInfo> getAllExecutions(){
+        return this.executionsParAlgo;
     }
-
-    /**
-     * Permet d'ajouter une assignation du processus à un processeur
-     * @param s : L'assignation du processus à un processeur sur une période donnée
-     */
-    public void addSchedule(Schedule s){
-        this.listeSchedules.add(s);
-    }
-    /**
-     * Permet de définir la liste des assignations du processus à des processeurs
-     * @param listeSchedules : la liste des assignations du processus aux divers processeurs
-     */
-    public void setSchedules(List<Schedule> listeSchedules){
-        this.listeSchedules = listeSchedules;
-    }
-
     
 
 

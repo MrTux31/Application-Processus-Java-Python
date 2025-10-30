@@ -1,10 +1,13 @@
 package com.ordonnancement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
+import com.ordonnancement.model.ExecutionInfo;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.model.Process;
@@ -25,14 +28,14 @@ public class Main {
         ConfigurationManager manager = ConfigurationManager.getInstance(); //Récup l'instance du configuration manager
 
         //Création des algos qui vont être utilisés par l'ordonnanceur
-        AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultDetailles", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultGlobaux", 9);
-        AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultDetailles2", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\ResultGlobaux2", null);
+        AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.json", 9);
+        AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.json", null);
         //Ajouts de ces algos dans une liste
         List<AlgoConfiguration> liste = new ArrayList<>();
         liste.add(algo1);
         liste.add(algo2);
         //Création de l'objet FileConfig représentant le fichier de configuration
-        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Metriques","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources", liste);
+        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processInitiaux.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Metriques","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources", liste);
         //On enregistre cet objet dans le manager
         manager.setFileConfiguration(fileConfig);
         //Création du configuration writer
@@ -42,22 +45,44 @@ public class Main {
 
         //Démo Parsing/////////////////////////////////////////////////////////////////////
 
-       //Créer le parser de fichier pour les processus initiaux
+        manager = ConfigurationManager.getInstance(); //Récupération de l'instance du manager
+        fileConfig = manager.getFileConfiguration(); //Récupération du fichier de configuration utilisé dans l'application
+        List<AlgoConfiguration> listeAlgos = fileConfig.getListeAlgorithmes(); //On récupère les liste des algorithmes qui ont été exécutés
+
+
+
+        //Créer le parser de fichier pour les processus initiaux
         FileParser parserFichierProcessus = new ProcessParser(new InitialProcessParser());
         //Parser le fichier et récupérer la liste des processus
-        List<Process> processusInitiaux = parserFichierProcessus.parse("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processInitiaux.json");
+        List<Process> processusInitiaux = parserFichierProcessus.parse(fileConfig.getFichierProcessus());
 
         //Créer le parser de fichier pour les résultats globaux
         FileParser parserFichierResultGlobaux = new ProcessParser(new GlobalResultProcessParser(processusInitiaux));
-        //Parse le fichier des résultats globaux et met à jour la liste des processus
-        parserFichierResultGlobaux.parse("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobaux.json");
 
-
-        //Créer le parser de fichier pour les résultats détaillés
+         //Créer le parser de fichier pour les résultats détaillés
         FileParser parserFichierResultDetailed = new ProcessParser(new DetailedResultProcessParser(processusInitiaux));
-        //Parse le fichier des résultats détaillés et met à jour la liste des processus
-        parserFichierResultDetailed.parse("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailed.json");
 
+        //Pour chaque algorithme d'ordonnancement executé
+        for(AlgoConfiguration algo : listeAlgos){
+            //Récupération des fichiers de résultats pour chaque algorithme
+            String resultDetailed = algo.getFichierResultatsDetailles();
+            String resultGlobal = algo.getFichierResultatsGlobaux();
+        
+            //Parse le fichier des résultats globaux et met à jour la liste des processus
+            parserFichierResultGlobaux.parse(resultGlobal);
+            //Parse le fichier des résultats détaillés et met à jour la liste des processus
+            parserFichierResultDetailed.parse(resultDetailed);
+
+
+
+        }
+
+
+
+
+
+        
+        
         
 
         //Créer le parser des métriques
@@ -78,30 +103,76 @@ public class Main {
 
     }
 
-    // Méthode utilitaire pour afficher les processus
-    public static void afficherProcessus(List<Process> processusInitiaux) {
+
+
+
+/**
+ * Affiche tous les processus et leurs informations détaillées,
+ * y compris les exécutions par algorithme d'ordonnancement.
+ */
+public static void afficherProcessus(List<Process> processusInitiaux) {
+
+    System.out.println("=======================================================================");
+    System.out.println("                        LISTE DES PROCESSUS");
+    System.out.println("=======================================================================");
+
+    for (Process p : processusInitiaux) {
+
+        HashMap<String,ExecutionInfo> executions = p.getAllExecutions();
+
+        if(!executions.isEmpty()){
+
+        }
+
+        System.out.println("\n------------------------------------------------------------");
+        System.out.printf("Processus %d%n", p.getId());
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("Date de soumission : %d%n", p.getDateSoumission());
+        System.out.printf("Temps d'exécution  : %d%n", p.getTempsExecution());
+        System.out.printf("RAM requise        : %d%n", p.getRequiredRam());
+        System.out.printf("Deadline            : %d%n", p.getDeadline());
+        System.out.printf("Priorité            : %d%n", p.getPriority());
+        System.out.println();
+
         
-        for (Process p : processusInitiaux) {
-            System.out.println("ID | Soumission | Début | Fin | Exécution | RAM Req | Deadline | Priorité");
-            System.out.println("--------------------------------------------------------------------------");
-            System.out.printf("%2d | %9d | %5d | %3d | %9d | %7d | %8d | %7d%n",
-                    p.getId(),
-                    p.getDateSoumission(),
-                    p.getDateDebut(),
-                    p.getDateFin(),
-                    p.getTempsExecution(),
-                    p.getRequiredRam(),
-                    p.getDeadline(),
-                    p.getPriority()
-            );
-            if (!p.getListSchedules().isEmpty()) {
-                System.out.println("  Schedules:");
-                for (Schedule s : p.getListSchedules()) {
-                    System.out.print("Processeur"+ s.getProcessor().getId() +" Date debut : " + s.getDateDebutExecution() + " Date fin : " + s.getDateFinExecution()+"\n");
+
+        // Parcours des résultats par algorithme
+        for (Map.Entry<String, ExecutionInfo> entry : executions.entrySet()) {
+            String nomAlgo = entry.getKey();
+            ExecutionInfo info = entry.getValue();
+
+            System.out.println("------------------------------------------------------------");
+            System.out.println("Algorithme : " + nomAlgo);
+            System.out.println("------------------------------------------------------------");
+
+            // Affichage des infos globales
+            System.out.printf("  Date début exécution : %d%n", info.getDateDebut());
+            System.out.printf("  Date fin exécution   : %d%n", info.getDateFin());
+            
+
+            // Affichage des exécutions détaillées
+            List<Schedule> schedules = info.getListSchedules();
+            if (schedules == null || schedules.isEmpty()) {
+                System.out.println("  Aucune exécution détaillée.");
+            } else {
+                System.out.println("  Détails des exécutions :");
+                for (Schedule s : schedules) {
+                    System.out.printf(
+                        "     - CPU %-6s | Début : %3d | Fin : %3d%n",
+                        s.getProcessor().getId(),
+                        s.getDateDebutExecution(),
+                        s.getDateFinExecution()
+                    );
                 }
             }
         }
     }
+
+    System.out.println("\n=======================================================================");
+    System.out.println("                         FIN DE L’AFFICHAGE");
+    System.out.println("=======================================================================");
+}
+
 
     public static void afficherMetrics(List<Metrics> metricsList) {
        

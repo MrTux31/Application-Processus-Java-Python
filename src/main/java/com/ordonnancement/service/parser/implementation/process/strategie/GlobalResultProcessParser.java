@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ordonnancement.model.ExecutionInfo;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.service.parser.FileParserStrategy;
 import com.ordonnancement.service.parser.FileParsingException;
@@ -44,11 +45,27 @@ public class GlobalResultProcessParser implements FileParserStrategy<Process>{
      * @throws Exception : si le format du fichier est incorrect
      * 
      * Format attendu :
-    * 
-    * [
-    *   {"idProcessus": 1, "dateSoumission": 0, "dateDebut": 5,"dateFin": 8, "requiredRam": 1024, "usedRam":"1024"},
-    *   {"idProcessus": 2, "dateSoumission": 3,  "dateDebut": 9,"dateFin": 12,"requiredRam": 1024, "usedRam":"1024"}
-    * ]
+     * {
+    *   "nomAlgorithme": "FIFO",
+    *   "processus": [
+    *     {
+    *       "idProcessus": 1,
+    *       "dateSoumission": 0,
+    *       "dateDebut": 5,
+    *       "dateFin": 8,
+    *       "requiredRam": 1024,
+    *       "usedRam": 1024
+    *     },
+    *     {
+    *       "idProcessus": 2,
+    *       "dateSoumission": 3,
+    *       "dateDebut": 9,
+    *       "dateFin": 12,
+    *       "requiredRam": 1024,
+    *       "usedRam": 1024
+    *     }
+    *   ]
+    * }
      */
 
     @Override
@@ -63,7 +80,14 @@ public class GlobalResultProcessParser implements FileParserStrategy<Process>{
             
             String contenu = new String(Files.readAllBytes(Paths.get(cheminFichier))); //Lire le contenu du fichier 
 
-            JSONArray tableauJson = new JSONArray(contenu); //Un tableau JSON à partir du contenu du fichier
+            JSONObject racine = new JSONObject(contenu); // L'objet racine du JSON
+
+            //Récupération du nom de l'algorithme
+            String nomAlgo = racine.getString("nomAlgorithme");
+
+
+
+            JSONArray tableauJson = racine.getJSONArray("processus"); //Un tableau JSON à partir du contenu du fichier
             
             for(int i = 0; i<tableauJson.length(); i++){ //Parcours de chaque élément du tableau JSON (itère sur des processus représentés en JSON)
 
@@ -72,9 +96,17 @@ public class GlobalResultProcessParser implements FileParserStrategy<Process>{
                 int idProcessus =  objetProcessusJSON.getInt("idProcessus"); //Récupération de l'id du processus actuel
                 Process p = mapProcessus.get(idProcessus); //Récupérer le processus auquel correspond l'id
                 if(p!= null){ //Au cas où aucun processus avec cet id n'existe
-                    //On met à jour l'objet processus : les dates de début et de fin
-                    p.setDateDebut(objetProcessusJSON.getInt("dateDebut")); 
-                    p.setDateFin(objetProcessusJSON.getInt("dateFin"));
+                    
+                    ExecutionInfo infoExecution = p.getExecutionInfo(nomAlgo); //On récup l'execution pour cet algorithme dans le processus
+                    if(infoExecution == null){ //Si elle est null, on la crée, elle n'a pas encore été insérée
+                        infoExecution = new ExecutionInfo(); //On crée l'execution info pour ce processus
+                        p.addExecution(nomAlgo, infoExecution); //On l'ajoute l'execution dans le processus
+                    }
+                    //Mise à jour des dates de début et de fin de l'execution
+                    infoExecution.setDateDebut(objetProcessusJSON.getInt("dateDebut"));
+                    infoExecution.setDateFin(objetProcessusJSON.getInt("dateFin"));
+
+                   
                 }
                 else{ //Si p est null, cela veux dire que le processus qu'on tente de récupérer n'a pas été déclaré dans la liste des processus initiale.
                     throw new FileParsingException("Incohérence détectée : le processus " + idProcessus + 
