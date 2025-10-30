@@ -2,7 +2,6 @@ package com.ordonnancement.service.parser.implementation.process.strategie;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
@@ -54,18 +53,7 @@ public class GlobalResultProcessParser implements FileParserStrategy<Process>{
 
     @Override
     public List<Process> parse(String cheminFichier) {
-        if (cheminFichier == null || cheminFichier.isBlank()) {
-            throw new FileParsingException("Le chemin du fichier à parser doit être spécifié.");
-        }
-        Path path = Paths.get(cheminFichier);
-
-        if (!Files.exists(path)) {
-            throw new FileParsingException("Le fichier spécifié n'existe pas : " + cheminFichier);
-        }
-
-        if (Files.isDirectory(path)) {
-            throw new FileParsingException("Le chemin spécifié pointe vers un dossier, pas un fichier : " + cheminFichier);
-        }
+       
         try {
             //Création d'un Map pour accéder rapidement au processus en fonction de son ID
             Map<Integer,Process> mapProcessus = new HashMap<>();
@@ -87,6 +75,10 @@ public class GlobalResultProcessParser implements FileParserStrategy<Process>{
                     //On met à jour l'objet processus : les dates de début et de fin
                     p.setDateDebut(objetProcessusJSON.getInt("dateDebut")); 
                     p.setDateFin(objetProcessusJSON.getInt("dateFin"));
+                }
+                else{ //Si p est null, cela veux dire que le processus qu'on tente de récupérer n'a pas été déclaré dans la liste des processus initiale.
+                    throw new FileParsingException("Incohérence détectée : le processus " + idProcessus + 
+                                   " dans les résultats détaillés n'existe pas dans la liste initiale.");
                 }
 
             }

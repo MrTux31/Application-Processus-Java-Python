@@ -47,16 +47,18 @@ public class Main {
         //Parser le fichier et récupérer la liste des processus
         List<Process> processusInitiaux = parserFichierProcessus.parse("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processInitiaux.json");
 
-        
+        //Créer le parser de fichier pour les résultats globaux
+        FileParser parserFichierResultGlobaux = new ProcessParser(new GlobalResultProcessParser(processusInitiaux));
+        //Parse le fichier des résultats globaux et met à jour la liste des processus
+        parserFichierResultGlobaux.parse("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobaux.json");
+
+
         //Créer le parser de fichier pour les résultats détaillés
         FileParser parserFichierResultDetailed = new ProcessParser(new DetailedResultProcessParser(processusInitiaux));
         //Parse le fichier des résultats détaillés et met à jour la liste des processus
         parserFichierResultDetailed.parse("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailed.json");
 
-        //Créer le parser de fichier pour les résultats globaux
-        FileParser parserFichierResultGlobaux = new ProcessParser(new GlobalResultProcessParser(processusInitiaux));
-        //Parse le fichier des résultats globaux et met à jour la liste des processus
-        parserFichierResultGlobaux.parse("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobaux.json");
+        
 
         //Créer le parser des métriques
         FileParser parserMetrics = new MetricsParser();

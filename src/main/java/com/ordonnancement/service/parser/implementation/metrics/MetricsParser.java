@@ -2,7 +2,6 @@ package com.ordonnancement.service.parser.implementation.metrics;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.json.JSONObject;
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.service.parser.FileParser;
 import com.ordonnancement.service.parser.FileParsingException;
+import com.ordonnancement.service.validation.FileValidator;
 /**
  * Classe permettant de parser le fichier "métriques globales"
  * 
@@ -36,19 +36,7 @@ public class MetricsParser implements FileParser<Metrics>{
     @Override
     public List<Metrics> parse(String cheminFichier){
 
-         if (cheminFichier == null || cheminFichier.isBlank()) {
-            throw new FileParsingException("Le chemin du fichier à parser doit être spécifié.");
-        }
-        Path path = Paths.get(cheminFichier);
-
-        if (!Files.exists(path)) {
-            throw new FileParsingException("Le fichier spécifié n'existe pas : " + cheminFichier);
-        }
-
-        if (Files.isDirectory(path)) {
-            throw new FileParsingException("Le chemin spécifié pointe vers un dossier, pas un fichier : " + cheminFichier);
-        }
-
+        FileValidator.verifierCheminFichier(cheminFichier); //Vérification de l'existance du fichier
 
         try {
             List<Metrics> liste = new ArrayList<>();

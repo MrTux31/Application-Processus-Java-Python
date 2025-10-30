@@ -2,7 +2,6 @@ package com.ordonnancement.service.parser.implementation.process.strategie;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,18 +66,7 @@ public class DetailedResultProcessParser implements FileParserStrategy<Process>{
      */
     @Override
     public List<Process> parse(String cheminFichier) {
-        if (cheminFichier == null || cheminFichier.isBlank()) {
-            throw new FileParsingException("Le chemin du fichier à parser doit être spécifié.");
-        }
-        Path path = Paths.get(cheminFichier);
-
-        if (!Files.exists(path)) {
-            throw new FileParsingException("Le fichier spécifié n'existe pas : " + cheminFichier);
-        }
-
-        if (Files.isDirectory(path)) {
-            throw new FileParsingException("Le chemin spécifié pointe vers un dossier, pas un fichier : " + cheminFichier);
-        }
+        
         try {
             
         
@@ -116,6 +104,10 @@ public class DetailedResultProcessParser implements FileParserStrategy<Process>{
                 Process p = mapProcessus.get(idProcessus); //Récupérer le processus auquel correspond l'id
                 if(p!= null){//Au cas où aucun processus avec cet id n'existe
                     p.setSchedules(listeSchedule); //On définit la liste des schedules du processus
+                }
+                else{ //Si p est null, cela veux dire que le processus qu'on tente de récupérer n'a pas été déclaré dans la liste des processus initiale.
+                    throw new FileParsingException("Incohérence détectée : le processus " + idProcessus + 
+                                   " dans les résultats détaillés n'existe pas dans la liste initiale.");
                 }
                 
             }

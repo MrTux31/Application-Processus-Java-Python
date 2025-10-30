@@ -5,6 +5,8 @@ import java.util.List;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.service.parser.FileParser;
 import com.ordonnancement.service.parser.FileParserStrategy;
+import com.ordonnancement.service.validation.FileValidator;
+import com.ordonnancement.service.validation.ProcessValidator;
 
 /**
  * Classe permettant de parser les fichiers listants les processus, selon une strétégie de parsing
@@ -29,7 +31,11 @@ public class ProcessParser implements FileParser<Process>{
      */
     @Override
     public List<Process> parse(String cheminFichier){
-        return strategie.parse(cheminFichier);
+        FileValidator.verifierCheminFichier(cheminFichier); //Vérification de l'existance du fichier
+        List<Process> listeProcess = strategie.parse(cheminFichier);
+        ProcessValidator.valider(listeProcess); //Validation de la cohérence des processus parsés
+        return listeProcess;
+
         
     }
 
