@@ -83,6 +83,8 @@ public class Runner {
         //On return les résultats obtenus après l'exécution du script python
         return new Resultats(processusInitiaux, listeMetriques);
         
+        //TO DO : Stocker gloabalement ces résultats dans un SINGLETON : ResultatsManager pour pouvoir y
+        //accéder depuis n'importe où dans l'app.
 
     }
 

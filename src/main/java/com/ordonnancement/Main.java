@@ -1,9 +1,7 @@
 package com.ordonnancement;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.ExecutionInfo;
@@ -13,6 +11,7 @@ import com.ordonnancement.model.Process;
 import com.ordonnancement.model.Resultats;
 import com.ordonnancement.model.Schedule;
 import com.ordonnancement.service.runner.Runner;
+import com.ordonnancement.util.ProcessUtils;
 
 public class Main {
     public static void main(String[] args) {
@@ -39,7 +38,7 @@ public class Main {
 
         System.out.println("--------------------------------------------Affichage processus--------------------------------------------");
         //Test affichage des processus : 
-        afficherProcessus(resultats.getListeProcessus());
+        affichage(resultats.getListeProcessus());
         System.out.println("\n");
         System.out.println("--------------------------------------------Affichage Metrics--------------------------------------------");
 
@@ -50,75 +49,6 @@ public class Main {
 
     }
 
-
-
-
-/**
- * Affiche tous les processus et leurs informations détaillées,
- * y compris les exécutions par algorithme d'ordonnancement.
- */
-public static void afficherProcessus(List<Process> processusInitiaux) {
-
-    System.out.println("=======================================================================");
-    System.out.println("                        LISTE DES PROCESSUS");
-    System.out.println("=======================================================================");
-
-    for (Process p : processusInitiaux) {
-
-        HashMap<String,ExecutionInfo> executions = p.getAllExecutions();
-
-        if(!executions.isEmpty()){
-
-        }
-
-        System.out.println("\n------------------------------------------------------------");
-        System.out.printf("Processus %d%n", p.getId());
-        System.out.println("------------------------------------------------------------");
-        System.out.printf("Date de soumission : %d%n", p.getDateSoumission());
-        System.out.printf("Temps d'exécution  : %d%n", p.getTempsExecution());
-        System.out.printf("RAM requise        : %d%n", p.getRequiredRam());
-        System.out.printf("Deadline            : %d%n", p.getDeadline());
-        System.out.printf("Priorité            : %d%n", p.getPriority());
-        System.out.println();
-
-        
-
-        // Parcours des résultats par algorithme
-        for (Map.Entry<String, ExecutionInfo> entry : executions.entrySet()) {
-            String nomAlgo = entry.getKey();
-            ExecutionInfo info = entry.getValue();
-
-            System.out.println("------------------------------------------------------------");
-            System.out.println("Algorithme : " + nomAlgo);
-            System.out.println("------------------------------------------------------------");
-
-            // Affichage des infos globales
-            System.out.printf("  Date début exécution : %d%n", info.getDateDebut());
-            System.out.printf("  Date fin exécution   : %d%n", info.getDateFin());
-            
-
-            // Affichage des exécutions détaillées
-            List<Schedule> schedules = info.getListSchedules();
-            if (schedules == null || schedules.isEmpty()) {
-                System.out.println("  Aucune exécution détaillée.");
-            } else {
-                System.out.println("  Détails des exécutions :");
-                for (Schedule s : schedules) {
-                    System.out.printf(
-                        "     - CPU %-6s | Début : %3d | Fin : %3d%n",
-                        s.getProcessor().getId(),
-                        s.getDateDebutExecution(),
-                        s.getDateFinExecution()
-                    );
-                }
-            }
-        }
-    }
-
-    System.out.println("\n=======================================================================");
-    System.out.println("                         FIN DE L’AFFICHAGE");
-    System.out.println("=======================================================================");
-}
 
 
     public static void afficherMetrics(List<Metrics> metricsList) {
@@ -133,6 +63,53 @@ public static void afficherProcessus(List<Process> processusInitiaux) {
                     m.getMakespan()
             );
         }
+    }
+
+
+    public static void affichage(List<Process> processusInitiaux){
+
+        for(Process p : processusInitiaux){
+
+            System.out.println("\n------------------------------------------------------------");
+            System.out.printf("Processus %d%n", p.getId());
+            System.out.println("------------------------------------------------------------");
+            System.out.printf("Date de soumission : %d%n", p.getDateSoumission());
+            System.out.printf("Temps d'exécution  : %d%n", p.getTempsExecution());
+            System.out.printf("RAM requise        : %d%n", p.getRequiredRam());
+            System.out.printf("Deadline            : %d%n", p.getDeadline());
+            System.out.printf("Priorité            : %d%n", p.getPriority());
+            System.out.println();
+
+            List<String> algos = ProcessUtils.getNomAlgos(p); //Récupération des différents algos qui ont executé le processus
+
+            for(String nom : algos){ //Parcours des différents algos qui ont executé le processus
+                System.out.println("------------------------------------------------------------");
+                System.out.println("Algorithme : " + nom);
+                System.out.println("------------------------------------------------------------");
+
+                ExecutionInfo info = ProcessUtils.getExecution(p, nom); //Récupération de l'execution de ce processus pour cet algo la
+
+                // Affichage des infos globales
+                System.out.printf("  Date début exécution : %d%n", info.getDateDebut());
+                System.out.printf("  Date fin exécution   : %d%n", info.getDateFin());
+
+                List<Schedule> listeAssignationProcessus = ProcessUtils.getSchedules(p, nom); //On récupère les assignations pour ce processus et cet algo
+                
+                System.out.println("  Détails des exécutions :");
+                for (Schedule s : listeAssignationProcessus) {
+                    System.out.printf(
+                        "     - CPU %-6s | Début : %3d | Fin : %3d%n",
+                        s.getProcessor().getId(),
+                        s.getDateDebutExecution(),
+                        s.getDateFinExecution()
+                    );
+                }
+
+            }
+
+        }
+
+
     }
 
 

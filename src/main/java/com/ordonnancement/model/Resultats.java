@@ -10,8 +10,8 @@ import java.util.List;
 public class Resultats {
 
 
-    private List<Process> listeProcessus;
-    private List<Metrics> listeMetriques;
+    private final List<Process> listeProcessus;
+    private final List<Metrics> listeMetriques;
 
     public Resultats(List<Process> listeProcessus, List<Metrics> listeMetriques){
         this.listeProcessus = listeProcessus;
