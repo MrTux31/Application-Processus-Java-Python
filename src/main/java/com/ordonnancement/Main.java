@@ -5,28 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.ExecutionInfo;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.model.Process;
+import com.ordonnancement.model.Resultats;
 import com.ordonnancement.model.Schedule;
-import com.ordonnancement.service.configuration.ConfigurationWriter;
-import com.ordonnancement.service.parser.FileParser;
-import com.ordonnancement.service.parser.implementation.metrics.MetricsParser;
-import com.ordonnancement.service.parser.implementation.process.ProcessParser;
-import com.ordonnancement.service.parser.implementation.process.strategie.DetailedResultProcessParser;
-import com.ordonnancement.service.parser.implementation.process.strategie.GlobalResultProcessParser;
-import com.ordonnancement.service.parser.implementation.process.strategie.InitialProcessParser;
+import com.ordonnancement.service.runner.Runner;
 
 public class Main {
     public static void main(String[] args) {
         
-        //Démo création du fichier de configuration////////////////////////////////////////////
+        //Démo création du fichier de configuration + récupération des résultats python////////////////////////////////////////////
 
-        ConfigurationManager manager = ConfigurationManager.getInstance(); //Récup l'instance du configuration manager
-
+       
         //Création des algos qui vont être utilisés par l'ordonnanceur
         AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.json", 9);
         AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.json", null);
@@ -35,69 +28,23 @@ public class Main {
         liste.add(algo1);
         liste.add(algo2);
         //Création de l'objet FileConfig représentant le fichier de configuration
-        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processInitiaux.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Metriques","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources", liste);
-        //On enregistre cet objet dans le manager
-        manager.setFileConfiguration(fileConfig);
-        //Création du configuration writer
-        ConfigurationWriter writer = new ConfigurationWriter();
-        //Créer le fichier JSON de configuration
-        writer.writeConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json");
-
-        //Démo Parsing/////////////////////////////////////////////////////////////////////
-
-        manager = ConfigurationManager.getInstance(); //Récupération de l'instance du manager
-        fileConfig = manager.getFileConfiguration(); //Récupération du fichier de configuration utilisé dans l'application
-        List<AlgoConfiguration> listeAlgos = fileConfig.getListeAlgorithmes(); //On récupère les liste des algorithmes qui ont été exécutés
+        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processInitiaux.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\metrics.json","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources", liste);
+       
+        //Lancer l'execution / écriture fichier config + récup des résultats de python
+        Resultats resultats = Runner.run(fileConfig,"C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json");
 
 
 
-        //Créer le parser de fichier pour les processus initiaux
-        FileParser parserFichierProcessus = new ProcessParser(new InitialProcessParser());
-        //Parser le fichier et récupérer la liste des processus
-        List<Process> processusInitiaux = parserFichierProcessus.parse(fileConfig.getFichierProcessus());
-
-        //Créer le parser de fichier pour les résultats globaux
-        FileParser parserFichierResultGlobaux = new ProcessParser(new GlobalResultProcessParser(processusInitiaux));
-
-         //Créer le parser de fichier pour les résultats détaillés
-        FileParser parserFichierResultDetailed = new ProcessParser(new DetailedResultProcessParser(processusInitiaux));
-
-        //Pour chaque algorithme d'ordonnancement executé
-        for(AlgoConfiguration algo : listeAlgos){
-            //Récupération des fichiers de résultats pour chaque algorithme
-            String resultDetailed = algo.getFichierResultatsDetailles();
-            String resultGlobal = algo.getFichierResultatsGlobaux();
-        
-            //Parse le fichier des résultats globaux et met à jour la liste des processus
-            parserFichierResultGlobaux.parse(resultGlobal);
-            //Parse le fichier des résultats détaillés et met à jour la liste des processus
-            parserFichierResultDetailed.parse(resultDetailed);
-
-
-
-        }
-
-
-
-
-
-        
-        
-        
-
-        //Créer le parser des métriques
-        FileParser parserMetrics = new MetricsParser();
-        //Parser le fichier des métriques et récupérer la liste des métriques
-        List<Metrics> metriques = parserMetrics.parse("\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\metrics.json");
+        //Affichage résultats
 
         System.out.println("--------------------------------------------Affichage processus--------------------------------------------");
         //Test affichage des processus : 
-        afficherProcessus(processusInitiaux);
+        afficherProcessus(resultats.getListeProcessus());
         System.out.println("\n");
         System.out.println("--------------------------------------------Affichage Metrics--------------------------------------------");
 
         //Test affichage des Métriques : 
-        afficherMetrics(metriques);
+        afficherMetrics(resultats.getListeMetrics());
 
 
 

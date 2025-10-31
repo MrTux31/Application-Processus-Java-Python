@@ -1,4 +1,4 @@
-package com.ordonnancement.service.parser.implementation.metrics;
+package com.ordonnancement.service.parser.metrics;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,14 +11,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.ordonnancement.model.Metrics;
-import com.ordonnancement.service.parser.FileParser;
 import com.ordonnancement.service.parser.FileParsingException;
 import com.ordonnancement.service.validation.FileValidator;
 /**
  * Classe permettant de parser le fichier "métriques globales"
  * 
  */
-public class MetricsParser implements FileParser<Metrics>{
+public class MetricsParser{
 
     /**
      * Permet de parser les fichiers listant les métriques globales par algo d'ordonnancement 
@@ -33,7 +32,7 @@ public class MetricsParser implements FileParser<Metrics>{
     * ]
      */
 
-    @Override
+    
     public List<Metrics> parse(String cheminFichier){
 
         FileValidator.verifierCheminFichier(cheminFichier); //Vérification de l'existance du fichier

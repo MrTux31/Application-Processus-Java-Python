@@ -1,4 +1,4 @@
-package com.ordonnancement.service.parser.implementation.process.strategie;
+package com.ordonnancement.service.parser.process.strategie;
 
 import java.io.IOException;
 import java.nio.file.Files;

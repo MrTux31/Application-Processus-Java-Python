@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ordonnancement.config.ConfigurationManager;
+import com.ordonnancement.model.FileConfiguration;
 
 /**
  * Classe qui s'occupe d'écrire le fichier de
@@ -15,7 +15,15 @@ import com.ordonnancement.config.ConfigurationManager;
 
 public class ConfigurationWriter {
 
-    public void writeConfiguration(String destination){
+
+    /**
+     * Permet de lancer l'écriture du fichier de configuration
+     * Génère un fichier JSON contenant toutes les infos du fichier
+     * de configuration dans la destination spécifiée.
+     * @param destination : La destination du fichier de configuration
+     */
+
+    public void writeConfiguration(FileConfiguration configuration,String destination){
         //Vérifications concernant la validité de la destination
         if(destination == null || destination.isBlank()){ //si on ne fournit aucune destination
             throw new ConfigurationWriterException("Le chemin du fichier de destination doit être spécifié");
@@ -28,7 +36,6 @@ public class ConfigurationWriter {
             throw new ConfigurationWriterException("Le fichier de destination ne contient pas l'extension JSON.");
         }
 
-        ConfigurationManager manager = ConfigurationManager.getInstance(); //Récupération de l'instance du manager
         Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls() // Pour que Python ait toujours les mêmes clés (ajoute les éléments nulls au json)
         .create(); //Creation du JSON builder
 
@@ -38,7 +45,7 @@ public class ConfigurationWriter {
 
         //Try with ressources pour fermer automatiquement le writer en cas d'erreur
         try (FileWriter writer = new FileWriter(destination.trim())) { //L'objet FileWriter permet d'écrire dans le fichier de destination et le créer si il n'existe pas encore
-            gson.toJson(manager.getFileConfiguration(), writer); //Conversion en JSON de l'objet FileConfiguration, écrit dans la destination
+            gson.toJson(configuration, writer); //Conversion en JSON de l'objet FileConfiguration, écrit dans la destination
         
         
         
