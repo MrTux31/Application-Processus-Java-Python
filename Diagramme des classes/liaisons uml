@@ -1,0 +1,29 @@
+FileConfiguration o-- "*" AlgoConfiguration
+MetricsParser ..> Metrics
+MetricsParser ..> FileValidator
+Process o--> "*" ExecutionInfo
+ProcessUtils ..> Process
+ProcessUtils ..> ExecutionInfo
+ProcessUtils ..> Schedule
+ConfigurationWriter ..> FileConfiguration
+ExecutionInfo o--> "*" Schedule
+Resultats o--> "*" Process
+Resultats o--> "*" Metrics
+ProcessParser o--> "*" FileParserStrategy
+ProcessParser ..> Process
+ProcessParser ..> FileValidator
+ProcessParser ..> ProcessValidator
+Runner ..> ConfigurationWriter
+Runner ..> FileConfiguration
+Runner ..> AlgoConfiguration
+Runner ..> ProcessParser
+Runner ..> Process
+Runner ..> Metrics
+Runner ..> MetricsParser
+Runner ..> Resultats
+ProcessValidator ..> Process
+ProcessValidator ..> ExecutionValidator
+ExecutionValidator ..> ExecutionInfo
+ExecutionValidator ..> Process
+ExecutionValidator ..> Schedule
+Schedule o--> "1" Processor
