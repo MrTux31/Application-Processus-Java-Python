@@ -1,0 +1,19 @@
+{
+  "fichierProcessus": "processusInitiaux.csv",
+  "fichierRessourcesDisponibles": "ressources.json",
+  "fichierMetriquesGlobales": "fichierMetriquesGlobales",
+  "listeAlgorithmes": [
+    {
+      "nomAlgorithme": "ROUND ROBIN",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.csv",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.csv",
+      "quantum": 9
+    },
+    {
+      "nomAlgorithme": "FIFO",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.csv",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.csv",
+      "quantum": null
+    }
+  ]
+}
