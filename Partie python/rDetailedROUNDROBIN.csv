@@ -1,0 +1,4 @@
+idProcessus,dateSoumission,dateDebut,dateFin,requiredRam,usedRam
+2,0,0,3,512,
+1,0,0,6,1024,
+3,3,3,9,512,

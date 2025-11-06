@@ -53,6 +53,7 @@ def parser_fichier_processus(chemin_fichier):
     with open(chemin_fichier, newline='') as fichier: #Ouvrir le fichier CSV
         for ligne in csv.DictReader(fichier): #Pour chaque ligne dans le fichier CSV
             liste_elements.append(ligne) #Ajout d'un dictionnaire (représentant la ligne du CSV courante) dans la liste 
+            
     return liste_elements    
 
 #Utilisé pour parser le fichier des ressources
@@ -132,8 +133,6 @@ else:
     #Récupération des données 
     donnees = charger_donnes()
     
-    
-
     #Parcours du dictionnaire contenant les algos d'ordonnancement à exécuter
     for algo in donnees["algos"]:
 

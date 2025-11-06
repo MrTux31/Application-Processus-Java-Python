@@ -5,9 +5,9 @@
   "listeAlgorithmes": [
     {
       "nomAlgorithme": "ROUND ROBIN",
-      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.csv",
-      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.csv",
-      "quantum": 9
+      "fichierResultatsDetailles": "rDetailedROUNDROBIN.csv",
+      "fichierResultatsGlobaux": "rGlobauxROUNDROBIN.csv",
+      "quantum": 2
     },
     {
       "nomAlgorithme": "FIFO",
