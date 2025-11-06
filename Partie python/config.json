@@ -1,7 +1,7 @@
 {
   "fichierProcessus": "processusInitiaux.csv",
   "fichierRessourcesDisponibles": "ressources.json",
-  "fichierMetriquesGlobales": "fichierMetriquesGlobales",
+  "fichierMetriquesGlobales": "fichierMetriquesGlobales.csv",
   "listeAlgorithmes": [
     {
       "nomAlgorithme": "ROUND ROBIN",
