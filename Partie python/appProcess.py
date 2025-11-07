@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import roundRobin
+import fifo
 
 
 def parser_fichier_config(chemin_fichier):
@@ -143,12 +144,13 @@ else:
                 roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"],donnees["metriques"]) #On exécute le round robin (passage en params des paramètres de l'algo : chemins fichiers sortie et Quantum)
                 
             case "FIFO":
+                fifo.fifo( 
+                    donnees["algos"][algo],
+                    donnees["processus"],
+                    donnees["ressources"],
+                    donnees["metriques"]
+                )
                 
-                pass
-
-            case "PRIORITE" :
-
-                pass
             case _:
                 print("Algo inconnu : ",algo, file=sys.stderr)
                 sys.exit(3)
