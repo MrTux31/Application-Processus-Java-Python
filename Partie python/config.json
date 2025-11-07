@@ -14,6 +14,12 @@
       "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.csv",
       "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.csv",
       "quantum": null
+    },
+    {
+      "nomAlgorithme": "priorite",
+      "fichierResultatsDetailles": "rDetailedPriority.csv",
+      "fichierResultatsGlobaux": "rGlobauxPriority.csv",
+      "quantum": null
     }
   ]
 }
