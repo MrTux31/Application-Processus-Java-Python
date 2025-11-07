@@ -145,6 +145,10 @@ else:
             case "FIFO":
                 
                 pass
+
+            case "PRIORITE" :
+
+                pass
             case _:
                 print("Algo inconnu : ",algo, file=sys.stderr)
                 sys.exit(3)
