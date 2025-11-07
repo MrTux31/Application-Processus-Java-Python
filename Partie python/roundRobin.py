@@ -39,8 +39,8 @@ def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
     fichier_detaille = Path(params_algos["fichierResultatsDetailles"].strip())
     fichier_global = Path(params_algos["fichierResultatsGlobaux"].strip())
     
-    # Vérifie que le fichier existe
-    if not fichier_detaille.exists() or not fichier_global.exists():
+    # Vérifie que le dossier parent existe bien
+    if not fichier_detaille.parent.exists() or not fichier_global.parent.exists():
         #Mettre le message d'erreur dans la sortie d'erreur, pour récup les erreurs avec Java
         print("Chemins de fichiers de résultats incorrects pour le Round Robin",file=sys.stderr)
         sys.exit(12)
