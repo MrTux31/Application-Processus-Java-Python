@@ -47,7 +47,7 @@ def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
     
     try :
         #Enregistrer le fichier d'informations globales des processus---------------------
-        with open(fichier_detaille, "w", newline="", encoding="utf-8") as f:
+        with open(fichier_global, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["idProcessus", "dateSoumission", "dateDebut","dateFin","requiredRam","usedRam"])
             writer.writeheader()  # écrit la première ligne (les noms de colonnes)
             for p in processus: #Pour chaque processus, on enregistre la ligne dans le csv
@@ -61,7 +61,7 @@ def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
                 })
 
         #Enregistrer le fichier d'informations détaillées des processus---------------------
-        with open(fichier_global, "w", newline="", encoding="utf-8") as f:
+        with open(fichier_detaille, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["idProcessus", "dateDebut","dateFin","idProcesseur"])
             writer.writeheader()  # écrit la première ligne (les noms de colonnes)
             writer.writerows(infos_allocations_processeur)
