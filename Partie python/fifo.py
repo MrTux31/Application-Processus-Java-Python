@@ -1,4 +1,4 @@
-from datetime import date
+
 from pathlib import Path
 import sys
 import csv
@@ -15,6 +15,7 @@ def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_a
     # Avertir sur 'quantum' uniquement s'il a une valeur non nulle
     if params_algos.get("quantum") not in (None, "", 0):
         print("Avertissement: 'quantum' fourni mais ignoré pour l'algorithme FIFO.", file=sys.stderr)
+
 
     # Créer les dossiers parents si nécessaire
     try:

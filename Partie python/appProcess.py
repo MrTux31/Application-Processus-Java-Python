@@ -150,6 +150,9 @@ else:
                     donnees["ressources"],
                     donnees["metriques"]
                 )
+
+            case "PRIORITE":
+                pass
                 
             case _:
                 print("Algo inconnu : ",algo, file=sys.stderr)
