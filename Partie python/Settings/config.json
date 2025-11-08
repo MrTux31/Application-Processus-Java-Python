@@ -7,7 +7,7 @@
       "nomAlgorithme": "ROUND ROBIN",
       "fichierResultatsDetailles": "Resultats/RoundRobin/rDetailedROUNDROBIN.csv",
       "fichierResultatsGlobaux": "Resultats/RoundRobin/rGlobauxROUNDROBIN.csv",
-      "quantum": 10
+      "quantum": 2
     },
     {
       "nomAlgorithme": "FIFO",
