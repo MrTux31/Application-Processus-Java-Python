@@ -112,15 +112,7 @@ def initialiser_processus(processus, ram_dispo):
 
     # Parcours de tous les processus fournis
     for p in processus:
-        # Vérifie si le processus peut être exécuté avec la RAM disponible
-        if int(p["requiredRam"]) > ram_dispo:
-            print(
-                f"Impossible d'exécuter le processus {p['idProcessus']} : "
-                f"{p['requiredRam']} > {ram_dispo}",
-                file=sys.stderr
-            )
-            sys.exit(9)  # Quitte le programme avec un code d’erreur spécifique
-
+        
         # Création d’un dictionnaire enrichi pour le processus
         nouvelle_liste.append({
             "idProcessus": p["idProcessus"],                # Identifiant du processus

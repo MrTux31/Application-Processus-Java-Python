@@ -2,9 +2,9 @@ import sys
 import csv 
 import json
 from pathlib import Path
-
-import roundRobin
-import fifo
+import Verifications.verifications
+import Algos.roundRobin
+import Algos.fifo
 
 
 def parser_fichier_config(chemin_fichier):
@@ -38,6 +38,10 @@ def parser_fichier_config(chemin_fichier):
     except KeyError as e: #Si une clé est manquante dans le fichier de config
         print(f"Champ manquant dans le fichier de configuration : {e.args[0]}", file=sys.stderr)
         sys.exit(5)
+    except Exception as e:
+            # Attrape toutes les erreurs inconnues
+            print(f"Erreur inattendue lors du parsing du fichier de configuration : {e}", file=sys.stderr)
+            sys.exit(99)
     
     return fichier_processus,fichier_ressources,fichier_metriques,dict_algos
 
@@ -50,11 +54,16 @@ def parser_fichier_processus(chemin_fichier):
         print(f"Le fichier {chemin_fichier} est innexistant.",file=sys.stderr)
         sys.exit(2)
     
-    liste_elements = []
-    with open(chemin_fichier, newline='') as fichier: #Ouvrir le fichier CSV
-        for ligne in csv.DictReader(fichier): #Pour chaque ligne dans le fichier CSV
-            liste_elements.append(ligne) #Ajout d'un dictionnaire (représentant la ligne du CSV courante) dans la liste 
-            
+    try:
+        liste_elements = []
+        with open(chemin_fichier, newline='') as fichier: #Ouvrir le fichier CSV
+            for ligne in csv.DictReader(fichier): #Pour chaque ligne dans le fichier CSV
+                liste_elements.append(ligne) #Ajout d'un dictionnaire (représentant la ligne du CSV courante) dans la liste 
+    except Exception as e:
+            # Attrape toutes les erreurs inconnues
+            print(f"Erreur inattendue lors du parsing du fichier des processus : {e}", file=sys.stderr)
+            sys.exit(99)
+
     return liste_elements    
 
 #Utilisé pour parser le fichier des ressources
@@ -74,20 +83,18 @@ def parser_fichier_ressources(chemin_fichier):
             sys.exit(4)
         try:
             #Récupération des différentes données
-            nb_processeurs = ressources["nombreTotalProcesseurs"]
-            ram_totale = ressources["ramTotale"]
-            liste_processeurs =  [processeur["idProcesseur"] for processeur in ressources["processeurs"] ]
+            nb_processeurs = int(ressources["nombreTotalProcesseurs"])
+            ram_totale = int(ressources["ramTotale"])
+            liste_processeurs =  [processeur["idProcesseur"] for processeur in ressources["processeurs"]]
         except KeyError as e: #Si une clé est manquante dans le fichier des ressources
             print(f"Champ manquant dans le fichier des ressources : {e.args[0]}", file=sys.stderr)
             sys.exit(6)
 
-        #Gestion incohérences
-        if len(liste_processeurs) != nb_processeurs: #Si le nb de processeurs est incohérent
-            print("Erreur dans le fichier des ressources, il y a un nombre total de CPU différent du nombre réel", file=sys.stderr)
-            sys.exit(7)
-        if len(liste_processeurs) == 0:
-            print("Erreur dans le fichier des ressources, il n'y a aucun CPU spécifié", file=sys.stderr)
-            sys.exit(8)
+        except Exception as e:
+            # Attrape toutes les erreurs inconnues
+            print(f"Erreur inattendue lors du parsing du fichier de ressources : {e}", file=sys.stderr)
+            sys.exit(99)
+
         return {"processeurs" : liste_processeurs, "nb_processeurs" :nb_processeurs, "ram_tot" :ram_totale,}
 
 
@@ -119,6 +126,11 @@ def charger_donnes():
     liste_processus = parser_fichier_processus(fichier_processus)
     dict_ressources = parser_fichier_ressources(fichier_ressources)
 
+    #On lance une vérification des divers processus et des ressources récupérés dans les fichiers lus.
+    Verifications.verifications.verifierRessources(dict_ressources) #Vérification des ressources
+    Verifications.verifications.verifierProcessus(liste_processus,dict_ressources["ram_tot"]) #Vérification des processus
+    Verifications.verifications.verifierAlgos(dict_algos) #Vérification des algos d'ordonnancement
+
     return {"processus" : liste_processus,"ressources" :dict_ressources, "algos":dict_algos, "metriques" : fichier_metriques}
 
 
@@ -141,10 +153,10 @@ else:
         match algo.strip().upper():  #Enlever espaces et forcer les majuscules sur le nom d'algo
             case "ROUND ROBIN":
                 
-                roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"],donnees["metriques"]) #On exécute le round robin (passage en params des paramètres de l'algo : chemins fichiers sortie et Quantum)
+                Algos.roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"],donnees["metriques"]) #On exécute le round robin (passage en params des paramètres de l'algo : chemins fichiers sortie et Quantum)
                 
             case "FIFO":
-                fifo.fifo( 
+                Algos.fifo.fifo( 
                     donnees["algos"][algo],
                     donnees["processus"],
                     donnees["ressources"],

@@ -76,7 +76,6 @@ def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
     
 
 
-
 def enregistrer_date_fin_alloc(infos_allocations_processeur,pe, date):
     """
     Met à jour la date de fin de la dernière allocation CPU d'un processus donné.
@@ -125,11 +124,7 @@ def initialiser_processus(processus: list[dict], ram_dispo: int, quantum: int) -
     nouvelle_liste = []
     
     #Ajout des processus dans la liste de processus en attente de soumission
-    for p in processus:
-        if int(p["requiredRam"]) > ram_dispo:
-            print(f"Impossible d'exécuter le processus {p["idProcessus"]} car il demande trop de ram : {p["requiredRam"]} contre un total de {ram_dispo} disponible", file=sys.stderr)
-            sys.exit(9)
-
+    for p in processus:    
         nouvelle_liste.append({
             "idProcessus": p["idProcessus"],
             "dateSoumission": int(p["dateSoumission"]),
@@ -143,7 +138,7 @@ def initialiser_processus(processus: list[dict], ram_dispo: int, quantum: int) -
             "dateFin": None,
             "usedRam" : None
         })
-    
+
     #Tri des processus par date de soumission croissante
     nouvelle_liste.sort(key=lambda processus:processus["dateSoumission"]) 
     return nouvelle_liste
