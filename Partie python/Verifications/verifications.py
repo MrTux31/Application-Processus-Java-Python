@@ -3,13 +3,25 @@ import sys
 
 def verifierRessources(ressources : dict):
     """
-    "ressources": {
-        "processeurs": liste des IDs,
-        "nb_processeurs": int,
-        "ram_tot": int
+    Vérifie la cohérence des ressources pour l’ordonnancement.
+
+    Paramètres
+    ----------
+    ressources : dict
+        Dictionnaire contenant :
+        - 'processeurs' : liste des IDs des processeurs,
+        - 'nb_processeurs' : nombre total de processeurs,
+        - 'ram_tot' : quantité totale de RAM (>0).
+
+    Termine le programme avec une erreur affichée si incohérence détectée.
+
+    Exemple pramètre "ressources" :
+    {
+        'processeurs': ['CPU1', 'CPU2'],
+        'nb_processeurs': 2,
+        'ram_tot': 8000
     }
     """
-    
     try:
 
         liste_processeurs = ressources["processeurs"]
@@ -44,6 +56,28 @@ def verifierRessources(ressources : dict):
 
 
 def verifier_entiers_positifs(p: dict):
+    """
+    Vérifie que certaines valeurs numériques d’un processus sont des entiers positifs.
+
+    Paramètres
+    ----------
+    p : dict
+        Exemple :
+        {
+            'idProcessus': '1',
+            'dateSoumission': '0',
+            'tempsExecution': '6',
+            'requiredRam': '1024',
+            'deadline': '20',
+            'priority': '3'
+        }
+        Les champs numériques vérifiés sont :
+        dateSoumission, tempsExecution, requiredRam, deadline, priority
+
+    Termine le programme avec une erreur si une valeur négative est détectée.
+    """
+    
+    
     champs_numeriques = ["dateSoumission", "tempsExecution", "requiredRam", "deadline", "priority"]
     
     for champ in champs_numeriques:
@@ -54,6 +88,30 @@ def verifier_entiers_positifs(p: dict):
         
 
 def verifierProcessus(processus: list[dict], ram_dispo: int):
+    """
+    Vérifie la cohérence des processus avant l’ordonnancement.
+
+    Paramètres
+    ----------
+    processus : list[dict]
+        Exemple :
+        [
+            {'idProcessus': '1', 'dateSoumission': '0', 'tempsExecution': '6', 'requiredRam': '1024', 'deadline': '20', 'priority': '3'},
+            {'idProcessus': '2', 'dateSoumission': '0', 'tempsExecution': '3', 'requiredRam': '1024', 'deadline': '15', 'priority': '1'},
+            {'idProcessus': '3', 'dateSoumission': '3', 'tempsExecution': '6', 'requiredRam': '512', 'deadline': '15', 'priority': '1'}
+        ]
+    ram_dispo : int
+        Quantité totale de RAM disponible pour l’ordonnancement (exemple : 8000).
+
+    Vérifie pour chaque processus :
+    - unicité de l’ID,
+    - valeurs numériques positives (via `verifier_entiers_positifs`),
+    - RAM demandée <= RAM disponible et > 0,
+    - deadline >= date de soumission.
+
+    Termine avec une erreur si une incohérence est détectée
+    """
+    
     try:
         ids_vus = set() #Création d'un ensemble pour stocker les id (on vérif si ils sont uniques)
         for p in processus:
@@ -87,7 +145,37 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
 
 
 def verifierAlgos(algos : dict):
-    
+    """
+    Vérifie la cohérence des algorithmes à exécuter pour l’ordonnancement.
+
+    Paramètres
+    ----------
+    algos : dict
+        Exemple :
+        {
+            'ROUND ROBIN': {
+                'fichierResultatsDetailles': Path('Resultats/RoundRobin/rDetailedROUNDROBIN.csv'),
+                'fichierResultatsGlobaux': Path('Resultats/RoundRobin/rGlobauxROUNDROBIN.csv'),
+                'quantum': 2
+            },
+            'FIFO': {
+                'fichierResultatsDetailles': Path('Resultats/Fifo/rDetailedFIFO.csv'),
+                'fichierResultatsGlobaux': Path('Resultats/Fifo/rGlobauxFIFO.csv'),
+                'quantum': None
+            },
+            'PRIORITE': {
+                'fichierResultatsDetailles': Path('Resultats/Priorite/rDetailedPriority.csv'),
+                'fichierResultatsGlobaux': Path('Resultats/Priorite/rGlobauxPriority.csv'),
+                'quantum': None
+            }
+        }
+
+    Vérifie :
+    - Que la liste des algorithmes n’est pas vide.
+    - Pour ROUND ROBIN, que le quantum est défini et > 0.
+
+    Termine le programme avec une erreur en cas d'incohérence 
+    """
     if len(algos) == 0:
         print("Erreur dans le fichier de configuration, liste des algorithmes à exécuter manquante", file=sys.stderr)
         sys.exit(13)

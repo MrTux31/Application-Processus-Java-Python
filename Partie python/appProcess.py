@@ -9,16 +9,36 @@ import Metriques.metriques
 
 def charger_donnes():
     """
-    Retourne un dictionnaire contenant toutes les données nécessaires :
+    Charge et vérifie toutes les données nécessaires à l’ordonnancement.
+
+    Lit le fichier de configuration, puis charge :
+    - la liste des processus à ordonnancer (CSV),
+    - les ressources disponibles (JSON),
+    - les algorithmes à exécuter et leurs paramètres,
+    - le chemin du fichier de métriques globales.
+
+    Effectue également les vérifications de cohérence sur les données chargées.
+
+    Retour
+    ------
+    dict
+        Dictionnaire contenant toutes les données nécessaires à l’ordonnancement.
+
+    Exemple de retour :
+    -----------------
     {
-        "processus": liste des dictionnaires représentant les processus,
-        "ressources": {
-            "processeurs": liste des IDs,
-            "nb_processeurs": int,
-            "ram_tot": int
+        'processus': [
+            {'idProcessus': '1', 'dateSoumission': '0', 'tempsExecution': '6', 'requiredRam': '1024', 'deadline': '20', 'priority': '3'},
+            {'idProcessus': '2', 'dateSoumission': '0', 'tempsExecution': '3', 'requiredRam': '1024', 'deadline': '15', 'priority': '1'},
+            {'idProcessus': '3', 'dateSoumission': '3', 'tempsExecution': '6', 'requiredRam': '512', 'deadline': '15', 'priority': '1'}
+        ],
+        'ressources': {'processeurs': ['CPU1', 'CPU2'], 'nb_processeurs': 2, 'ram_tot': 8000},
+        'algos': {
+            'ROUND ROBIN': {'fichierResultatsDetailles': Path('Resultats/RoundRobin/rDetailedROUNDROBIN.csv'),
+                            'fichierResultatsGlobaux': Path('Resultats/RoundRobin/rGlobauxROUNDROBIN.csv'),
+                            'quantum': 2}
         },
-        "algos": dictionnaire des algos à exécuter,
-        "metriques": chemin du fichier de métriques
+        'metriques': Path('Resultats/fichierMetriquesGlobales.csv')
     }
     """
     #Récupération du fichier de configuration
@@ -47,7 +67,30 @@ def charger_donnes():
 
 
 def main():
+    """
+    Point d’entrée principal du programme Python d’ordonnancement.
 
+    Lit le fichier de configuration passé en argument, charge toutes les données 
+    nécessaires (processus, ressources, algorithmes), puis exécute chaque 
+    algorithme d’ordonnancement demandé (Round Robin, FIFO, Priorité, etc.).
+
+    À la fin de l’exécution :
+    - affiche les métriques globales de chaque algorithme (temps moyen, makespan…)
+    - enregistre les métriques globales dans le fichier défini dans la configuration.
+
+    En cas d’erreur (chemin manquant, algo inconnu, etc.), 
+    affiche un message sur stderr et quitte.
+
+    Exemple d’exécution
+    -------------------
+    $ python appProcess.py config.json
+
+    Exemple de sortie
+    -----------------
+    Métriques globales pour les différents algorithmes :
+    ----------------------------------------------------
+    - ROUND ROBIN | Temps d'attente moyen : 4.0 | Temps reponse moyen : 2.5 | Makespan : 18
+    """
     if len(sys.argv) < 2 :
         print("Chemin du fichier de configuration manquant !", file=sys.stderr)
         sys.exit(1)
