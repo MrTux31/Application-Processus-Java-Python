@@ -1,6 +1,9 @@
 import sys
 import csv
 
+from Metriques import metriques
+
+
 def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
     """
     Enregistre les résultats de l'ordonnancement dans deux fichiers CSV : global et détaillé.
@@ -15,7 +18,7 @@ def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
              "deadline": 20, "priority": 3, "tempsTotalExecution": 6, "tempsRestQuantum": 0},
             {"idProcessus": "2", "dateSoumission": 0, "dateDebut": 0, "dateFin": 3,
              "requiredRam": 512, "usedRam": None, "tempsExecution": 3,
-             "deadline": 15, "priority": 1, "tempsTotalExecution": 3, "tempsRestQuantum": 1}
+             "deadline": 15, "priority": 1, "tempsTotalExecution": 3, "tempsRestQuantum": 0}
         ]
 
     infos_allocations_processeur : list[dict]
@@ -131,8 +134,6 @@ def initialiser_processus(processus: list[dict], ram_dispo: int, quantum: int) -
             "dateSoumission": int(p["dateSoumission"]),
             "tempsExecution": int(p["tempsExecution"]), #Le nombre d'unités de temps pendant lesquelle le processus doit s'executer
             "requiredRam": int(p["requiredRam"]),
-            "deadline": int(p["deadline"]),
-            "priority": int(p["priority"]),
             "tempsTotalExecution": 0,   #Le nombre d'unité de temps pendant lequel le processus s'est executé
             "tempsRestQuantum" : quantum,
             "dateDebut": None,# date de premier début
@@ -212,13 +213,12 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
         #Si le processus s'est executé pendant le temps qui était prévu, on le met dans la liste des processus terminés
         if pe["processus"]["tempsTotalExecution"] == pe["processus"]["tempsExecution"]:
             
-            pe["processus"]["dateFin"] = date+1 #Enregistrement de la date de fin (+1 sur la date pour avoir la VRAIE date de fin)
+            pe["processus"]["dateFin"] = date+1 #Enregistrement de la date de fin (+1 sur la date pour avoir la VRAIE date de fin, il se termine une unité de temps après)
             processus_termines.append(pe["processus"]) #Le processus est terminé
             enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 sur la date pour avoir la VRAIE date de fin)
             ram_liberee += pe["processus"]["usedRam"] #On récupère la ram rendue par le processus fini
             processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
             processus_elus.remove(pe) #Supression des processus élus
-            
         else:
             #Si le processus élu à épuisé le quantum de temps
             if pe["processus"]["tempsRestQuantum"] == 0:
@@ -305,3 +305,7 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
     enregistrer_resultats(processus_termines,infos_allocations_processeur, params_algo)
     
 
+    tempsAttenteMoyen = metriques.tempsAttenteMoyen(processus_termines)
+    tempsReponseMoyen = metriques.tempsReponseMoyen(processus_termines)
+    
+    return {"algo": "ROUND ROBIN", "tempsAttenteMoyen": tempsAttenteMoyen, "tempsReponseMoyen":tempsReponseMoyen, "makespan": date} #On retourne les métriques

@@ -4,7 +4,7 @@ from pathlib import Path
 import Verifications.verifications
 import Algos.roundRobin
 import Algos.fifo
-
+import Metriques.metriques
 
 
 def charger_donnes():
@@ -54,16 +54,18 @@ def main():
     else:
         #Récupération des données 
         donnees = charger_donnes()
-        
+        metriques_moyennes = []
+
         #Parcours du dictionnaire contenant les algos d'ordonnancement à exécuter
         for algo in donnees["algos"]:
 
             #Vérification de la correspondance du nom de l'algo, pour l'executer
             match algo.strip().upper():  #Enlever espaces et forcer les majuscules sur le nom d'algo
                 case "ROUND ROBIN":
-                    
-                    Algos.roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"],donnees["metriques"]) #On exécute le round robin (passage en params des paramètres de l'algo : chemins fichiers sortie et Quantum)
-                    
+                    #On exécute le round robin (passage en params des paramètres de l'algo : chemins fichiers sortie et Quantum)
+                    #Récupération de ses métriques (moyennes)
+                    metriques_round_robin = Algos.roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"],donnees["metriques"]) 
+                    metriques_moyennes.append(metriques_round_robin)
                 case "FIFO":
                     Algos.fifo.fifo( 
                         donnees["algos"][algo],
@@ -78,14 +80,19 @@ def main():
                 case _:
                     print("Algo inconnu : ",algo, file=sys.stderr)
                     sys.exit(3)
+        #Affichage des métriques moyennes
+        print("Métriques globales pour les différents algorithmes :")
+        print("----------------------------------------------------")
+        for m in metriques_moyennes:
+            print(f"- {m["algo"]} | Temps d'attente moyen : {m["tempsAttenteMoyen"]} | Temps reponse moyen : {m["tempsReponseMoyen"]} | Makespan : {m["makespan"]}")    
 
-
+        Metriques.metriques.enregistrerMetriques(donnees["metriques"],metriques_moyennes)
 #Début du programme
 if __name__ == "__main__":
     try:
         main()
     except SystemExit: #On attrape les sys.exit()
         raise #On les affiche
-    #except Exception as e:
-    #    print("Erreur inattendue lors de l'exécution du programme.", e, file=sys.stderr)
-     #   sys.exit(99)
+    except Exception as e:
+        print("Erreur inattendue lors de l'exécution du programme.", e, file=sys.stderr)
+        sys.exit(99)
