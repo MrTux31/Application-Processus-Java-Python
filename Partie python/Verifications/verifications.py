@@ -35,8 +35,8 @@ def verifierRessources(ressources : dict):
         if ram_tot<= 0:
             print("Erreur dans le fichier des ressources, la quantité de ram est <=0", file=sys.stderr)
             sys.exit(8)   
-    except Exception as e:
-        print(f"Erreur innatendue dans le fichier des ressources : {e}", file=sys.stderr)
+    except Exception:
+        print("Erreur innatendue dans le fichier des ressources", file=sys.stderr)
         sys.exit(13)
     
     
@@ -77,12 +77,17 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
         print(f"Le fichier des processus initiaux est mal formé (clé manquante : {e}).", file=sys.stderr)
         sys.exit(13)
 
-    except Exception as e:
-        print(f"Erreur innatendue dans le fichier des processus : {e}", file=sys.stderr)
+    except Exception :
+        print("Erreur innatendue dans le fichier des processus", file=sys.stderr)
         sys.exit(13)
 
 
 def verifierAlgos(algos : dict):
+    
+    if len(algos) == 0:
+        print("Erreur dans le fichier de configuration, liste des algorithmes à exécuter manquante", file=sys.stderr)
+        sys.exit(13)
+
     for a in algos:
         try:
             if a == "ROUND ROBIN" and algos[a]["quantum"] is None:
@@ -92,6 +97,6 @@ def verifierAlgos(algos : dict):
             if a == "ROUND ROBIN" and algos[a]["quantum"] <=0:
                 print("Erreur dans le fichier de configuration, quantum <=0 pour le Round Robin", file=sys.stderr)
                 sys.exit(13)
-        except Exception as e:
-            print(f"Erreur innatendue dans le fichier de config pour l'algo à exécuter {a} : {e}", file=sys.stderr)
+        except Exception:
+            print(f"Erreur innatendue dans le fichier de config pour l'algo à exécuter {a}", file=sys.stderr)
             sys.exit(13)

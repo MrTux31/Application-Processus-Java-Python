@@ -28,7 +28,7 @@ def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_a
         sys.exit(11)
     except Exception as e:
         # Si on n'arrive même pas à préparer les dossiers, sortir avec 12 (cohérent avec ton code)
-        print(f"Chemins de fichiers de résultats incorrects pour FIFO : {e}", file=sys.stderr)
+        print("Chemins de fichiers de résultats incorrects pour FIFO", file=sys.stderr)
         sys.exit(12)
 
     # Écriture des fichiers

@@ -7,8 +7,8 @@ def enregistrer_resultats_priorite(processus, infos_allocations_processeur, para
     Crée automatiquement les dossiers parents si besoin.
     """
     # Normalisation des chemins
-    fichier_detaille = Path(str(params_algos["fichierResultatsDetailles"]).strip())
-    fichier_global   = Path(str(params_algos["fichierResultatsGlobaux"]).strip())
+    fichier_detaille = params_algos["fichierResultatsDetailles"]
+    fichier_global   = params_algos["fichierResultatsGlobaux"]
 
     # Créer les dossiers parents si nécessaire
     try:
@@ -17,11 +17,11 @@ def enregistrer_resultats_priorite(processus, infos_allocations_processeur, para
         if str(fichier_global.parent) not in (".", ""):
             fichier_global.parent.mkdir(parents=True, exist_ok=True)
     except PermissionError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour priorite, des permissions sont manquantes : {e}", file=sys.stderr)
+        print("Erreur d'enregistrement des fichiers de résultats pour priorite, des permissions sont manquantes : {e}", file=sys.stderr)
         sys.exit(11)
     except Exception as e:
-        # Si on n'arrive même pas à préparer les dossiers, sortir avec 12 (cohérent avec ton code)
-        print(f"Chemins de fichiers de résultats incorrects pour priorite : {e}", file=sys.stderr)
+        
+        print("Chemins de fichiers de résultats incorrects pour priorite ", file=sys.stderr)
         sys.exit(12)
 
     # Écriture des fichiers

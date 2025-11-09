@@ -1,4 +1,3 @@
-from pathlib import Path
 import sys
 import csv
 
@@ -36,8 +35,8 @@ def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
         }
     """
     
-    fichier_detaille = Path(params_algos["fichierResultatsDetailles"].strip())
-    fichier_global = Path(params_algos["fichierResultatsGlobaux"].strip())
+    fichier_detaille = params_algos["fichierResultatsDetailles"]
+    fichier_global = params_algos["fichierResultatsGlobaux"]
     
     # Vérifie que le dossier parent existe bien
     if not fichier_detaille.parent.exists() or not fichier_global.parent.exists():
@@ -73,7 +72,9 @@ def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
     except PermissionError as e:
         print(f"Erreur d'enregistrement des fichiers de résultats pour Round Robin, des permissions sont manquantes : {e}", file=sys.stderr)
         sys.exit(11)
-    
+    except Exception:
+        print("Erreur d'enregistrement inconnue des fichiers de résultats pour Round Robin", file=sys.stderr)
+        sys.exit(11)
 
 
 def enregistrer_date_fin_alloc(infos_allocations_processeur,pe, date):
