@@ -68,6 +68,10 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
                     print(f"Impossible d'exécuter le processus {p['idProcessus']} : RAM demandée {p['requiredRam']} > RAM disponible {ram_dispo}", file=sys.stderr)
                     sys.exit(9)
                 
+                if int(p["requiredRam"]) == 0: 
+                    print(f"Impossible d'exécuter le processus {p['idProcessus']} : RAM demandée ({p['requiredRam']}) insuffisante", file=sys.stderr)
+                    sys.exit(9)
+                
                 if int(p["deadline"]) < int(p["dateSoumission"]):
                     print(f"Deadline avant la date de soumission pour le processus {p['idProcessus']}", file=sys.stderr)
                     sys.exit(9)

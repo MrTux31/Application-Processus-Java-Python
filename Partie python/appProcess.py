@@ -86,6 +86,6 @@ if __name__ == "__main__":
         main()
     except SystemExit: #On attrape les sys.exit()
         raise #On les affiche
-    except Exception as e:
-        print("Erreur inattendue lors de l'exécution du programme.", e, file=sys.stderr)
-        sys.exit(99)
+    #except Exception as e:
+    #    print("Erreur inattendue lors de l'exécution du programme.", e, file=sys.stderr)
+     #   sys.exit(99)

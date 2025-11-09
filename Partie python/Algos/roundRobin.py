@@ -155,14 +155,29 @@ def soumettre_processus(date: int, processus_attente_soumission: list, processus
             processus_attente_soumission.remove(ps)# Suppression du processus de la liste attente soumission
 
 def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processus_elus: list,
-                infos_allocations_processeur: list, date: int):
+                infos_allocations_processeur: list, date: int, ram_dispo : int) -> int:
     """
-    Alloue les CPU libres aux processus en attente.
+    Alloue les CPU libres aux processus en attente. (renvoie qte ram restante)
     """
+    ram_restante = ram_dispo #On stocke la qte de ram disponible
+
     #Parcours de tous les processus en file attente
     for pfa in list(processus_file_attente):
-        #Si au moins un processeur est dispo
-        if len(processeurs_dispos) > 0:
+
+        #Si au moins un processeur est dispo et que la quantité de ram  restante est suffisante
+        if (len(processeurs_dispos) > 0 and ram_restante  >= pfa["requiredRam"] and pfa["usedRam"] is None):
+            pfa["usedRam"] = pfa["requiredRam"] #On récupère la ram nécessaire au fonctionnement du processus (on l'enregistre pour la rendre plus tard)
+            ram_restante = ram_restante - pfa["requiredRam"]
+            cpu = processeurs_dispos.pop(0) #On prends un cpu dispo dans la liste (le premier) 
+            #Allocation a un CPU
+            processus_elus.append({"processus" : pfa, "processeur" : cpu }) #On peut alors élire le processus, sur un cpu 
+            processus_file_attente.remove(pfa) #On supprime le processus de la fil d'attente
+            #Enregistrement des premières infos sur l'allocation
+            infos_allocations_processeur.append({"idProcessus" : pfa["idProcessus"],
+            "dateDebut" : date, "dateFin" : None, "idProcesseur": cpu})
+        
+        #Dans le cas où le processus à déjà de la ram allouée, il reprends son exécution sans reset la mémoire
+        elif len(processeurs_dispos) > 0 and pfa["usedRam"]: 
             cpu = processeurs_dispos.pop(0) #On prends un cpu dispo dans la liste (le premier) 
             #Allocation a un CPU
             processus_elus.append({"processus" : pfa, "processeur" : cpu }) #On peut alors élire le processus, sur un cpu 
@@ -171,12 +186,17 @@ def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processu
             infos_allocations_processeur.append({"idProcessus" : pfa["idProcessus"],
             "dateDebut" : date, "dateFin" : None, "idProcesseur": cpu})
 
+    
+    return ram_restante
+
 def executer_processus_elus(processus_elus: list, processus_file_attente: list,
                             processus_termines: list, processeurs_dispos: list,
-                            infos_allocations_processeur: list, date: int, quantum: int):
+                            infos_allocations_processeur: list, date: int, quantum: int) -> int:
     """
-    Met à jour le temps d'exécution des processus élus, gère la fin ou le quantum.
+    Met à jour le temps d'exécution des processus élus, gère la fin ou le quantum. Renvoie la qte de ram libérée par les processus finis
     """
+    ram_liberee = 0 #Variable qui stocke la quantitée de ram libérée par les processus terminés
+
     #Parcours de tous les processus élus
     for pe in list(processus_elus):
         #Enregistrement de la date de début d'execution du processus    
@@ -188,16 +208,18 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
         #On incrémente le temps pendant lequel le processus s'est exécuté
         pe["processus"]["tempsTotalExecution"] +=1
 
+        
         #Si le processus s'est executé pendant le temps qui était prévu, on le met dans la liste des processus terminés
         if pe["processus"]["tempsTotalExecution"] == pe["processus"]["tempsExecution"]:
+            
             pe["processus"]["dateFin"] = date+1 #Enregistrement de la date de fin (+1 sur la date pour avoir la VRAIE date de fin)
             processus_termines.append(pe["processus"]) #Le processus est terminé
             enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 sur la date pour avoir la VRAIE date de fin)
+            ram_liberee += pe["processus"]["usedRam"] #On récupère la ram rendue par le processus fini
             processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
             processus_elus.remove(pe) #Supression des processus élus
             
         else:
-            
             #Si le processus élu à épuisé le quantum de temps
             if pe["processus"]["tempsRestQuantum"] == 0:
                 processus_file_attente.append(pe["processus"]) #On renvoie le processus en file d'attente
@@ -206,7 +228,8 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
                 enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 sur la date pour avoir la VRAIE date de fin)
                 processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
                 processus_elus.remove(pe) #Supression du processus de la liste des élus
-            
+        
+    return ram_liberee    #On return la qte de ram libérée par les processus terminés
 
 
 def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : dict, fichier_metriques : str):
@@ -270,14 +293,15 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
 
     #Tant qu'il reste des processus à traiter
     while processus_attente_soumission or processus_file_attente or processus_elus:
-
+        
         #Effectuer les 4 actions
         soumettre_processus(date,processus_attente_soumission,processus_file_attente)
-        allouer_cpu(processus_file_attente,processeurs_dispos,processus_elus,infos_allocations_processeur,date)
-        executer_processus_elus(processus_elus,processus_file_attente,processus_termines,processeurs_dispos,infos_allocations_processeur,date,quantum)
-        date += 1 #Incrémentation de la date 
+        ram_dispo = allouer_cpu(processus_file_attente,processeurs_dispos,processus_elus,infos_allocations_processeur,date,ram_dispo) #Allocation du cpu au processus, mise a jour de la qte de ram dispo
+        ram_dispo += executer_processus_elus(processus_elus,processus_file_attente,processus_termines,processeurs_dispos,infos_allocations_processeur,date,quantum) #Execution du processus, si il se finit, la ram libérée est rendue
 
+        date += 1 #Incrémentation de la date 
+        
     #Enregistrer les résultats de l'ordonnancement dans les deux fichiers de résultats       
     enregistrer_resultats(processus_termines,infos_allocations_processeur, params_algo)
-
+    
 
