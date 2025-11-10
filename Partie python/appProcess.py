@@ -4,6 +4,7 @@ from pathlib import Path
 import Verifications.verifications
 import Algos.roundRobin
 import Algos.fifo
+import Algos.priorite
 import Metriques.metriques
 
 
@@ -120,7 +121,13 @@ def main():
                     metriques_moyennes.append(metriques_fifo)
 
                 case "PRIORITE":
-                    pass
+                    metrique_priorite = Algos.priorite.priorite(
+                    donnees["algos"][algo],
+                    donnees["processus"],
+                    donnees["ressources"],
+                    donnees["metriques"]
+                    )
+                    metriques_moyennes.append(metrique_priorite)
                     
                 case _:
                     print("Algo inconnu : ",algo, file=sys.stderr)
