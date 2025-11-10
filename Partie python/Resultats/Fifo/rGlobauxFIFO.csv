@@ -1,4 +1,7 @@
 idProcessus,dateSoumission,dateDebut,dateFin,requiredRam,usedRam
-2,0,0,3,1024,
-1,0,0,6,1024,
-3,3,3,9,512,
+2,0,0,8,1024,1024
+3,3,8,11,512,512
+1,0,0,15,1024,1024
+
+usedRamTotal
+2560
