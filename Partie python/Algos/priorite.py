@@ -1,64 +1,7 @@
 import sys, csv, json
 from pathlib import Path
 from Metriques import metriques
-
-def enregistrer_resultats_priorite(processus, infos_allocations_processeur, params_algos):
-    """
-    Ecrit deux CSV : global (par processus) et détaillé (allocations CPU).
-    Crée automatiquement les dossiers parents si besoin.
-    """
-    # Normalisation des chemins
-    fichier_detaille = params_algos["fichierResultatsDetailles"]
-    fichier_global   = params_algos["fichierResultatsGlobaux"]
-
-    # Créer les dossiers parents si nécessaire
-    try:
-        if str(fichier_detaille.parent) not in (".", ""):
-            fichier_detaille.parent.mkdir(parents=True, exist_ok=True)
-        if str(fichier_global.parent) not in (".", ""):
-            fichier_global.parent.mkdir(parents=True, exist_ok=True)
-    except PermissionError as e:
-        print("Erreur d'enregistrement des fichiers de résultats pour priorite, des permissions sont manquantes : {e}", file=sys.stderr)
-        sys.exit(11)
-    except Exception as e:
-        
-        print("Chemins de fichiers de résultats incorrects pour priorite ", file=sys.stderr)
-        sys.exit(12)
-
-    # Écriture des fichiers
-    try:
-        # Global par processus
-        with open(fichier_global, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(
-                f,
-                fieldnames=["idProcessus", "dateSoumission", "dateDebut", "dateFin", "requiredRam", "usedRam"]
-            )
-            writer.writeheader()
-            for p in processus:
-                writer.writerow({
-                    "idProcessus":   p.get("idProcessus"),
-                    "dateSoumission":p.get("dateSoumission"),
-                    "dateDebut":     p.get("dateDebut"),
-                    "dateFin":       p.get("dateFin"),
-                    "requiredRam":   p.get("requiredRam"),
-                    "usedRam":       p.get("usedRam")
-                })
-
-        # Détail allocations CPU
-        with open(fichier_detaille, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(
-                f,
-                fieldnames=["idProcessus", "dateDebut", "dateFin", "idProcesseur"]
-            )
-            writer.writeheader()
-            writer.writerows(infos_allocations_processeur)
-
-    except FileNotFoundError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour priorite : {e}", file=sys.stderr)
-        sys.exit(10)
-    except PermissionError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour priorite, des permissions sont manquantes : {e}", file=sys.stderr)
-        sys.exit(11)
+import ManipulationFichiers.Writing.writing
 
 def enregistrer_date_fin_alloc(infos_allocations_processeur, pe, date):
     """
@@ -223,8 +166,9 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, f
         # Avance le temps d'une unité
         date += 1
 
-    # Export des résultats (CSV global + CSV détaillé)
-    enregistrer_resultats_priorite(processus_termines, infos_allocations_processeur, params_algo)
+    #Enregistrer les résultats de l'ordonnancement dans les deux fichiers de résultats       
+    ManipulationFichiers.Writing.writing.enregistrer_resultats("PRIORITE",processus_termines,infos_allocations_processeur, params_algo)
+    
 
     # Calcul des métriques finales sur les processus terminés
     tempsAttenteMoyen = metriques.tempsAttenteMoyen(processus_termines)

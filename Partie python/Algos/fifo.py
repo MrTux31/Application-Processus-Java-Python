@@ -1,72 +1,8 @@
 from datetime import date
 from pathlib import Path
 import sys
-import csv
 from Metriques import metriques
-
-
-def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_algos):
-    """
-    Écrit deux CSV : global (par processus) et détaillé (allocations CPU).
-    Crée automatiquement les dossiers parents si besoin.
-    (Le total de RAM utilisée n'est plus ajouté en bas du fichier global.)
-    """
-    # Normalisation des chemins
-    fichier_detaille = Path(str(params_algos["fichierResultatsDetailles"]).strip())
-    fichier_global = Path(str(params_algos["fichierResultatsGlobaux"]).strip())
-
-    # Avertir sur 'quantum' uniquement s'il a une valeur non nulle
-    if params_algos.get("quantum") not in (None, "", 0):
-        print("Avertissement: 'quantum' fourni mais ignoré pour l'algorithme FIFO.", file=sys.stderr)
-
-    # Créer les dossiers parents si nécessaire
-    try:
-        if str(fichier_detaille.parent) not in (".", ""):
-            fichier_detaille.parent.mkdir(parents=True, exist_ok=True)
-        if str(fichier_global.parent) not in (".", ""):
-            fichier_global.parent.mkdir(parents=True, exist_ok=True)
-    except PermissionError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO, permissions manquantes : {e}", file=sys.stderr)
-        sys.exit(11)
-    except Exception as e:
-        print(f"Chemins de fichiers de résultats incorrects pour FIFO : {e}", file=sys.stderr)
-        sys.exit(12)
-
-    # Écriture des fichiers
-    try:
-        # Fichier global (par processus uniquement)
-        with open(fichier_global, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(
-                f,
-                fieldnames=["idProcessus", "dateSoumission", "dateDebut", "dateFin", "requiredRam", "usedRam"]
-            )
-            writer.writeheader()
-
-            for p in processus:
-                writer.writerow({
-                    "idProcessus": p.get("idProcessus"),
-                    "dateSoumission": p.get("dateSoumission"),
-                    "dateDebut": p.get("dateDebut"),
-                    "dateFin": p.get("dateFin"),
-                    "requiredRam": p.get("requiredRam"),
-                    "usedRam": p.get("usedRam") or 0
-                })
-
-        # Fichier détaillé (allocations CPU)
-        with open(fichier_detaille, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(
-                f,
-                fieldnames=["idProcessus", "dateDebut", "dateFin", "idProcesseur"]
-            )
-            writer.writeheader()
-            writer.writerows(infos_allocations_processeur)
-
-    except FileNotFoundError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO : {e}", file=sys.stderr)
-        sys.exit(10)
-    except PermissionError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO, permissions manquantes : {e}", file=sys.stderr)
-        sys.exit(11)
+import ManipulationFichiers.Writing.writing
 
 
 def enregistrer_date_fin_alloc(infos_allocations_processeur, pe, date_fin):
@@ -230,11 +166,15 @@ def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichi
     if etat_ram["utilisee"] != 0:
         print(f"Avertissement: RAM utilisée non nulle à la fin ({etat_ram['utilisee']}).", file=sys.stderr)
 
-    enregistrer_resultats_fifo(processus_termines, infos_allocations_processeur, params_algo)
+    #Enregistrer les résultats de l'ordonnancement dans les deux fichiers de résultats       
+    ManipulationFichiers.Writing.writing.enregistrer_resultats("FIFO",processus_termines,infos_allocations_processeur, params_algo)
+    
 
     # --- Calcul des métriques à la fin ---
     tempsAttenteMoyen = metriques.tempsAttenteMoyen(processus_termines)
     tempsReponseMoyen = metriques.tempsReponseMoyen(processus_termines)
+
+
 
     return {
         "algo": "FIFO",

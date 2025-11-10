@@ -1,10 +1,10 @@
 import sys
-import Parsing.parsing
 from pathlib import Path
 import Verifications.verifications
 import Algos.roundRobin
 import Algos.fifo
-import Metriques.metriques
+import ManipulationFichiers.Writing.writing
+import ManipulationFichiers.Parsing.parsing
 
 
 def charger_donnes():
@@ -43,7 +43,7 @@ def charger_donnes():
     """
     #Récupération du fichier de configuration
     cheming_config = Path(sys.argv[1]) #Utilisation de Path pouir représenter le chemin de manière sécurisée, permet de tester son existance
-    config = Parsing.parsing.parser_fichier_config(cheming_config) #Récupération de toutes les données du fichier de config
+    config = ManipulationFichiers.Parsing.parsing.parser_fichier_config(cheming_config) #Récupération de toutes les données du fichier de config
     
     #Récupérer le chemin de chaque fichiers
     fichier_processus = config[0]
@@ -52,8 +52,8 @@ def charger_donnes():
     dict_algos = config[3] #Récupérer le dictionnaire des algos à exécuter
 
     #Lire les éléments des fichiers de données et les convertir en structures de données
-    liste_processus = Parsing.parsing.parser_fichier_processus(fichier_processus)
-    dict_ressources = Parsing.parsing.parser_fichier_ressources(fichier_ressources)
+    liste_processus = ManipulationFichiers.Parsing.parsing.parser_fichier_processus(fichier_processus)
+    dict_ressources = ManipulationFichiers.Parsing.parsing.parser_fichier_ressources(fichier_ressources)
 
     #On lance une vérification des divers processus et des ressources récupérés dans les fichiers lus.
     Verifications.verifications.verifierRessources(dict_ressources) #Vérification des ressources
@@ -131,7 +131,7 @@ def main():
         for m in metriques_moyennes:
             print(f"- {m["algo"]} | Temps d'attente moyen : {m["tempsAttenteMoyen"]} | Temps reponse moyen : {m["tempsReponseMoyen"]} | Makespan : {m["makespan"]}")    
 
-        Metriques.metriques.enregistrerMetriques(donnees["metriques"],metriques_moyennes)
+        ManipulationFichiers.Writing.writing.enregistrerMetriques(donnees["metriques"],metriques_moyennes)
 #Début du programme
 if __name__ == "__main__":
     try:

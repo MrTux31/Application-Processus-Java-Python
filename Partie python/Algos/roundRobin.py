@@ -2,83 +2,7 @@ import sys
 import csv
 
 from Metriques import metriques
-
-
-def enregistrer_resultats(processus, infos_allocations_processeur,params_algos):
-    """
-    Enregistre les résultats de l'ordonnancement dans deux fichiers CSV : global et détaillé.
-
-    Paramètres :
-    ----------
-    processus : list[dict]
-        Liste des processus terminés. Exemple :
-        [
-            {"idProcessus": "1", "dateSoumission": 0, "dateDebut": 0, "dateFin": 6,
-             "requiredRam": 1024, "usedRam": None, "tempsExecution": 6,
-             "deadline": 20, "priority": 3, "tempsTotalExecution": 6, "tempsRestQuantum": 0},
-            {"idProcessus": "2", "dateSoumission": 0, "dateDebut": 0, "dateFin": 3,
-             "requiredRam": 512, "usedRam": None, "tempsExecution": 3,
-             "deadline": 15, "priority": 1, "tempsTotalExecution": 3, "tempsRestQuantum": 0}
-        ]
-
-    infos_allocations_processeur : list[dict]
-        Liste des allocations CPU détaillées. Exemple :
-        [
-            {"idProcessus": "1", "dateDebut": 0, "dateFin": 2, "idProcesseur": "CPU1"},
-            {"idProcessus": "2", "dateDebut": 0, "dateFin": 2, "idProcesseur": "CPU2"},
-            {"idProcessus": "1", "dateDebut": 2, "dateFin": 4, "idProcesseur": "CPU1"}
-        ]
-
-    params_algos : dict
-        Paramètres de l'algorithme. Exemple :
-        {
-            "fichierResultatsDetailles": "rDetailedROUNDROBIN.csv",
-            "fichierResultatsGlobaux": "rGlobauxROUNDROBIN.csv",
-            "quantum": 2
-        }
-    """
-    
-    fichier_detaille = params_algos["fichierResultatsDetailles"]
-    fichier_global = params_algos["fichierResultatsGlobaux"]
-    
-    # Vérifie que le dossier parent existe bien
-    if not fichier_detaille.parent.exists() or not fichier_global.parent.exists():
-        #Mettre le message d'erreur dans la sortie d'erreur, pour récup les erreurs avec Java
-        print("Chemins de fichiers de résultats incorrects pour le Round Robin",file=sys.stderr)
-        sys.exit(12)
-    
-    try :
-        #Enregistrer le fichier d'informations globales des processus---------------------
-        with open(fichier_global, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=["idProcessus", "dateSoumission", "dateDebut","dateFin","requiredRam","usedRam"])
-            writer.writeheader()  # écrit la première ligne (les noms de colonnes)
-            for p in processus: #Pour chaque processus, on enregistre la ligne dans le csv
-                writer.writerow({ 
-                    "idProcessus": p["idProcessus"],
-                    "dateSoumission": p["dateSoumission"],
-                    "dateDebut": p["dateDebut"],
-                    "dateFin": p["dateFin"],  
-                    "requiredRam": p["requiredRam"],
-                    "usedRam": p["usedRam"]
-                })
-
-        #Enregistrer le fichier d'informations détaillées des processus---------------------
-        with open(fichier_detaille, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=["idProcessus", "dateDebut","dateFin","idProcesseur"])
-            writer.writeheader()  # écrit la première ligne (les noms de colonnes)
-            writer.writerows(infos_allocations_processeur)
-    #Si le chemin du fichier est incorrect
-    except FileNotFoundError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour Round Robin : {e}", file=sys.stderr)
-        sys.exit(10)
-    #Si il n'y a pas de permissions d'écritures dans la destination
-    except PermissionError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour Round Robin, des permissions sont manquantes : {e}", file=sys.stderr)
-        sys.exit(11)
-    except Exception:
-        print("Erreur d'enregistrement inconnue des fichiers de résultats pour Round Robin", file=sys.stderr)
-        sys.exit(11)
-
+import ManipulationFichiers.Writing.writing
 
 def enregistrer_date_fin_alloc(infos_allocations_processeur,pe, date):
     """
@@ -299,7 +223,7 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
         date += 1 #Incrémentation de la date 
         
     #Enregistrer les résultats de l'ordonnancement dans les deux fichiers de résultats       
-    enregistrer_resultats(processus_termines,infos_allocations_processeur, params_algo)
+    ManipulationFichiers.Writing.writing.enregistrer_resultats("ROUND ROBIN",processus_termines,infos_allocations_processeur, params_algo)
     
 
     tempsAttenteMoyen = metriques.tempsAttenteMoyen(processus_termines)
