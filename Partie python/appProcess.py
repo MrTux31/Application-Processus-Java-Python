@@ -3,6 +3,7 @@ from pathlib import Path
 import Verifications.verifications
 import Algos.roundRobin
 import Algos.fifo
+import Algos.priorite
 import ManipulationFichiers.Writing.writing
 import ManipulationFichiers.Parsing.parsing
 
