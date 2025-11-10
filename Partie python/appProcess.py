@@ -107,7 +107,7 @@ def main():
                 case "ROUND ROBIN":
                     #On exécute le round robin (passage en params des paramètres de l'algo : chemins fichiers sortie et Quantum)
                     #Récupération de ses métriques (moyennes)
-                    metriques_round_robin = Algos.roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"],donnees["metriques"]) 
+                    metriques_round_robin = Algos.roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"]) 
                     metriques_moyennes.append(metriques_round_robin)
                 case "FIFO":
                     #On exécute le fifo (passage en params des paramètres de l'algo : chemins fichiers sortie

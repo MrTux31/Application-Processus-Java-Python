@@ -1,5 +1,5 @@
 {
-  "nombreTotalProcesseurs": 2,
+  "nombreTotalProcesseurs": 1,
   "ramTotale": 8000,
   "processeurs": [
     {"idProcesseur": "CPU1"},
