@@ -133,6 +133,10 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
                 if int(p["deadline"]) < int(p["dateSoumission"]):
                     print(f"Deadline avant la date de soumission pour le processus {p['idProcessus']}", file=sys.stderr)
                     sys.exit(9)
+                
+                if int(p["tempsExecution"]) == 0:
+                    print(f"Temps d'execution de 0 pour le processus {p['idProcessus']}", file=sys.stderr)
+                    sys.exit(9)
 
     #Si des clés manquent dans ce dico, alors le fichier des processus était mal formé
     except KeyError as e:

@@ -232,7 +232,7 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
     return ram_liberee    #On return la qte de ram libérée par les processus terminés
 
 
-def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : dict, fichier_metriques : str):
+def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : dict):
     """
     Exécute l'algorithme Round-Robin sur un ensemble de processus et enregistre les résultats.
 
@@ -265,9 +265,6 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
             "ram_tot": 8192
         }
 
-    fichier_metriques : str
-        Chemin du fichier CSV pour stocker les métriques globales. Exemple :
-        "fichierMetriquesGlobales.csv"
     """
     
     
