@@ -136,8 +136,10 @@ def executer_processus_elus(processus_elus: list, processus_termines: list,
             pe["processus"]["dateFin"] = date+1 #Enregistrement de la date de fin (+1 sur la date pour qu'elle soit exacte)
             processus_termines.append(pe["processus"]) #Le processus est terminé
             enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 pour qu'elle soit exacte)
-            if pe.get("usedRam"):
-                etat_ram["utilisee"] -= pe["usedRam"]
+            
+            
+            if pe["processus"]["usedRam"]:
+                etat_ram["utilisee"] -= pe["processus"]["usedRam"]
                 if etat_ram["utilisee"] < 0:
                     etat_ram["utilisee"] = 0
             processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
@@ -177,7 +179,6 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, f
         executer_processus_elus(processus_elus, processus_termines, processeurs_dispos, infos_allocations_processeur, date, etat_ram)
         # Avance le temps d'une unité
         date += 1
-        print(etat_ram)
 
     if etat_ram["utilisee"] != 0:
         print(f"Avertissement: RAM utilisée non nulle à la fin ({etat_ram['utilisee']}).", file=sys.stderr)
