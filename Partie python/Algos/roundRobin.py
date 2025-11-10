@@ -135,7 +135,7 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
 
         
         #Si le processus s'est executé pendant le temps qui était prévu, on le met dans la liste des processus terminés
-        if pe["processus"]["tempsTotalExecution"] == pe["processus"]["tempsExecution"]:
+        if pe["processus"]["tempsTotalExecution"] >= pe["processus"]["tempsExecution"]:
             
             pe["processus"]["dateFin"] = date+1 #Enregistrement de la date de fin (+1 sur la date pour avoir la VRAIE date de fin, il se termine une unité de temps après)
             processus_termines.append(pe["processus"]) #Le processus est terminé

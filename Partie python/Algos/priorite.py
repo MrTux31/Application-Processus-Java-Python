@@ -90,8 +90,6 @@ def soumettre_processus_priorite(date: int, processus_attente_soumission: list, 
     
 
     processus_file_attente.sort(key=lambda p: p["priority"], reverse=True)  # Tri par priorité décroissante
-
-
 def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processus_elus: list,
                 infos_allocations_processeur: list, date: int):
     """
