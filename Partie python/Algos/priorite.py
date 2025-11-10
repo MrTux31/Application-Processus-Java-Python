@@ -98,9 +98,10 @@ def allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
     Alloue les CPU libres aux processus en attente.
     """
 
-    ram_restante = etat_ram["totale"] - etat_ram["utilisee"]
     #Parcours de tous les processus en file attente
     for pfa in list(processus_file_attente):
+        # Recalcul de la RAM restante à chaque itération
+        ram_restante = etat_ram["totale"] - etat_ram["utilisee"]
         #Si au moins un processeur est dispo 
         if len(processeurs_dispos) > 0 and  pfa["requiredRam"] <= ram_restante :
             cpu = processeurs_dispos.pop(0) #On prends un cpu dispo dans la liste (le premier) 
@@ -176,6 +177,7 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, f
         executer_processus_elus(processus_elus, processus_termines, processeurs_dispos, infos_allocations_processeur, date, etat_ram)
         # Avance le temps d'une unité
         date += 1
+        print(etat_ram)
 
     if etat_ram["utilisee"] != 0:
         print(f"Avertissement: RAM utilisée non nulle à la fin ({etat_ram['utilisee']}).", file=sys.stderr)
