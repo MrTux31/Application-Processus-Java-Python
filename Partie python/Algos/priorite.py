@@ -1,5 +1,6 @@
 import sys, csv, json
 from pathlib import Path
+from Metriques import metriques
 
 def enregistrer_resultats_priorite(processus, infos_allocations_processeur, params_algos):
     """
@@ -188,6 +189,50 @@ def executer_processus_elus(processus_elus: list, processus_termines: list,
             enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 pour qu'elle soit exacte)
             processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
             processus_elus.remove(pe) #Supression des processus élus
+            
+            
+def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichier_metriques: str):
+    """
+    Exécute l'algorithme de planification par priorité (priorité la plus élevée d'abord).
+    - Pas de quantum.
+    - La RAM n'est pas gérée ici : un processus prêt s'exécute dès qu'un CPU est libre.
+    """
+    # Copie de la liste des CPU disponibles (mutable pendant la simulation)
+    processeurs_dispos = list(ressources_dispo["processeurs"])
+    # La RAM n'est pas utilisée dans la logique priorite, mais on la conserve pour homogénéité d'interface
+    ram_totale = int(ressources_dispo.get("ram_tot", 0))
+    # Historique des allocations CPU (pour l'export détaillé)
+    infos_allocations_processeur = []
+    # Horloge discrète de la simulation (ticks)
+    date = 0
 
-# code non-finalisé
-         
+    # Préparation des structures: tri initial par date de soumission
+    processus_attente_soumission = initialiser_processus(processus, ram_totale)
+    processus_file_attente = []
+    processus_elus = []
+    processus_termines = []
+
+    # Boucle principale: soumettre -> allouer -> exécuter -> avancer l'horloge
+    while processus_attente_soumission or processus_file_attente or processus_elus:
+        # Ajoute à la file d'attente les processus dont la date de soumission == date
+        soumettre_processus_priorite(date, processus_attente_soumission, processus_file_attente)
+        # Attribue les CPU libres aux processus les plus prioritaires en attente
+        allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus, infos_allocations_processeur, date)
+        # Fait progresser d'un tick les processus en cours; termine et libère CPU si fini
+        executer_processus_elus(processus_elus, processus_termines, processeurs_dispos, infos_allocations_processeur, date)
+        # Avance le temps d'une unité
+        date += 1
+
+    # Export des résultats (CSV global + CSV détaillé)
+    enregistrer_resultats_priorite(processus_termines, infos_allocations_processeur, params_algo)
+
+    # Calcul des métriques finales sur les processus terminés
+    tempsAttenteMoyen = metriques.tempsAttenteMoyen(processus_termines)
+    tempsReponseMoyen = metriques.tempsReponseMoyen(processus_termines)
+
+    return {
+        "algo": "PRIORITE",
+        "tempsAttenteMoyen": tempsAttenteMoyen,
+        "tempsReponseMoyen": tempsReponseMoyen,
+        "makespan": date
+    }
