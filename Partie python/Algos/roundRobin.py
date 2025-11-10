@@ -156,7 +156,7 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
     return ram_liberee    #On return la qte de ram libérée par les processus terminés
 
 
-def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : dict):
+def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : dict , fichier_metriques: str):
     """
     Exécute l'algorithme Round-Robin sur un ensemble de processus et enregistre les résultats.
 
