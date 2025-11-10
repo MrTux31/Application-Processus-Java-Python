@@ -90,16 +90,23 @@ def soumettre_processus_priorite(date: int, processus_attente_soumission: list, 
     
 
     processus_file_attente.sort(key=lambda p: p["priority"], reverse=True)  # Tri par priorité décroissante
-def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processus_elus: list,
-                infos_allocations_processeur: list, date: int):
+
+
+def allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
+                infos_allocations_processeur, date, etat_ram ):
     """
     Alloue les CPU libres aux processus en attente.
     """
+
+    ram_restante = etat_ram["totale"] - etat_ram["utilisee"]
     #Parcours de tous les processus en file attente
     for pfa in list(processus_file_attente):
-        #Si au moins un processeur est dispo
-        if len(processeurs_dispos) > 0:
+        #Si au moins un processeur est dispo 
+        if len(processeurs_dispos) > 0 and  pfa["requiredRam"] <= ram_restante :
             cpu = processeurs_dispos.pop(0) #On prends un cpu dispo dans la liste (le premier) 
+            # Gestion effective de la RAM
+            pfa["usedRam"] = int(pfa["requiredRam"])
+            etat_ram["utilisee"] += pfa["usedRam"]
             #Allocation a un CPU
             processus_elus.append({"processus" : pfa, "processeur" : cpu }) #On peut alors élire le processus, sur un cpu 
             processus_file_attente.remove(pfa) #On supprime le processus de la fil d'attente
@@ -109,7 +116,7 @@ def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processu
 
 
 def executer_processus_elus(processus_elus: list, processus_termines: list, 
-                            processeurs_dispos: list, infos_allocations_processeur: list, date: int,):
+                            processeurs_dispos: list, infos_allocations_processeur: list, date: int, etat_ram ):
     """
     Met à jour le temps d'exécution des processus élus, gère la fin ou le quantum.
     """
@@ -128,6 +135,10 @@ def executer_processus_elus(processus_elus: list, processus_termines: list,
             pe["processus"]["dateFin"] = date+1 #Enregistrement de la date de fin (+1 sur la date pour qu'elle soit exacte)
             processus_termines.append(pe["processus"]) #Le processus est terminé
             enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 pour qu'elle soit exacte)
+            if pe.get("usedRam"):
+                etat_ram["utilisee"] -= pe["usedRam"]
+                if etat_ram["utilisee"] < 0:
+                    etat_ram["utilisee"] = 0
             processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
             processus_elus.remove(pe) #Supression des processus élus
             
@@ -142,6 +153,8 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, f
     processeurs_dispos = list(ressources_dispo["processeurs"])
     # La RAM n'est pas utilisée dans la logique priorite, mais on la conserve pour homogénéité d'interface
     ram_totale = int(ressources_dispo.get("ram_tot", 0))
+    # Initialisation de la ram
+    etat_ram = {"totale": ram_totale, "utilisee": 0}
     # Historique des allocations CPU (pour l'export détaillé)
     infos_allocations_processeur = []
     # Horloge discrète de la simulation (ticks)
@@ -158,11 +171,14 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, f
         # Ajoute à la file d'attente les processus dont la date de soumission == date
         soumettre_processus_priorite(date, processus_attente_soumission, processus_file_attente)
         # Attribue les CPU libres aux processus les plus prioritaires en attente
-        allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus, infos_allocations_processeur, date)
+        allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus, infos_allocations_processeur, date, etat_ram)
         # Fait progresser d'un tick les processus en cours; termine et libère CPU si fini
-        executer_processus_elus(processus_elus, processus_termines, processeurs_dispos, infos_allocations_processeur, date)
+        executer_processus_elus(processus_elus, processus_termines, processeurs_dispos, infos_allocations_processeur, date, etat_ram)
         # Avance le temps d'une unité
         date += 1
+
+    if etat_ram["utilisee"] != 0:
+        print(f"Avertissement: RAM utilisée non nulle à la fin ({etat_ram['utilisee']}).", file=sys.stderr)
 
     #Enregistrer les résultats de l'ordonnancement dans les deux fichiers de résultats       
     ManipulationFichiers.Writing.writing.enregistrer_resultats("PRIORITE",processus_termines,infos_allocations_processeur, params_algo)
