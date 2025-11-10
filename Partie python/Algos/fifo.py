@@ -7,13 +7,13 @@ from Metriques import metriques
 
 def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_algos):
     """
-    Ecrit deux CSV : global (par processus) et détaillé (allocations CPU).
+    Écrit deux CSV : global (par processus) et détaillé (allocations CPU).
     Crée automatiquement les dossiers parents si besoin.
-    En plus, ajoute un second "tableau" en bas du CSV global avec 'usedRamTotal'.
+    (Le total de RAM utilisée n'est plus ajouté en bas du fichier global.)
     """
     # Normalisation des chemins
     fichier_detaille = Path(str(params_algos["fichierResultatsDetailles"]).strip())
-    fichier_global   = Path(str(params_algos["fichierResultatsGlobaux"]).strip())
+    fichier_global = Path(str(params_algos["fichierResultatsGlobaux"]).strip())
 
     # Avertir sur 'quantum' uniquement s'il a une valeur non nulle
     if params_algos.get("quantum") not in (None, "", 0):
@@ -26,7 +26,7 @@ def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_a
         if str(fichier_global.parent) not in (".", ""):
             fichier_global.parent.mkdir(parents=True, exist_ok=True)
     except PermissionError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO, des permissions sont manquantes : {e}", file=sys.stderr)
+        print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO, permissions manquantes : {e}", file=sys.stderr)
         sys.exit(11)
     except Exception as e:
         print(f"Chemins de fichiers de résultats incorrects pour FIFO : {e}", file=sys.stderr)
@@ -34,7 +34,7 @@ def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_a
 
     # Écriture des fichiers
     try:
-        # Global par processus + mini-tableau de synthèse usedRamTotal
+        # Fichier global (par processus uniquement)
         with open(fichier_global, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f,
@@ -42,28 +42,17 @@ def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_a
             )
             writer.writeheader()
 
-            used_total = 0
             for p in processus:
-                used = int(p.get("usedRam") or 0)
-                used_total += used
                 writer.writerow({
-                    "idProcessus":    p.get("idProcessus"),
+                    "idProcessus": p.get("idProcessus"),
                     "dateSoumission": p.get("dateSoumission"),
-                    "dateDebut":      p.get("dateDebut"),
-                    "dateFin":        p.get("dateFin"),
-                    "requiredRam":    p.get("requiredRam"),
-                    "usedRam":        used
+                    "dateDebut": p.get("dateDebut"),
+                    "dateFin": p.get("dateFin"),
+                    "requiredRam": p.get("requiredRam"),
+                    "usedRam": p.get("usedRam") or 0
                 })
 
-            # Ligne vide pour séparer les tableaux
-            f.write("\n")
-
-            # Mini-tableau de synthèse en dessous
-            synth_writer = csv.DictWriter(f, fieldnames=["usedRamTotal"])
-            synth_writer.writeheader()
-            synth_writer.writerow({"usedRamTotal": used_total})
-
-        # Détail allocations CPU
+        # Fichier détaillé (allocations CPU)
         with open(fichier_detaille, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f,
@@ -76,7 +65,7 @@ def enregistrer_resultats_fifo(processus, infos_allocations_processeur, params_a
         print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO : {e}", file=sys.stderr)
         sys.exit(10)
     except PermissionError as e:
-        print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO, des permissions sont manquantes : {e}", file=sys.stderr)
+        print(f"Erreur d'enregistrement des fichiers de résultats pour FIFO, permissions manquantes : {e}", file=sys.stderr)
         sys.exit(11)
 
 
@@ -85,7 +74,6 @@ def enregistrer_date_fin_alloc(infos_allocations_processeur, pe, date_fin):
     Met à jour la date de fin de la dernière allocation CPU d'un processus donné (FIFO).
     Contrairement à Round Robin, pas de quantum : mise à jour uniquement à la fin.
     """
-    # Recherche de la dernière allocation en cours du processus sur ce processeur
     for i in range(len(infos_allocations_processeur) - 1, -1, -1):
         alloc = infos_allocations_processeur[i]
         if alloc["idProcessus"] == pe["processus"]["idProcessus"] and alloc["dateFin"] is None:
@@ -96,20 +84,12 @@ def enregistrer_date_fin_alloc(infos_allocations_processeur, pe, date_fin):
 def initialiser_processus(processus, ram_dispo):
     """
     Initialise la liste des processus pour l'algorithme FIFO.
-    Vérifie la RAM disponible et trie les processus par date de soumission.
+    Convertit les champs en entiers et trie les processus par date de soumission.
+    (Ne lève plus d'erreur si requiredRam > ram_dispo)
     """
     nouvelle_liste = []
     for p in processus:
         required_ram = int(p["requiredRam"])
-        if required_ram > ram_dispo:
-            print(
-                f"Impossible d'exécuter le processus {p['idProcessus']} : "
-                f"{p['requiredRam']} > {ram_dispo}",
-                file=sys.stderr
-            )
-            sys.exit(9)
-
-        # deadline peut être vide -> None
         raw_deadline = p.get("deadline", "")
         deadline = None
         if raw_deadline not in (None, "", "None"):
@@ -128,7 +108,7 @@ def initialiser_processus(processus, ram_dispo):
             "usedRam": None
         })
 
-    # Tri par date de soumission (et id si égalité, pour stabilité)
+    # Tri manuel sans lambda
     for i in range(len(nouvelle_liste) - 1):
         for j in range(i + 1, len(nouvelle_liste)):
             if (nouvelle_liste[i]["dateSoumission"] > nouvelle_liste[j]["dateSoumission"]) or (
@@ -144,48 +124,29 @@ def initialiser_processus(processus, ram_dispo):
 def soumettre_processus(date_actuelle, processus_attente_soumission, processus_file_attente, etat_ram):
     """
     Ajoute à la file d'attente les processus dont la date de soumission == date_actuelle.
-    Rejette ceux dont la deadline est déjà irréalisable en démarrant maintenant.
-    si la somme des RAM des arrivants (après rejets deadline) > RAM restante, on lève une erreur.
+    Les deadlines sont stockées mais ne provoquent plus de rejet.
+    Aucune vérification de RAM à ce stade.
     """
     arrivants = []
     i = 0
     while i < len(processus_attente_soumission):
         ps = processus_attente_soumission[i]
         if date_actuelle == ps["dateSoumission"]:
-            if ps["deadline"] is not None and (date_actuelle + ps["tempsExecution"] > ps["deadline"]):
-                processus_attente_soumission.pop(i)
-                print(
-                    f"Processus {ps['idProcessus']} rejeté (deadline {ps['deadline']} dépassée si démarrage à t={date_actuelle}).",
-                    file=sys.stderr
-                )
-                continue
             arrivants.append(ps)
             processus_attente_soumission.pop(i)
             continue
         i += 1
 
-    if arrivants:
-        ram_restante = etat_ram["totale"] - etat_ram["utilisee"]
-        somme_ram_arrivants = 0
-        for p in arrivants:
-            somme_ram_arrivants += p["requiredRam"]
-        if somme_ram_arrivants > ram_restante:
-            print(
-                f"Erreur: RAM requise par les processus arrivant simultanément ({somme_ram_arrivants}) "
-                f"> RAM restante ({ram_restante}) à t={date_actuelle}.",
-                file=sys.stderr
-            )
-            sys.exit(14)
-
-        for ps in arrivants:
-            processus_file_attente.append(ps)
+    for ps in arrivants:
+        processus_file_attente.append(ps)
 
 
 def allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
                 infos_allocations_processeur, date_actuelle, etat_ram):
     """
     Alloue les CPU libres aux processus en attente (FIFO) si la RAM disponible suffit.
-    etat_ram: {"totale": int, "utilisee": int}
+    Aucun arrêt du programme n'est déclenché : si la RAM restante est insuffisante,
+    le processus reste dans la file d'attente.
     """
     i = 0
     while i < len(processus_file_attente) and len(processeurs_dispos) > 0:
@@ -196,13 +157,6 @@ def allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
             cpu = processeurs_dispos.pop(0)
             pfa["usedRam"] = int(pfa["requiredRam"])
             etat_ram["utilisee"] += pfa["usedRam"]
-
-            if etat_ram["utilisee"] > etat_ram["totale"]:
-                print(
-                    f"Erreur: RAM utilisée ({etat_ram['utilisee']}) > RAM totale autorisée ({etat_ram['totale']}).",
-                    file=sys.stderr
-                )
-                sys.exit(13)
 
             processus_elus.append({"processus": pfa, "processeur": cpu})
             processus_file_attente.pop(i)
@@ -249,7 +203,9 @@ def executer_processus_elus(processus_elus, processus_file_attente, processus_te
 
 def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichier_metriques: str):
     """
-    Exécute l'algorithme FIFO sur un ensemble de processus en prenant en compte la RAM et les deadlines.
+    Exécute l'algorithme FIFO sur un ensemble de processus.
+    - Les deadlines ne provoquent plus de rejet.
+    - Si la RAM disponible est insuffisante, le processus attend simplement.
     """
     processeurs_dispos = list(ressources_dispo["processeurs"])
     ram_totale = int(ressources_dispo["ram_tot"])
@@ -280,4 +236,9 @@ def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichi
     tempsAttenteMoyen = metriques.tempsAttenteMoyen(processus_termines)
     tempsReponseMoyen = metriques.tempsReponseMoyen(processus_termines)
 
-    return {"algo": "FIFO", "tempsAttenteMoyen": tempsAttenteMoyen, "tempsReponseMoyen": tempsReponseMoyen, "makespan": date_actuelle}
+    return {
+        "algo": "FIFO",
+        "tempsAttenteMoyen": tempsAttenteMoyen,
+        "tempsReponseMoyen": tempsReponseMoyen,
+        "makespan": date_actuelle
+    }
