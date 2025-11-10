@@ -110,12 +110,14 @@ def main():
                     metriques_round_robin = Algos.roundRobin.round_robin(donnees["algos"][algo], donnees["processus"], donnees["ressources"],donnees["metriques"]) 
                     metriques_moyennes.append(metriques_round_robin)
                 case "FIFO":
-                    Algos.fifo.fifo( 
-                        donnees["algos"][algo],
-                        donnees["processus"],
-                        donnees["ressources"],
-                        donnees["metriques"]
-                    )
+                    #On exécute le fifo (passage en params des paramètres de l'algo : chemins fichiers sortie
+                    #Récupération de ses métriques (moyennes)
+                    metriques_fifo = Algos.fifo.fifo(
+                    donnees["algos"][algo],
+                    donnees["processus"],
+                    donnees["ressources"],
+                    donnees["metriques"])
+                    metriques_moyennes.append(metriques_fifo)
 
                 case "PRIORITE":
                     pass
