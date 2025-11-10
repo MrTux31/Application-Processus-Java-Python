@@ -38,6 +38,9 @@ def verifierRessources(ressources : dict):
         #Gestion de l'unicité de chaque id CPU
         id_vus = set()
         for p in liste_processeurs:
+            if not p.strip(): #Si le nom cpu est "    "
+                print("Erreur dans le fichier des ressources,il y a un CPU avec un ID vide", file=sys.stderr)
+                sys.exit(8)
             if p not in id_vus:
                 id_vus.add(p)
             else:
@@ -115,6 +118,9 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
     try:
         ids_vus = set() #Création d'un ensemble pour stocker les id (on vérif si ils sont uniques)
         for p in processus:
+            if not p["idProcessus"].strip(): #Si l'id du processus est  "    "
+                print("Erreur dans le fichier des ressources, il y a un Processus avec un nom vide", file=sys.stderr)
+                sys.exit(8)
             if p["idProcessus"] in ids_vus: #Test de l'unicité de l'id du processus
                 print(f"Erreur : doublon d'idProcessus détecté ({p['idProcessus']})", file=sys.stderr)
                 sys.exit(9)

@@ -102,7 +102,7 @@ def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processu
             "dateDebut" : date, "dateFin" : None, "idProcesseur": cpu})
         
         #Dans le cas où le processus à déjà de la ram allouée, il reprends son exécution sans reset la mémoire
-        elif len(processeurs_dispos) > 0 and pfa["usedRam"]: 
+        elif len(processeurs_dispos) > 0 and pfa["usedRam"] is not None: 
             cpu = processeurs_dispos.pop(0) #On prends un cpu dispo dans la liste (le premier) 
             #Allocation a un CPU
             processus_elus.append({"processus" : pfa, "processeur" : cpu }) #On peut alors élire le processus, sur un cpu 
@@ -136,7 +136,6 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
         
         #Si le processus s'est executé pendant le temps qui était prévu, on le met dans la liste des processus terminés
         if pe["processus"]["tempsTotalExecution"] >= pe["processus"]["tempsExecution"]:
-            
             pe["processus"]["dateFin"] = date+1 #Enregistrement de la date de fin (+1 sur la date pour avoir la VRAIE date de fin, il se termine une unité de temps après)
             processus_termines.append(pe["processus"]) #Le processus est terminé
             enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 sur la date pour avoir la VRAIE date de fin)

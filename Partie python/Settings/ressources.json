@@ -1,6 +1,9 @@
 {
-  "nombreTotalProcesseurs": 1,
+  "nombreTotalProcesseurs": 2,
   "ramTotale": 8000,
   "processeurs": [
-    {"idProcesseur": "CPU1"}  ]
+    {"idProcesseur": "CPU1"}, 
+    {"idProcesseur": "CPU2"}
+
+  ]
 }
