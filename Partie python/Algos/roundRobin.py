@@ -80,8 +80,10 @@ def soumettre_processus(date: int, processus_attente_soumission: list, processus
             processus_file_attente.append(ps) #Le processus est alors soumis, ajout à la vraie file d'attente, 
             processus_attente_soumission.remove(ps)# Suppression du processus de la liste attente soumission
 
-    processus_file_attente.sort(key=lambda p: (p["dateSoumission"], p["priority"], p["idProcessus"]))
-    
+    #Tri des processus en attente par leur date de soumission croissante et leur priorité décroissante (plus elle est élevée plus il est prio)
+    processus_file_attente.sort(key=lambda p: (p["dateSoumission"], -p["priority"]))
+
+
 def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processus_elus: list,
                 infos_allocations_processeur: list, date: int, ram_dispo : int) -> int:
     """

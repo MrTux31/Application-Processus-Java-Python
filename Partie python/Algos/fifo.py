@@ -66,7 +66,8 @@ def soumettre_processus(date: int, processus_attente_soumission: list, processus
             processus_file_attente.append(ps)
             processus_attente_soumission.remove(ps)
 
-    processus_file_attente.sort(key=lambda p: (p["dateSoumission"], p["priority"], p["idProcessus"]))
+    #Tri des processus en attente par leur date de soumission croissante et leur priorité décroissante (plus elle est élevée plus il est prio)
+    processus_file_attente.sort(key=lambda p: (p["dateSoumission"], -p["priority"]))
 
 
 
