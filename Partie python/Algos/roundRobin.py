@@ -58,6 +58,7 @@ def initialiser_processus(processus: list[dict], ram_dispo: int, quantum: int) -
             "dateSoumission": int(p["dateSoumission"]),
             "tempsExecution": int(p["tempsExecution"]), #Le nombre d'unités de temps pendant lesquelle le processus doit s'executer
             "requiredRam": int(p["requiredRam"]),
+            "priority": int(p.get("priority", 0)), #Priorité du processus
             "tempsTotalExecution": 0,   #Le nombre d'unité de temps pendant lequel le processus s'est executé
             "tempsRestQuantum" : quantum,
             "dateDebut": None,# date de premier début
@@ -79,6 +80,8 @@ def soumettre_processus(date: int, processus_attente_soumission: list, processus
             processus_file_attente.append(ps) #Le processus est alors soumis, ajout à la vraie file d'attente, 
             processus_attente_soumission.remove(ps)# Suppression du processus de la liste attente soumission
 
+    processus_file_attente.sort(key=lambda p: (p["dateSoumission"], p["priority"], p["idProcessus"]))
+    
 def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processus_elus: list,
                 infos_allocations_processeur: list, date: int, ram_dispo : int) -> int:
     """

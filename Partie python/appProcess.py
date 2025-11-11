@@ -136,7 +136,7 @@ def main():
         print("Métriques globales pour les différents algorithmes :")
         print("----------------------------------------------------")
         for m in metriques_moyennes:
-            print(f"- {m["algo"]} | Temps d'attente moyen : {m["tempsAttenteMoyen"]} | Temps reponse moyen : {m["tempsReponseMoyen"]} | Makespan : {m["makespan"]}")    
+           print(f"- {m['algo']} | Temps d'attente moyen : {m['tempsAttenteMoyen']} | Temps reponse moyen : {m['tempsReponseMoyen']} | Makespan : {m['makespan']}")   
 
         ManipulationFichiers.Writing.writing.enregistrerMetriques(donnees["metriques"],metriques_moyennes)
 
