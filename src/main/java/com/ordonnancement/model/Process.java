@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class Process {
 
-    private final int id;
+    private final String id;
     private final int dateSoumission; //Date à partir de laquelle on veut que le processus soit considéré par l'ordonnanceur
     private final int tempsExecution;
     private final int requiredRam;
@@ -32,7 +32,7 @@ public class Process {
      * @param requiredRam : La quantité de ram nécessaire à l'exécution du processus
      * @param tempsExecution : Le temps d'execution total du processus
      */
-    public Process( int id, int dateSoumission, int tempsExecution, int requiredRam, int deadline, int priority ) {
+    public Process( String id, int dateSoumission, int tempsExecution, int requiredRam, int deadline, int priority ) {
        
         this.dateSoumission = dateSoumission;
         this.deadline = deadline;
@@ -45,7 +45,7 @@ public class Process {
     }
 
     
-    public int getId() {
+    public String getId() {
         return id;
     }
 

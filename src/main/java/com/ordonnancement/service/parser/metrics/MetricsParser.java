@@ -1,68 +1,114 @@
 package com.ordonnancement.service.parser.metrics;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.service.parser.FileParsingException;
 import com.ordonnancement.service.validation.FileValidator;
+
 /**
- * Classe permettant de parser le fichier "métriques globales"
- * 
+ * Classe permettant de parser le fichier CSV des métriques globales.
+ *
+ * Cette classe lit un fichier CSV contenant les métriques globales calculées
+ * pour chaque algorithme d'ordonnancement. Chaque ligne correspond aux valeurs
+ * moyennes calculées pour un algorithme donné.
+ *
+ * Format attendu du CSV :
+ *
+ * algo,tempsAttenteMoyen,tempsReponseMoyen,makespan
+ * ROUND ROBIN,0.0,5.0,9
+ * FIFO,0.0,5.0,9
+ * PRIORITE,0.0,5.0,9
+ *
  */
-public class MetricsParser{
+public class MetricsParser {
 
     /**
-     * Permet de parser les fichiers listant les métriques globales par algo d'ordonnancement 
-     * @param cheminFichier : le chemin du fichier à parser
-     * @return La liste des métriques du fichiers
-     * @throws Exception : si le format du fichier est incompatible
-     * 
-     * Format attendu : 
-    * [
-    *   {"nomAlgorithme": "Round-Robin", "tempsReponseMoyen": 5.3, "tempsAttenteMoyen": 4.6, "makespan": 40},
-    *   {"nomAlgorithme": "FIFO", "tempsReponseMoyen": 2.3, "tempsAttenteMoyen": 5.4, "makespan": 30}
-    * ]
+     * Permet de parser le fichier CSV listant les métriques globales par algorithme
+     * d'ordonnancement.
+     *
+     * @param cheminFichier chemin vers le fichier CSV à parser
+     * @return une liste d'objets Metrics correspondant aux algorithmes analysés
+     * @throws FileParsingException si le fichier est vide, mal formé ou si les
+     *                              valeurs numériques sont invalides
      */
+    public List<Metrics> parse(String cheminFichier) {
 
-    
-    public List<Metrics> parse(String cheminFichier){
+        FileValidator.verifierCheminFichier(cheminFichier); // Vérification de l'existence du fichier
 
-        FileValidator.verifierCheminFichier(cheminFichier); //Vérification de l'existance du fichier
+        try (BufferedReader reader = new BufferedReader(new FileReader(cheminFichier))) {
 
-        try {
             List<Metrics> liste = new ArrayList<>();
-        
-            String contenu = new String(Files.readAllBytes(Paths.get(cheminFichier))); //Lire le contenu du fichier 
 
-            JSONArray tableauJson = new JSONArray(contenu); //Un tableau JSON à partir du contenu du fichier
-            
-            for(int i = 0; i<tableauJson.length(); i++){ //Parcours de chaque élément du tableau JSON (itère sur des métriques pour chaque algo représentés en JSON)
+            // Lecture de la première ligne (en-tête)
+            String ligne = reader.readLine();
+            if (ligne == null) {
+                throw new FileParsingException("Fichier CSV vide : " + cheminFichier);
+            }
 
-                JSONObject objetMetrics = tableauJson.getJSONObject(i); //Récupération de l'élément actuel
-                
-                //Lecure des données de l'objet JSON et création d'un objet Metrics
-                Metrics m = new Metrics(objetMetrics.getString("nomAlgorithme"),objetMetrics.getDouble("tempsReponseMoyen"),objetMetrics.getDouble("tempsAttenteMoyen"),objetMetrics.getInt("makespan"));
-                liste.add(m); //On ajoute le processus créé à la liste
+            // Vérification de la validité de l'en-tête
+            checkHeader(ligne);
 
+            // Lecture des lignes de données
+            while ((ligne = reader.readLine()) != null) {
+                if (ligne.trim().isEmpty()) continue; // Ignorer les lignes vides
+                parseLine(ligne, liste); // Conversion et ajout à la liste
+            }
+
+            return liste;
+
+        } catch (IOException e) {
+            throw new FileParsingException("Impossible de lire le fichier : " + cheminFichier, e);
+        } catch (NumberFormatException e) {
+            throw new FileParsingException("Format numérique invalide dans le fichier CSV : " + cheminFichier, e);
         }
-
-
-        return liste;
-        }catch (IOException e) {
-        throw new FileParsingException("Impossible de lire le fichier : " + cheminFichier, e);
-        } catch (JSONException e) {
-            throw new FileParsingException("Le fichier n'est pas un JSON valide : " + cheminFichier, e);
-        }
-        
     }
 
+    /**
+     * Vérifie que la ligne d'en-tête correspond exactement aux colonnes attendues.
+     *
+     * @param header ligne du CSV contenant les noms des colonnes
+     * @throws FileParsingException si les colonnes ne correspondent pas
+     */
+    private void checkHeader(String header) {
+        String[] colonnesAttendues = {"algo", "tempsAttenteMoyen", "tempsReponseMoyen", "makespan"};
+        String[] colonnes = header.split(",");
 
+        if (colonnes.length != colonnesAttendues.length) {
+            throw new FileParsingException("Nombre de colonnes incorrect dans le fichier des métriques globales");
+        }
+
+        for (int i = 0; i < colonnesAttendues.length; i++) {
+            if (!colonnes[i].trim().equals(colonnesAttendues[i])) {
+                throw new FileParsingException(
+                        "Colonne " + colonnesAttendues[i] + " introuvable dans le fichier des métriques globales");
+            }
+        }
+    }
+
+    /**
+     * Convertit une ligne du CSV en objet Metrics et l’ajoute à la liste des métriques.
+     *
+     * @param ligne ligne du CSV contenant les valeurs
+     * @param liste liste dans laquelle ajouter le nouvel objet Metrics
+     * @throws FileParsingException si la ligne contient moins de 4 colonnes ou des données invalides
+     */
+    private void parseLine(String ligne, List<Metrics> liste) {
+        String[] valeurs = ligne.split(",");
+        if (valeurs.length < 4) {
+            throw new FileParsingException("Ligne CSV incomplète dans le fichier des métriques globales : " + ligne);
+        }
+
+        String nomAlgorithme = valeurs[0].trim();
+        double tempsAttenteMoyen = Double.parseDouble(valeurs[1].trim());
+        double tempsReponseMoyen = Double.parseDouble(valeurs[2].trim());
+        int makespan = Integer.parseInt(valeurs[3].trim());
+
+        Metrics m = new Metrics(nomAlgorithme, tempsReponseMoyen, tempsAttenteMoyen, makespan);
+        liste.add(m);
+    }
 }

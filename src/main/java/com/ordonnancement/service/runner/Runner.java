@@ -8,10 +8,9 @@ import com.ordonnancement.model.Process;
 import com.ordonnancement.model.Resultats;
 import com.ordonnancement.service.configuration.ConfigurationWriter;
 import com.ordonnancement.service.parser.metrics.MetricsParser;
-import com.ordonnancement.service.parser.process.ProcessParser;
-import com.ordonnancement.service.parser.process.strategie.DetailedResultProcessParser;
-import com.ordonnancement.service.parser.process.strategie.GlobalResultProcessParser;
-import com.ordonnancement.service.parser.process.strategie.InitialProcessParser;
+import com.ordonnancement.service.parser.process.DetailedResultProcessParser;
+import com.ordonnancement.service.parser.process.GlobalResultProcessParser;
+import com.ordonnancement.service.parser.process.InitialProcessParser;
 
 /**
  * Classe permettant de lancer la création du fichier de configuration,
@@ -52,13 +51,13 @@ public class Runner {
         List<AlgoConfiguration> listeAlgos = fileConfiguration.getListeAlgorithmes(); //On récupère les liste des algorithmes qui ont été exécutés
        
         //Créer le parser de fichier pour les processus initiaux
-        ProcessParser parserFichierProcessus = new ProcessParser(new InitialProcessParser());
+        InitialProcessParser parserFichierProcessus = new InitialProcessParser();
         //Parser le fichier et récupérer la liste des processus
         List<Process> processusInitiaux = parserFichierProcessus.parse(fileConfiguration.getFichierProcessus());
         //Créer le parser de fichier pour les résultats globaux
-        ProcessParser parserFichierResultGlobaux = new ProcessParser(new GlobalResultProcessParser(processusInitiaux));
+        GlobalResultProcessParser parserFichierResultGlobaux = new GlobalResultProcessParser(processusInitiaux);
          //Créer le parser de fichier pour les résultats détaillés
-        ProcessParser parserFichierResultDetailed = new ProcessParser(new DetailedResultProcessParser(processusInitiaux));
+        DetailedResultProcessParser parserFichierResultDetailed = new DetailedResultProcessParser(processusInitiaux);
 
 
         //Pour chaque algorithme d'ordonnancement executé
@@ -68,9 +67,9 @@ public class Runner {
             String resultGlobal = algo.getFichierResultatsGlobaux();
         
             //Parse le fichier des résultats globaux et met à jour la liste des processus
-            parserFichierResultGlobaux.parse(resultGlobal);
+            parserFichierResultGlobaux.parse(resultGlobal,algo.getNomAlgorithme());
             //Parse le fichier des résultats détaillés et met à jour la liste des processus
-            parserFichierResultDetailed.parse(resultDetailed);
+            parserFichierResultDetailed.parse(resultDetailed,algo.getNomAlgorithme());
         }
 
 

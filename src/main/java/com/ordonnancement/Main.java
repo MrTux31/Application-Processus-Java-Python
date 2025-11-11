@@ -20,14 +20,14 @@ public class Main {
 
        
         //Création des algos qui vont être utilisés par l'ordonnanceur
-        AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.json", 9);
-        AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.json", null);
+        AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.csv", 9);
+        AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.csv", null);
         //Ajouts de ces algos dans une liste
         List<AlgoConfiguration> liste = new ArrayList<>();
         liste.add(algo1);
         liste.add(algo2);
         //Création de l'objet FileConfig représentant le fichier de configuration
-        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processInitiaux.json", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\metrics.json","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources", liste);
+        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources", liste);
        
         //Lancer l'execution / écriture fichier config + récup des résultats de python
         Resultats resultats = Runner.run(fileConfig,"C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json");
@@ -71,7 +71,7 @@ public class Main {
         for(Process p : processusInitiaux){
 
             System.out.println("\n------------------------------------------------------------");
-            System.out.printf("Processus %d%n", p.getId());
+            System.out.printf("Processus %s%n", p.getId());
             System.out.println("------------------------------------------------------------");
             System.out.printf("Date de soumission : %d%n", p.getDateSoumission());
             System.out.printf("Temps d'exécution  : %d%n", p.getTempsExecution());

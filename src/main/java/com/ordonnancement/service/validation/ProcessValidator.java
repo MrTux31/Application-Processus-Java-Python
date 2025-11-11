@@ -19,7 +19,7 @@ public class ProcessValidator {
      * @throws FileParsingException : Si le processus est incohérent
      */
     public static void valider(List<Process> processus) {
-        Set<Integer> ids = new HashSet<>(); //Un ensemble pour stocker les ID des processus
+        Set<String> ids = new HashSet<>(); //Un ensemble pour stocker les ID des processus
 
         for (Process p : processus) {
             if (!ids.add(p.getId())) { //Si le processus est déjà présent
@@ -34,7 +34,7 @@ public class ProcessValidator {
             if (p.getDeadline() < p.getDateSoumission()) {
                 throw new FileParsingException("Le processus " + p.getId() + " a une deadline avant sa soumission.");
             }
-            if (p.getPriority() <= 0) {
+            if (p.getPriority() < 0) {
                 throw new FileParsingException("Le processus " + p.getId() + " a une priorité <= 0");
             }
            
