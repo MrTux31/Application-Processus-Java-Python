@@ -199,6 +199,9 @@ def verifierAlgos(algos : dict):
             if a == "ROUND ROBIN" and algos[a]["quantum"] <=0:
                 print("Erreur dans le fichier de configuration, quantum <=0 pour le Round Robin", file=sys.stderr)
                 sys.exit(13)
+            elif a != "ROUND ROBIN" and algos[a]["quantum"] is not None: #Pour d'autres algos qui n'ont pas besoin de quantum
+                print(f"Erreur dans le fichier de configuration, quantum doit être null pour l'algo {a} ", file=sys.stderr)
+                sys.exit(13)
         except Exception:
             print(f"Erreur innatendue dans le fichier de config pour l'algo à exécuter {a}", file=sys.stderr)
             sys.exit(13)
