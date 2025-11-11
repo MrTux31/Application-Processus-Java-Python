@@ -44,7 +44,6 @@ def initialiser_processus(processus, ram_dispo):
             "usedRam": None
         })
 
-    # Tri manuel sans lambda
     for i in range(len(nouvelle_liste) - 1):
         for j in range(i + 1, len(nouvelle_liste)):
             if (nouvelle_liste[i]["dateSoumission"] > nouvelle_liste[j]["dateSoumission"]) or (
@@ -57,24 +56,18 @@ def initialiser_processus(processus, ram_dispo):
     return nouvelle_liste
 
 
-def soumettre_processus(date_actuelle, processus_attente_soumission, processus_file_attente, etat_ram):
+def soumettre_processus(date: int, processus_attente_soumission: list, processus_file_attente: list):
     """
-    Ajoute à la file d'attente les processus dont la date de soumission == date_actuelle.
-    Les deadlines sont stockées mais ne provoquent plus de rejet.
-    Aucune vérification de RAM à ce stade.
+    Ajoute les processus dont la date de soumission est atteinte à la file d'attente,
+    triés par priorité (1 = plus haute) puis idProcessus.
     """
-    arrivants = []
-    i = 0
-    while i < len(processus_attente_soumission):
-        ps = processus_attente_soumission[i]
-        if date_actuelle == ps["dateSoumission"]:
-            arrivants.append(ps)
-            processus_attente_soumission.pop(i)
-            continue
-        i += 1
+    for ps in list(processus_attente_soumission):
+        if date == ps["dateSoumission"]:
+            processus_file_attente.append(ps)
+            processus_attente_soumission.remove(ps)
 
-    for ps in arrivants:
-        processus_file_attente.append(ps)
+    processus_file_attente.sort(key=lambda p: (p["dateSoumission"], p["priority"], p["idProcessus"]))
+
 
 
 def allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
@@ -156,7 +149,7 @@ def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichi
     processus_termines = []
 
     while processus_attente_soumission or processus_file_attente or processus_elus:
-        soumettre_processus(date_actuelle, processus_attente_soumission, processus_file_attente, etat_ram)
+        soumettre_processus(date_actuelle, processus_attente_soumission, processus_file_attente)
         allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
                     infos_allocations_processeur, date_actuelle, etat_ram)
         executer_processus_elus(processus_elus, processus_file_attente, processus_termines,
