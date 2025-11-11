@@ -74,14 +74,19 @@ def soumettre_processus(date: int, processus_attente_soumission: list, processus
     """
     Ajoute les processus dont la date de soumission est atteinte à la file d'attente.
     """
+    nouveaux_processus = [] #Liste des processus qui vont être soumis et rentrer dans la file d'attente
     #Parcours de tous les processus en attente de soumission
-    for ps in list(processus_attente_soumission): #Création copie liste pour pouvoir parcourir et suppr des elts de manière sécu
+    for ps in processus_attente_soumission: #Création copie liste pour pouvoir parcourir et suppr des elts de manière sécu
         if date == ps["dateSoumission"]: #Si la date de soumission du processus est la meme que la date actuelle
-            processus_file_attente.append(ps) #Le processus est alors soumis, ajout à la vraie file d'attente, 
-            processus_attente_soumission.remove(ps)# Suppression du processus de la liste attente soumission
+            nouveaux_processus.append(ps) #Ajout de tous les processus ayant cette date de soumissions
+    
+    #Si différents processus ont la meme date de soumission, alors on les trie par priorité décroissante
+    nouveaux_processus.sort(key=lambda p:  -p["priority"])
+    for p in nouveaux_processus:
+        processus_file_attente.append(p) #Le processus est alors soumis, ajout à la vraie file d'attente, 
+        processus_attente_soumission.remove(p)# Suppression du processus de la liste attente soumission
 
-    #Tri des processus en attente par leur date de soumission croissante et leur priorité décroissante (plus elle est élevée plus il est prio)
-    processus_file_attente.sort(key=lambda p: (p["dateSoumission"], -p["priority"]))
+   
 
 
 def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processus_elus: list,
