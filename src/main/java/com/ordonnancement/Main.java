@@ -27,23 +27,32 @@ public class Main {
         liste.add(algo1);
         liste.add(algo2);
         //Création de l'objet FileConfig représentant le fichier de configuration
-        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources", liste);
+        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources.json", liste);
        
-        //Lancer l'execution / écriture fichier config + récup des résultats de python
-        Resultats resultats = Runner.run(fileConfig,"C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json");
+        try {
+            //Lancer l'execution / écriture fichier config + récup des résultats de python
+            Resultats resultats = Runner.run(fileConfig,"C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json");
+            //Affichage résultats
+
+            System.out.println("--------------------------------------------Affichage processus--------------------------------------------");
+            //Test affichage des processus : 
+            affichage(resultats.getListeProcessus());
+            System.out.println("\n");
+            System.out.println("--------------------------------------------Affichage Metrics--------------------------------------------");
+
+            //Test affichage des Métriques : 
+            afficherMetrics(resultats.getListeMetrics());
+            
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage()); // Affiche juste le message principal
+        }
+        
+        
 
 
 
-        //Affichage résultats
-
-        System.out.println("--------------------------------------------Affichage processus--------------------------------------------");
-        //Test affichage des processus : 
-        affichage(resultats.getListeProcessus());
-        System.out.println("\n");
-        System.out.println("--------------------------------------------Affichage Metrics--------------------------------------------");
-
-        //Test affichage des Métriques : 
-        afficherMetrics(resultats.getListeMetrics());
+        
 
 
 

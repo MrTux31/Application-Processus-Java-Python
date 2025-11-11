@@ -11,6 +11,7 @@ import com.ordonnancement.service.parser.metrics.MetricsParser;
 import com.ordonnancement.service.parser.process.DetailedResultProcessParser;
 import com.ordonnancement.service.parser.process.GlobalResultProcessParser;
 import com.ordonnancement.service.parser.process.InitialProcessParser;
+import com.ordonnancement.service.python.PythonLauncher;
 
 /**
  * Classe permettant de lancer la création du fichier de configuration,
@@ -39,11 +40,8 @@ public class Runner {
         writer.writeConfiguration(fileConfiguration,destinationFichierConfig);
         
         
-        //Lancement python, execution script ( à faire)
-        // TO DO : lancement du script python depuis le service -> PythonLauncher (à créer)
-        //
-        
-        
+        //Lancement python, execution script 
+        PythonLauncher.runPythonScript("C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\Partie python\\appProcess.py", destinationFichierConfig);
         
         
         //Après exécution python : 
