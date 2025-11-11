@@ -8,7 +8,7 @@ import ManipulationFichiers.Writing.writing
 import ManipulationFichiers.Parsing.parsing
 
 
-def charger_donnes():
+def charger_donnees():
     """
     Charge et vérifie toutes les données nécessaires à l’ordonnancement.
 
@@ -97,7 +97,7 @@ def main():
         sys.exit(1)
     else:
         #Récupération des données 
-        donnees = charger_donnes()
+        donnees = charger_donnees()
         metriques_moyennes = []
 
         #Parcours du dictionnaire contenant les algos d'ordonnancement à exécuter
@@ -139,6 +139,7 @@ def main():
             print(f"- {m["algo"]} | Temps d'attente moyen : {m["tempsAttenteMoyen"]} | Temps reponse moyen : {m["tempsReponseMoyen"]} | Makespan : {m["makespan"]}")    
 
         ManipulationFichiers.Writing.writing.enregistrerMetriques(donnees["metriques"],metriques_moyennes)
+
 #Début du programme
 if __name__ == "__main__":
     try:
