@@ -1,7 +1,4 @@
 
-import sys
-import csv
-from pathlib import Path
 
 def tempsReponse(processus : dict) -> int:
     """

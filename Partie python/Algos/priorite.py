@@ -46,7 +46,7 @@ def enregistrer_date_fin_alloc(infos_allocations_processeur, pe, date):
             alloc["dateFin"] = date  # Le processus quitte le CPU à ce moment précis
             break
 
-def initialiser_processus(processus, ram_dispo):
+def initialiser_processus(processus):
     """
     Initialise la liste des processus pour l'algorithme priorite.
     Vérifie la RAM disponible et trie les processus par date de soumission.
@@ -146,7 +146,7 @@ def executer_processus_elus(processus_elus: list, processus_termines: list,
             processus_elus.remove(pe) #Supression des processus élus
             
             
-def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichier_metriques: str):
+def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict):
     """
     Exécute l'algorithme de planification par priorité (priorité la plus élevée d'abord).
     - Pas de quantum.
@@ -164,7 +164,7 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict, f
     date = 0
 
     # Préparation des structures: tri initial par date de soumission
-    processus_attente_soumission = initialiser_processus(processus, ram_totale)
+    processus_attente_soumission = initialiser_processus(processus)
     processus_file_attente = []
     processus_elus = []
     processus_termines = []

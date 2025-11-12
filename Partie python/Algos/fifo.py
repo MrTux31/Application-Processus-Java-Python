@@ -17,7 +17,7 @@ def enregistrer_date_fin_alloc(infos_allocations_processeur, pe, date_fin):
             break
 
 
-def initialiser_processus(processus, ram_dispo):
+def initialiser_processus(processus):
     """
     Initialise la liste des processus pour l'algorithme FIFO.
     Convertit les champs en entiers et trie les processus par date de soumission.
@@ -131,7 +131,7 @@ def executer_processus_elus(processus_elus, processus_file_attente, processus_te
         i += 1
 
 
-def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichier_metriques: str):
+def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict):
     """
     Exécute l'algorithme FIFO sur un ensemble de processus.
     - Les deadlines ne provoquent plus de rejet.
@@ -144,7 +144,7 @@ def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict, fichi
     infos_allocations_processeur = []
     date_actuelle = 0
 
-    processus_attente_soumission = initialiser_processus(processus, ram_totale)
+    processus_attente_soumission = initialiser_processus(processus)
     processus_file_attente = []
     processus_elus = []
     processus_termines = []

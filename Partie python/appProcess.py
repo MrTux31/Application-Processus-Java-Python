@@ -116,16 +116,14 @@ def main():
                     metriques_fifo = Algos.fifo.fifo(
                     donnees["algos"][algo],
                     donnees["processus"],
-                    donnees["ressources"],
-                    donnees["metriques"])
+                    donnees["ressources"])
                     metriques_moyennes.append(metriques_fifo)
 
                 case "PRIORITE":
                     metrique_priorite = Algos.priorite.priorite(
                     donnees["algos"][algo],
                     donnees["processus"],
-                    donnees["ressources"],
-                    donnees["metriques"]
+                    donnees["ressources"]
                     )
                     metriques_moyennes.append(metrique_priorite)
                     

@@ -1,5 +1,4 @@
-import sys
-import csv
+
 
 from Metriques import metriques
 import ManipulationFichiers.Writing.writing
@@ -45,7 +44,7 @@ def enregistrer_date_fin_alloc(infos_allocations_processeur,pe, date):
             alloc["dateFin"] = date  # Le processus quitte le CPU à ce moment précis
             break
 
-def initialiser_processus(processus: list[dict], ram_dispo: int, quantum: int) -> list[dict]:
+def initialiser_processus(processus: list[dict], quantum: int) -> list[dict]:
     """
     Transforme la liste brute de processus en une liste enrichie pour Round-Robin.
     """
@@ -211,7 +210,7 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
     date = 0 #Variable permettant de sauvegarder la date courante de l'ordonnancement
 
     #Liste des processus en attente de soumission
-    processus_attente_soumission = initialiser_processus(processus,ram_dispo,quantum)
+    processus_attente_soumission = initialiser_processus(processus,quantum)
     # File des processus en attente d'execution
     processus_file_attente = []
     #Liste des processus élus, en cours d'execution sur un cpu
