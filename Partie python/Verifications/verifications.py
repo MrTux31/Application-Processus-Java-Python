@@ -51,7 +51,7 @@ def verifierRessources(ressources : dict):
             print("Erreur dans le fichier des ressources, la quantité de ram est <=0", file=sys.stderr)
             sys.exit(8)   
     except Exception:
-        print("Erreur innatendue dans le fichier des ressources", file=sys.stderr)
+        print("Erreur inattendue dans le fichier des ressources", file=sys.stderr)
         sys.exit(13)
     
     
@@ -150,7 +150,7 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
         sys.exit(13)
 
     except Exception :
-        print("Erreur innatendue dans le fichier des processus", file=sys.stderr)
+        print("Erreur inattendue dans le fichier des processus", file=sys.stderr)
         sys.exit(13)
 
 
@@ -203,5 +203,5 @@ def verifierAlgos(algos : dict):
                 print(f"Erreur dans le fichier de configuration, quantum doit être null pour l'algo {a} ", file=sys.stderr)
                 sys.exit(13)
         except Exception:
-            print(f"Erreur innatendue dans le fichier de config pour l'algo à exécuter {a}", file=sys.stderr)
+            print(f"Erreur inattendue dans le fichier de config pour l'algo à exécuter {a}", file=sys.stderr)
             sys.exit(13)
