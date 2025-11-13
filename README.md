@@ -9,11 +9,12 @@ L’application est composée de deux parties complémentaires :
 - **Partie Java** : permet le paramétrage, le lancement du script Python et la visualisation des résultats.
 
 **Equipe**
-- ALLEMANE Axel
-- ROMA Quentin
-- LE DONNE Antonin
-- RIBEIRO VAUR Nino
-- OLIVENCIA Eliot
+- [Quentin ROMA](https://github.com/MrTux31)
+- [Axel Allemane](https://github.com/Allema31)
+- [Nino Ribeiro-Vaur](https://github.com/niriva)
+- [Antonin Le Donné](https://github.com/Antonin-Le-Donne)
+- [Eliot Olivencia](https://github.com/JLozer-m)
+
 
 **Enseignants référents :**
 Patricia Stolf (Python) et André Péninou (Java)
