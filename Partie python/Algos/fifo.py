@@ -26,17 +26,12 @@ def initialiser_processus(processus):
     nouvelle_liste = []
     for p in processus:
         required_ram = int(p["requiredRam"])
-        raw_deadline = p.get("deadline", "")
-        deadline = None
-        if raw_deadline not in (None, "", "None"):
-            deadline = int(raw_deadline)
 
         nouvelle_liste.append({
             "idProcessus": p["idProcessus"],
             "dateSoumission": int(p["dateSoumission"]),
             "tempsExecution": int(p["tempsExecution"]),
             "requiredRam": required_ram,
-            "deadline": deadline,
             "priority": int(p.get("priority", 0)),
             "tempsTotalExecution": 0,
             "dateDebut": None,
@@ -48,7 +43,6 @@ def initialiser_processus(processus):
         for j in range(i + 1, len(nouvelle_liste)):
             if (nouvelle_liste[i]["dateSoumission"] > nouvelle_liste[j]["dateSoumission"]) or (
                 nouvelle_liste[i]["dateSoumission"] == nouvelle_liste[j]["dateSoumission"]
-                and nouvelle_liste[i]["idProcessus"] > nouvelle_liste[j]["idProcessus"]
             ):
                 tmp = nouvelle_liste[i]
                 nouvelle_liste[i] = nouvelle_liste[j]
