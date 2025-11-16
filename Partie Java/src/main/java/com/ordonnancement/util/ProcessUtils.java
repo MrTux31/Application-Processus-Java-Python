@@ -3,12 +3,14 @@ package com.ordonnancement.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.ExecutionInfo;
 import com.ordonnancement.model.Process;
-import com.ordonnancement.model.Schedule;
 /**
  * Classe utilitaire permettant de récupérer plus facilement des éléments d'un processus
  */
@@ -42,18 +44,18 @@ public class ProcessUtils {
 
     
     /**
-     * Récupère toutes les assignation du processus à un processeur pour un algo précis.
+     * Récupère toutes les allocations processeur d'un processus pour un algo précis.
      * @param p : Le processus
      * @param algo : Le nom de l'algo d'ordonancement
-     * @return la liste des assignations
+     * @return la liste des allocations
      */
-    public static List<Schedule> getSchedules(Process p, String algo) {
-        ExecutionInfo info = getExecutions(p).get(algo);
-        List<Schedule> schedules = new ArrayList<>();
-        if(info != null){ //Evite null pointer
-            schedules = info.getListSchedules();
+    public static List<Allocation> getAllocations(Process p, String algo) {
+        List<Allocation> allocations = new ArrayList<>();
+        List<Allocation> allocationsProcessus = p.getAllocations(algo);
+        if(allocationsProcessus != null){ //Evite null pointer
+            allocations = allocationsProcessus;
         }
-        return schedules; //Retourne toujours une liste
+        return allocations; //Retourne toujours une liste
         
     }
 
@@ -71,5 +73,35 @@ public class ProcessUtils {
         }
 
         return nomAlgos;
+    }
+
+    /**
+     * Permet de récupérer les allocations de tous les processus
+     * sur un algorithme d'ordonnancement précis
+     * @param listeProcessus : tous les processus
+     * @param nomAlgo
+     * @return la liste de toutes les allocations de tous les processus
+     */
+    public static List<Allocation> getAllocations(List<Process> listeProcessus,String nomAlgo){
+        List<Allocation> listeComplete = new ArrayList<>();
+        for(Process p : listeProcessus){ //On parcours tous les processus de la liste
+            List<Allocation> allocs = ProcessUtils.getAllocations(p, nomAlgo); //Récupération de toutes les allocations processeur de cet processus
+            listeComplete.addAll(allocs); //Ajout à la liste globale des allocations
+        }
+        return listeComplete;
+    }
+
+
+    public static List<String> getAllCpus(List<Process> listeProcessus, String nomAlgo){
+
+        Set<String> ensembleCpu = new HashSet<>();
+        for(Process p : listeProcessus){ //Pour chaque processus
+            for(Allocation al : ProcessUtils.getAllocations(p, nomAlgo)){ //Récupération de l'alloc réalisée sur l'algo
+                ensembleCpu.add(al.getProcessor()); //Ajout de l'id cpu à l'ensemble
+            }
+
+        }
+        return new ArrayList<>(ensembleCpu);
+
     }
 }

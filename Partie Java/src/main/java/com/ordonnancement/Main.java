@@ -4,18 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ordonnancement.model.AlgoConfiguration;
+import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.ExecutionInfo;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.model.Resultats;
-import com.ordonnancement.model.Schedule;
 import com.ordonnancement.service.runner.Runner;
+import com.ordonnancement.ui.controller.GanttProcessorController;
 import com.ordonnancement.util.ProcessUtils;
 
 public class Main {
     public static void main(String[] args) {
         
+
+
+
+
         //Démo création du fichier de configuration + récupération des résultats python////////////////////////////////////////////
 
        
@@ -43,8 +48,11 @@ public class Main {
             //Test affichage des Métriques : 
             afficherMetrics(resultats.getListeMetrics());
             
+
+            GanttProcessorController.runApp(resultats);
         }
         catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage()); // Affiche juste le message principal
         }
         
@@ -102,13 +110,13 @@ public class Main {
                 System.out.printf("  Date début exécution : %d%n", info.getDateDebut());
                 System.out.printf("  Date fin exécution   : %d%n", info.getDateFin());
 
-                List<Schedule> listeAssignationProcessus = ProcessUtils.getSchedules(p, nom); //On récupère les assignations pour ce processus et cet algo
+                List<Allocation> listeAssignationProcessus = ProcessUtils.getAllocations(p, nom); //On récupère les assignations pour ce processus et cet algo
                 
                 System.out.println("  Détails des exécutions :");
-                for (Schedule s : listeAssignationProcessus) {
+                for (Allocation s : listeAssignationProcessus) {
                     System.out.printf(
                         "     - CPU %-6s | Début : %3d | Fin : %3d%n",
-                        s.getProcessor().getId(),
+                        s.getProcessor(),
                         s.getDateDebutExecution(),
                         s.getDateFinExecution()
                     );

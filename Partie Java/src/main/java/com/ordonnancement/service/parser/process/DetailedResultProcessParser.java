@@ -3,14 +3,13 @@ package com.ordonnancement.service.parser.process;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ordonnancement.model.ExecutionInfo;
+import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.Process;
-import com.ordonnancement.model.Processor;
-import com.ordonnancement.model.Schedule;
 import com.ordonnancement.service.parser.FileParsingException;
 import com.ordonnancement.service.validation.FileValidator;
 import com.ordonnancement.service.validation.ProcessValidator;
@@ -140,16 +139,19 @@ public class DetailedResultProcessParser {
                     "Incohérence détectée : le processus " + idProcessus
                             + " dans les résultats CSV n'existe pas dans la liste initiale.");
         }
+        
+    
+        // Création de l'allocation pour cette ligne et ajout à l'ExecutionInfo
+        Allocation a = new Allocation(p,idProcesseur, dateDebut, dateFin);
 
-        // Récupération ou création de l'ExecutionInfo pour cet algorithme
-        ExecutionInfo execInfo = p.getExecutionInfo(nomAlgorithme);
-        if (execInfo == null) {
-            execInfo = new ExecutionInfo();
-            p.addExecution(nomAlgorithme, execInfo);
+
+        // Récupérer la liste actuelle pour l'algorithme
+        List<Allocation> listeAlloc = p.getAllocations(nomAlgorithme);
+        if (listeAlloc == null) { //Si la liste est nulle, alors on la crée
+            listeAlloc = new ArrayList<>();
+            p.setAllocations(nomAlgorithme, listeAlloc); //On défini cette liste comme la liste des allocations de ce processus pour cet algo
         }
 
-        // Création du schedule pour cette ligne et ajout à l'ExecutionInfo
-        Schedule s = new Schedule(new Processor(idProcesseur), dateDebut, dateFin);
-        execInfo.getListSchedules().add(s);
+        listeAlloc.add(a); //Ajout de l'allocation à la liste
     }
 }

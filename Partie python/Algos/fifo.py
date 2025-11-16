@@ -134,7 +134,6 @@ def fifo(params_algo: dict, processus: list[dict], ressources_dispo: dict):
     processeurs_dispos = list(ressources_dispo["processeurs"])
     ram_totale = int(ressources_dispo["ram_tot"])
     etat_ram = {"totale": ram_totale, "utilisee": 0}
-
     infos_allocations_processeur = []
     date_actuelle = 0
 

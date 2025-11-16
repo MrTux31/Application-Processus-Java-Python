@@ -169,6 +169,7 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict):
     processus_elus = []
     processus_termines = []
 
+
     # Boucle principale: soumettre -> allouer -> exécuter -> avancer l'horloge
     while processus_attente_soumission or processus_file_attente or processus_elus:
         # Ajoute à la file d'attente les processus dont la date de soumission == date

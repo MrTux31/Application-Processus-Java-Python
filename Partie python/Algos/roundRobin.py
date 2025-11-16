@@ -201,9 +201,10 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
     
     
     quantum = params_algo["quantum"]
-    processeurs_dispos = ressources_dispo["processeurs"]
+    processeurs_dispos = list(ressources_dispo["processeurs"]) #Copie de la liste pour ma modifier la vraie
     ram_dispo = ressources_dispo["ram_tot"]
     infos_allocations_processeur = [] #Liste permettant de sauvegarder toutes les allocations qui ont été réalisées
+
 
 
 
