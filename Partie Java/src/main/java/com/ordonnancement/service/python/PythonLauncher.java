@@ -3,6 +3,7 @@ package com.ordonnancement.service.python;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 
 /**
  * Classe permettant de lancer le script python
@@ -16,11 +17,11 @@ public class PythonLauncher {
      * @param cheminScript chemin du script Python
      * @param cheminConfig fichier de configuration JSON à passer en argument
      */
-    public static void runPythonScript(String cheminScript, String cheminConfig){
+    public static void runPythonScript(Path cheminScript, String cheminConfig){
 
         //TO DO : Faire en sorte que ca marche pour linux: python3 et faire en sorte que ca marche sur windows avec juste "python" : attention variable path non configurée
 
-        String commande[] = {"python", cheminScript, cheminConfig}; //Commande à exécuter pour lancer le script python
+        String commande[] = {"python", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python
         ProcessBuilder builder = new ProcessBuilder(commande); //Construction de la commande
         
         try {

@@ -1,4 +1,8 @@
 package com.ordonnancement.service.runner;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import com.ordonnancement.model.AlgoConfiguration;
@@ -30,8 +34,9 @@ public class Runner {
      * @param fileConfiguration : Les paramètres du fichier de config
      * @param destinationFichierConfig: La destination du fichier de configuration à créer
      * @return Resultats : les résultats obtenus
+     * @throws RunnerException Si une erreur de lancement survient
      */
-    public static Resultats run(FileConfiguration fileConfiguration, String destinationFichierConfig){
+    public static Resultats run(FileConfiguration fileConfiguration, String destinationFichierConfig) throws RunnerException{
         
         //Création du configuration writer
         ConfigurationWriter writer = new ConfigurationWriter();
@@ -40,8 +45,13 @@ public class Runner {
         writer.writeConfiguration(fileConfiguration,destinationFichierConfig);
         
         
+
+        
+
+        Path cheminAppPython = getCheminAppPython();
+
         //Lancement python, execution script 
-        PythonLauncher.runPythonScript("C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\Partie python\\appProcess.py", destinationFichierConfig);
+        PythonLauncher.runPythonScript(cheminAppPython, destinationFichierConfig);
         
         
         //Après exécution python : 
@@ -82,6 +92,41 @@ public class Runner {
         
         //TO DO : Stocker gloabalement ces résultats dans un SINGLETON : ResultatsManager pour pouvoir y
         //accéder depuis n'importe où dans l'app.
+
+    }
+
+
+    /**
+     * Permet d'obtenir le chemin du fichier python depuis l'emplacement du JAR
+     * @return le chemin de l'executable python
+     * @throws RunnerException Si le chemin est innexistant
+     */
+    private static Path getCheminAppPython() throws RunnerException{
+        // Obtenir le répertoire parent du JAR 
+        
+        Path jarDir;
+        try {
+            jarDir = Paths.get(
+                    Runner.class.getProtectionDomain()
+                                .getCodeSource()
+                                .getLocation()
+                                .toURI()
+            ).getParent();
+        } catch (URISyntaxException e) {
+            throw new RunnerException("Impossible de déterminer le dossier du programme.\n" +
+        "Cause probable : le programme n'a pas été lancé depuis un fichier JAR valide.\n" +
+        "Solution : Vérifiez que vous lancez bien le fichier .jar et que son chemin ne contient pas de caractères spéciaux.");
+        }
+
+        // Path vers le fichier python
+        Path pythonPath = jarDir.getParent().getParent().resolve("python/appProcess.py");
+        //Vérification du chemin
+        if (!Files.exists(pythonPath)) {
+        throw new RunnerException("Le script Python est introuvable : " + pythonPath.toAbsolutePath() +
+        "\nVérifiez que le dossier 'python' existe et que 'appProcess.py' est présent.");
+        }
+        
+        return pythonPath;
 
     }
 

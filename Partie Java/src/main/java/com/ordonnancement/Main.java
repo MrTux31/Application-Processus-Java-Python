@@ -1,5 +1,7 @@
 package com.ordonnancement;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,20 +25,57 @@ public class Main {
 
         //Démo création du fichier de configuration + récupération des résultats python////////////////////////////////////////////
 
+        //Ne pas se fier a cette récupértion de chemins c'est teporaire pour les tests
+        Path jarDir = Paths.get("").toAbsolutePath().getParent(); // dossier courant pour test
+        Path resultsDir = jarDir.resolve("python/Resultats");
+
+        AlgoConfiguration algo1 = new AlgoConfiguration(
+            "ROUND ROBIN",
+            resultsDir.resolve("RoundRobin/rDetailedROUNDROBIN.csv").toString(),
+            resultsDir.resolve("RoundRobin/rGlobauxROUNDROBIN.csv").toString(),
+            2
+        );
+
+        AlgoConfiguration algo2 = new AlgoConfiguration(
+            "FIFO",
+            resultsDir.resolve("Fifo/rDetailedFIFO.csv").toString(),
+            resultsDir.resolve("Fifo/rGlobauxFIFO.csv").toString(),
+            null
+        );
+
+        Path settingsDir = jarDir.resolve("python/Settings");
+
+        
+
+        
+        ////////////
+
        
-        //Création des algos qui vont être utilisés par l'ordonnanceur
-        AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.csv", 2);
-        AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.csv", null);
+        // //Création des algos qui vont être utilisés par l'ordonnanceur
+        // AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.csv", 2);
+        // AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.csv", null);
+        
+        
         //Ajouts de ces algos dans une liste
         List<AlgoConfiguration> liste = new ArrayList<>();
         liste.add(algo1);
         liste.add(algo2);
         //Création de l'objet FileConfig représentant le fichier de configuration
-        FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources.json", liste);
+        //FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources.json", liste);
        
+
+        FileConfiguration fileConfig = new FileConfiguration(
+            settingsDir.resolve("processusInitiaux.csv").toString(),
+            settingsDir.resolve("fichierMetriquesGlobales.csv").toString(),
+            settingsDir.resolve("Ressources.json").toString(),
+            liste
+        );
+
         try {
             //Lancer l'execution / écriture fichier config + récup des résultats de python
-            Resultats resultats = Runner.run(fileConfig,"C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\config.json");
+            Resultats resultats = Runner.run(fileConfig,
+            settingsDir.resolve("config.json").toString()
+            );
             //Affichage résultats
 
             System.out.println("--------------------------------------------Affichage processus--------------------------------------------");
