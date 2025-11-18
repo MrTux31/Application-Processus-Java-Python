@@ -5,8 +5,8 @@ import java.util.List;
 import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.service.AppState;
+import com.ordonnancement.ui.components.GanttPane;
 import com.ordonnancement.util.ProcessUtils;
-import com.ordonnancement.view.GanttPane;
 
 import javafx.application.Application;
 import javafx.fxml.FXML;

@@ -1,5 +1,4 @@
 package com.ordonnancement.service.runner;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -102,24 +101,9 @@ public class Runner {
      * @throws RunnerException Si le chemin est innexistant
      */
     private static Path getCheminAppPython() throws RunnerException{
-        // Obtenir le répertoire parent du JAR 
         
-        Path jarDir;
-        try {
-            jarDir = Paths.get(
-                    Runner.class.getProtectionDomain()
-                                .getCodeSource()
-                                .getLocation()
-                                .toURI()
-            ).getParent();
-        } catch (URISyntaxException e) {
-            throw new RunnerException("Impossible de déterminer le dossier du programme.\n" +
-        "Cause probable : le programme n'a pas été lancé depuis un fichier JAR valide.\n" +
-        "Solution : Vérifiez que vous lancez bien le fichier .jar et que son chemin ne contient pas de caractères spéciaux.");
-        }
-
         // Path vers le fichier python
-        Path pythonPath = jarDir.getParent().getParent().resolve("python/appProcess.py");
+        Path pythonPath = Paths.get("python/appProcess.py");
         //Vérification du chemin
         if (!Files.exists(pythonPath)) {
         throw new RunnerException("Le script Python est introuvable : " + pythonPath.toAbsolutePath() +

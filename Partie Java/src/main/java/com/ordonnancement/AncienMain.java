@@ -26,8 +26,8 @@ public class AncienMain {
         //Démo création du fichier de configuration + récupération des résultats python////////////////////////////////////////////
 
         //Ne pas se fier a cette récupértion de chemins c'est teporaire pour les tests
-        Path jarDir = Paths.get("").toAbsolutePath().getParent(); // dossier courant pour test
-        Path resultsDir = jarDir.resolve("python/Resultats");
+        
+        Path resultsDir = Paths.get("python/Resultats");
 
         AlgoConfiguration algo1 = new AlgoConfiguration(
             "ROUND ROBIN",
@@ -43,7 +43,7 @@ public class AncienMain {
             null
         );
 
-        Path settingsDir = jarDir.resolve("python/Settings");
+        Path settingsDir = Paths.get("python/Settings");
 
         
 

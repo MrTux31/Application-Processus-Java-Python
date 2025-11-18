@@ -1,4 +1,4 @@
-package com.ordonnancement.view;
+package com.ordonnancement.ui.components;
 
 import java.util.Collections;
 import java.util.List;
