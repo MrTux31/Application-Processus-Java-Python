@@ -67,7 +67,7 @@ public class Main {
         FileConfiguration fileConfig = new FileConfiguration(
             settingsDir.resolve("processusInitiaux.csv").toString(),
             settingsDir.resolve("fichierMetriquesGlobales.csv").toString(),
-            settingsDir.resolve("Ressources.json").toString(),
+            settingsDir.resolve("ressources.json").toString(),
             liste
         );
 
