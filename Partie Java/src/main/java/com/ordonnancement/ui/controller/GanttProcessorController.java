@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.Process;
-import com.ordonnancement.model.Resultats;
+import com.ordonnancement.service.AppState;
 import com.ordonnancement.util.ProcessUtils;
 import com.ordonnancement.view.GanttPane;
 
@@ -27,11 +27,6 @@ public class GanttProcessorController extends Application {
 
     private static List<Process> listeProcessus;
 
-    public static void runApp(Resultats resultats) {
-        listeProcessus = resultats.getListeProcessus();
-
-        launch();
-    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -46,6 +41,8 @@ public class GanttProcessorController extends Application {
     @FXML
     private void initialize() {
 
+        this.listeProcessus = AppState.getInstance().getResultats().getListeProcessus();
+
         // Créer le GanttPane
         GanttPane ganttPane = new GanttPane();
         //On met le gantt dans une v box pour le centrer dedans
@@ -57,8 +54,12 @@ public class GanttProcessorController extends Application {
         
         scrollPane.setContent(boite); //On met la boite dans le scroll
         scrollPane.setPannable(true);
-        // Dessin
-        drawPane("ROUND ROBIN", ganttPane);
+        
+        if(listeProcessus!= null){
+            // Dessin
+            drawPane("ROUND ROBIN", ganttPane);
+        }
+        
 
     }
 

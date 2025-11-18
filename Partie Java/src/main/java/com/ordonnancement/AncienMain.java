@@ -12,12 +12,12 @@ import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.model.Resultats;
+import com.ordonnancement.service.AppState;
 import com.ordonnancement.service.runner.Runner;
-import com.ordonnancement.ui.controller.GanttProcessorController;
 import com.ordonnancement.util.ProcessUtils;
 
-public class Main {
-    public static void main(String[] args) {
+public class AncienMain {
+    public static void lancerExecution() {
         
 
 
@@ -71,6 +71,8 @@ public class Main {
             liste
         );
 
+        
+
         try {
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Resultats resultats = Runner.run(fileConfig,
@@ -87,8 +89,10 @@ public class Main {
             //Test affichage des Métriques : 
             afficherMetrics(resultats.getListeMetrics());
             
+            AppState state = AppState.getInstance();
+            state.setResultats(resultats);
 
-            GanttProcessorController.runApp(resultats);
+            
         }
         catch (Exception e) {
             e.printStackTrace();

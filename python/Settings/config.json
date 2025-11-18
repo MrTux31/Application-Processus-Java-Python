@@ -1,18 +1,18 @@
 {
-  "fichierProcessus": "Settings\\processusInitiaux.csv",
-  "fichierRessourcesDisponibles": "Settings\\ressources.json",
-  "fichierMetriquesGlobales": "Settings\\fichierMetriquesGlobales.csv",
+  "fichierProcessus": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\python\\Settings\\processusInitiaux.csv",
+  "fichierRessourcesDisponibles": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\python\\Settings\\ressources.json",
+  "fichierMetriquesGlobales": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\python\\Settings\\fichierMetriquesGlobales.csv",
   "listeAlgorithmes": [
     {
       "nomAlgorithme": "ROUND ROBIN",
-      "fichierResultatsDetailles": "Resultats\\RoundRobin\\rDetailedROUNDROBIN.csv",
-      "fichierResultatsGlobaux": "Resultats\\RoundRobin\\rGlobauxROUNDROBIN.csv",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\python\\Resultats\\RoundRobin\\rDetailedROUNDROBIN.csv",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\python\\Resultats\\RoundRobin\\rGlobauxROUNDROBIN.csv",
       "quantum": 2
     },
     {
       "nomAlgorithme": "FIFO",
-      "fichierResultatsDetailles": "Resultats\\Fifo\\rDetailedFIFO.csv",
-      "fichierResultatsGlobaux": "Resultats\\Fifo\\rGlobauxFIFO.csv",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\python\\Resultats\\Fifo\\rDetailedFIFO.csv",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\python\\Resultats\\Fifo\\rGlobauxFIFO.csv",
       "quantum": null
     }
   ]

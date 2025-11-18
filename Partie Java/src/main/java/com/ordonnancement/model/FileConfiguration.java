@@ -3,7 +3,7 @@ package com.ordonnancement.model;
 import java.util.List;
 
 /**
- * Classe représentant la configuration de l'ordonnanceur utilisée.
+ * Classe représentant le fichier de configuration json utilisée dans python.
  * Elle de répertorier toutes les informations nécessaires à la
  * génération du fichier de configuration pour python
  */
