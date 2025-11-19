@@ -152,6 +152,7 @@ public class AncienMain {
                 // Affichage des infos globales
                 System.out.printf("  Date début exécution : %d%n", info.getDateDebut());
                 System.out.printf("  Date fin exécution   : %d%n", info.getDateFin());
+                System.out.printf("  Ram utilisée   : %d%n", info.getUsedRam());
 
                 List<Allocation> listeAssignationProcessus = ProcessUtils.getAllocations(p, nom); //On récupère les assignations pour ce processus et cet algo
                 

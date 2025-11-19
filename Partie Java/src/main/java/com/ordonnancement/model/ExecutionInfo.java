@@ -10,38 +10,24 @@ import java.util.List;
 public class ExecutionInfo {
    
     //Calculé par python
-    private int dateDebut; //Date de début d'exécution du processus;
-    private int dateFin; //Date de fin d'exécution du processus
+    private final int dateDebut; //Date de début d'exécution du processus;
+    private final int dateFin; //Date de fin d'exécution du processus
+    private final int usedRam; //Qte de ram utilisée durant l'execution du processus
 
-
-    public ExecutionInfo() {
+    public ExecutionInfo(int dateDebut, int dateFin, int usedRam) {
        
-        this.dateDebut = -1; //Valeur par défaut (pas encore calculée)
-        this.dateFin = -1; //Valeur par défaut (pas encore calculée)
-    }
-
-    public void setDateDebut(int dateDebut) {
         this.dateDebut = dateDebut;
-    }
-
-    public void setDateFin(int dateFin) {
         this.dateFin = dateFin;
+        this.usedRam = usedRam;
     }
 
-    
-
-
-     /**
-     * Permet de savoir si le processus est terminé
-     * @return true si fini, false sinon
-     */
-    public boolean isFinished(){
-        return dateFin != -1;
-
-    }
 
     public int getDateDebut() {
         return dateDebut;
+    }
+
+    public int getUsedRam(){
+        return this.usedRam;
     }
 
     /**

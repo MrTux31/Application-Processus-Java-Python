@@ -124,6 +124,7 @@ public class GlobalResultProcessParser {
         String idProcessus = valeurs[0].trim();
         int dateDebut = Integer.parseInt(valeurs[2].trim());
         int dateFin = Integer.parseInt(valeurs[3].trim());
+        int usedRam = Integer.parseInt(valeurs[5].trim());
 
         // Récupération du Process correspondant
         Process p = mapProcessus.get(idProcessus);
@@ -134,14 +135,10 @@ public class GlobalResultProcessParser {
         }
 
         // Récupération ou création de l'ExecutionInfo pour cet algorithme
-        ExecutionInfo execInfo = p.getExecutionInfo(nomAlgorithme);
-        if (execInfo == null) {
-            execInfo = new ExecutionInfo();
-            p.addExecution(nomAlgorithme, execInfo);
-        }
+        ExecutionInfo execInfo = new ExecutionInfo(dateDebut,dateFin, usedRam);
+        p.addExecution(nomAlgorithme, execInfo); //Ajout de l'execution dans le processus
+        
 
-        // Mise à jour des informations globales
-        execInfo.setDateDebut(dateDebut);
-        execInfo.setDateFin(dateFin);
+        
     }
 }
