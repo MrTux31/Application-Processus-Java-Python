@@ -54,20 +54,39 @@ public class AppMainFrameController {
 
     /**
      * Affiche le gantt par cpu
+     * 
      * @author ROMA Quentin
      */
     @FXML
     private void doAfficherGanttCPU() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GanttProcessorView.fxml")); // Préparer le chargement du FXML
-            BorderPane ganttProcessor = loader.load(); //Charger le fxml
-            mainContentPane.getChildren().setAll(ganttProcessor);  //Mettre le border pane dans le stackpane
-            ganttProcessorController = loader.getController(); //Récupérer le controleur de la vue
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GanttProcessorView.fxml")); // Préparer le
+                                                                                                         // chargement
+                                                                                                         // du FXML
+            BorderPane ganttProcessor = loader.load(); // Charger le fxml
+            mainContentPane.getChildren().setAll(ganttProcessor); // Mettre le border pane dans le stackpane
+            ganttProcessorController = loader.getController(); // Récupérer le controleur de la vue
 
         } catch (Exception e) {
-            AlertUtils.showError("Erreur", "Impossible d'ouvrir le gantt par CPU :\n" + e.getMessage(),(Stage) mainContentPane.getScene().getWindow());
-            e.printStackTrace();
+
+            Throwable root = e;
+            while (root.getCause() != null) {
+                root = root.getCause();
+            }
+
+            // Récupérer le message réel de l'exception racine
+            String cleanMessage = root.getMessage();
+            if (cleanMessage == null || cleanMessage.isEmpty()) {
+                cleanMessage = root.toString(); // fallback si pas de message
+            }
+
+            AlertUtils.showError(
+                    "Erreur",
+                    "Erreur affichange Gantt CPU :\n" + cleanMessage,
+                    (Stage) mainContentPane.getScene().getWindow());
+
         }
+
     }
 
     /**
