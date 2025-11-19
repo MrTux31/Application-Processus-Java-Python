@@ -20,7 +20,10 @@
                         <MenuItem fx:id="ganttProcessMenu" text="Gantt Processus" />
                     </Menu>
 
-                    <Menu fx:id="metricsMenu" text="Métriques" />
+                    <Menu fx:id="metricsMenu" text="Métriques">
+                  <items>
+                     <MenuItem fx:id="graphMetric" mnemonicParsing="false" onAction="#doAfficherComparaisonAlgos" text="Comparer les métriques" />
+                  </items></Menu>
                 </menus>
             </MenuBar>
         </VBox>
