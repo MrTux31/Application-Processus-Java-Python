@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ordonnancement.model.Allocation;
+import com.ordonnancement.model.gantt.IGanttTask;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,27 +22,27 @@ import javafx.scene.shape.Rectangle;
  */
 public class GanttPane extends BorderPane {
 
-    private final double espacesGraduationsY = 50; // Hauteur de chaque ligne CPU
-    private final double espacesGraduationsX = 40;
+    private final double espacesGraduationsY = 50; // Hauteur de entre chaque élément en Y
+    private final double espacesGraduationsX = 40; //Espace entre chaque éléments en X
     
 
     /**
-     * Dessine le diagramme de Gantt pour plusieurs CPU.
+     * Classe permettant de dessiner un diagramme de gantt
      *
-     * @param listeAllocations Liste des allocations de processus (avec dateDebutExecution, dateFinExecution, CPU, idProcessus).
+     * @param listeTask : la liste des tâches du gantt a afficher
      * @param dateFinMax Temps maximal à afficher sur l'échelle de temps.
-     * @param listeCpus Liste des CPU à afficher.
+     * @param listeCategories : liste des catégories à afficher en Y
      */
-    public void dessinerGanttProcessor(List<Allocation> listeAllocations, int dateFinMax, List<String> listeCpus) {
+    public void dessinerGanttProcessor(List<IGanttTask> listeTask, int dateFinMax, List<String> listeCategories) {
 
         this.getChildren().clear();
-        Collections.sort(listeCpus); //Trier la liste des cpu dans l'ordre
+        Collections.sort(listeCategories); //Trier la liste des catégories dans l'ordre (éléments affichés en Y)
 
-        //Créer vertical box pour empiler les cpu 
-        VBox lignesCPU = new VBox(5);
-        for (String cpu : listeCpus) {
-            HBox ligne = creerLigneCpu(cpu, listeAllocations, dateFinMax);
-            lignesCPU.getChildren().add(ligne); //On ajoute la ligne des allocation de ce cpu
+        //Créer vertical box pour empiler les catégories 
+        VBox lignesCategories = new VBox(5);
+        for (String categorie : listeCategories) { //Pour chaque catégorie
+            HBox ligne = creerLigneTachesCategorie(categorie, listeTask, dateFinMax); //Générer la ligne avec les taches
+            lignesCategories.getChildren().add(ligne); //On ajoute la ligne des taches de cette cétagorie
         }
 
         //Horizontal box qui stocke les labels des dates
@@ -49,92 +50,92 @@ public class GanttPane extends BorderPane {
         echelleTemps.setPadding(new Insets(0, 0, 0, 80)); //Marge a gauche pour faire commencer graduation au bon endroit 
 
         this.setTop(echelleTemps); //L'échelle temps en haut du border pane
-        this.setCenter(lignesCPU); //On ajoute ces lignes au centre du border pane
+        this.setCenter(lignesCategories); //On ajoute ces lignes au centre du border pane
 
         
 
     }
     
     /**
-     * Crée une ligne de Gantt pour un CPU donné.
+     * Crée une ligne de Gantt pour une catégorie donnée.
      *
-     * @param cpu Nom du CPU.
-     * @param listeAllocations Liste des allocations de processus.
-     * @param dateFinMax Temps maximal pour déterminer la largeur de la zone d'allocation.
+     * @param Nom de la catégorie.
+     * @param listeTaches Liste des tâches de la catégorie
+     * @param dateFinMax Temps maximal pour déterminer la largeur de la zone des tâches.
      */
 
-    private HBox creerLigneCpu(String cpu, List<Allocation> listeAllocations, int dateFinMax) {
+    private HBox creerLigneTachesCategorie(String categorie, List<IGanttTask> listeTache, int dateFinMax) {
         HBox ligne = new HBox();
         ligne.setAlignment(Pos.CENTER_LEFT); //Centré en haut a gauche
         ligne.setPrefHeight(espacesGraduationsY); //Hauteur de la boite
         ligne.setMinHeight(espacesGraduationsY);
 
-        // Label du CPU à gauche
-        Label labelCPU = new Label(cpu);
-        labelCPU.setPrefWidth(80);
-        labelCPU.setAlignment(Pos.CENTER); //Nom du cpu centré
-        labelCPU.setPadding(new Insets(0, 10, 0, 0));
-        labelCPU.setStyle("-fx-font-weight: bold;");
+        // Label de la catégorie à gauche
+        Label labelCategorie = new Label(categorie);
+        labelCategorie.setPrefWidth(80);
+        labelCategorie.setAlignment(Pos.CENTER); //Nom du de la catégorie centrée
+        labelCategorie.setPadding(new Insets(0, 10, 0, 0));
+        labelCategorie.setStyle("-fx-font-weight: bold;");
 
-        //Utilisation d'un pane pour mettre le rectangle du processus dedans (pane permet de placer aux coordonnées voulues)
-        Pane zoneAllocations = new Pane(); //Pane pour ajouter toutes les allocations dedans
-        zoneAllocations.setPrefWidth((dateFinMax+1) * espacesGraduationsX); //On fait la bonne taille en longueur par rapport à l'échelle des graduations
+        //Utilisation d'un pane pour mettre le rectangle de la tache dedans (pane permet de placer aux coordonnées voulues)
+        Pane zoneTaches = new Pane(); //Pane pour ajouter toutes les allocations dedans
+        zoneTaches.setPrefWidth((dateFinMax+1) * espacesGraduationsX); //On fait la bonne taille en longueur par rapport à l'échelle des graduations
                                                                             //+1 pour que le contour aille jusqu'a la fin
-        zoneAllocations.setPrefHeight(espacesGraduationsY); //Hauteur su pane
-        zoneAllocations.setStyle("-fx-border-color: lightgray; -fx-border-width: 1;"); //bordure zone allocations
+        zoneTaches.setPrefHeight(espacesGraduationsY); //Hauteur su pane
+        zoneTaches.setStyle("-fx-border-color: lightgray; -fx-border-width: 1;"); //bordure zone allocations
 
        
 
         //Pour chaque allocation dans la liste des allocations
-        for (Allocation a : listeAllocations) {
-            if (a.getProcessor().equals(cpu)) { //On prend les allocations qui sont celles sur le CPU actuel (en param)
-                StackPane allocation = creerAllocation(a);
-                zoneAllocations.getChildren().add(allocation); //Ajouter l'allocation créée dans le pane
+        for (IGanttTask t : listeTache) {
+            if (t.getCategorie().equals(categorie)) { //On prend les taches qui ont la catégorie passée en paramètre
+                StackPane tache = creerTache(t); //Récupérer la tache 
+                zoneTaches.getChildren().add(tache); //Ajouter la tache créée dans le pane
 
             }
         }
-        //Ajouter le label du cpu en face du pane contenant toutes les allocations
-        ligne.getChildren().addAll(labelCPU,zoneAllocations); 
+        //Ajouter le label de la catégorie en face du pane contenant toutes les taches
+        ligne.getChildren().addAll(labelCategorie,zoneTaches); 
         return ligne;
     }
 
 
 
     /**
-     * Crée un bloc représentant une allocation (rectangle + texte centré).
+     * Crée un bloc représentant une tâche du gantt (rectangle + texte centré).
      *
-     * @param a Allocation L'allocation processeur
+     * @param tache La tache a convertir en bloc pour le  gantt
      */
 
-    private StackPane creerAllocation(Allocation a) {
+    private StackPane creerTache(IGanttTask tache) {
         //On a un stackpane qui va contenir rectangle + son texte par dessus 
 
 
         StackPane stack = new StackPane(); //Stackpane pour empiler un rectangle et un texte dessus
 
-        double x = a.getDateDebutExecution() * espacesGraduationsX; //Calcul de la position en X par rapport à l'échelle
-        //On calcule pas Y etant donné qu'on est deja sur la bonne ligne CPU
+        double x = tache.getDateDebut() * espacesGraduationsX; //Calcul de la position en X par rapport à l'échelle
+        //On calcule pas Y etant donné qu'on est deja sur la bonne ligne de catégorie
 
-        //On calcule l'espace en largeur dont on aura besoin pour l'allocation (le temps que l'alloc prends ramené à l'échelle)
-        double largeur = Math.ceil(a.getDateFinExecution() - a.getDateDebutExecution()) * espacesGraduationsX; 
+        //On calcule l'espace en largeur dont on aura besoin pour la tache (le temps que la tache à etre réalisée ramené à l'échelle)
+        double largeur = Math.ceil(tache.getDateFin() - tache.getDateDebut()) * espacesGraduationsX; 
         stack.setLayoutX(x); //On place le stack pane a la bonne ordonnée
         
         stack.setPrefWidth(largeur); //Definition largeur
         stack.setPrefHeight(espacesGraduationsY); //Definition longueur
 
         //Création du rectangle
-        Rectangle rectangle = new Rectangle(largeur, espacesGraduationsY-1); //-1 pour rentrer bien entre les lignes tracées (par zoneAllocations)
+        Rectangle rectangle = new Rectangle(largeur, espacesGraduationsY-1); //-1 pour rentrer bien entre les lignes tracées (par zoneTaches)
         //Couleur du rectangle 
-        rectangle.setFill(Color.hsb(a.getProcessus().hashCode() % 360, 0.6, 0.8)); //Couleur en HSB (s'exprime de 0 à 360) 
+        rectangle.setFill(Color.hsb(tache.getColorId() % 360, 0.6, 0.8)); //Couleur en HSB (s'exprime de 0 à 360) 
         rectangle.setStroke(Color.BLACK); // Couleur de la bordure                                  donc on prend reste division euclidienne de 360 pour avoir valeur dans intervalle)
         rectangle.setStrokeWidth(1); //epaisseur trait
         
-        // Label avec l'ID du processus
-        Label labelProcessus = new Label(a.getIdProcessus());
-        labelProcessus.setTextFill(Color.BLACK);
+        // Label avec l'ID du de la tache
+        Label labelTache = new Label(tache.getId());
+        labelTache.setTextFill(Color.BLACK);
 
 
-        stack.getChildren().addAll(rectangle,labelProcessus); //On empile le rectangle et le texte (au centre )
+        stack.getChildren().addAll(rectangle,labelTache); //On empile le rectangle et le texte (au centre )
         return stack;
 
     }
@@ -159,3 +160,5 @@ public class GanttPane extends BorderPane {
     }
 
 }
+
+
