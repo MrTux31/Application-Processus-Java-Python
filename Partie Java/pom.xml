@@ -34,6 +34,13 @@
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
+        <!-- Control FX qui rajoute des éléments de menu ex: check combo box
+             https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+            <dependency>
+                <groupId>org.controlsfx</groupId>
+                <artifactId>controlsfx</artifactId>
+                <version>11.2.2</version>
+            </dependency>
     </dependencies>
 
     <build>
@@ -59,6 +66,8 @@
                     <mainClass>com.ordonnancement.Ordonnancement</mainClass>
                 </configuration>
             </plugin>
+
+            
 
             <!-- Plugin Shade uniquement pour créer un JAR exécutable -->
             <plugin>

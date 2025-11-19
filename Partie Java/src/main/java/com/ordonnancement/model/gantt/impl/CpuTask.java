@@ -11,6 +11,7 @@ import com.ordonnancement.model.gantt.IGanttTask;
 public class CpuTask implements IGanttTask {
 
     private final Allocation allocation;
+    private final int colorId;
 
     /**
      * Constructeur.
@@ -19,6 +20,7 @@ public class CpuTask implements IGanttTask {
      */
     public CpuTask(Allocation allocation){
         this.allocation = allocation;
+        colorId = allocation.getProcessus().hashCode();
     }
 
     /**
@@ -68,6 +70,6 @@ public class CpuTask implements IGanttTask {
      */
     @Override
     public int getColorId() {
-        return allocation.hashCode();
+       return this.colorId; //On renvoie le hashcode unique du processus concerné
     }
 }

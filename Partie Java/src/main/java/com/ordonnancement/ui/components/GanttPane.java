@@ -3,7 +3,6 @@ package com.ordonnancement.ui.components;
 import java.util.Collections;
 import java.util.List;
 
-import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.gantt.IGanttTask;
 
 import javafx.geometry.Insets;
@@ -22,8 +21,8 @@ import javafx.scene.shape.Rectangle;
  */
 public class GanttPane extends BorderPane {
 
-    private final double espacesGraduationsY = 50; // Hauteur de entre chaque élément en Y
-    private final double espacesGraduationsX = 40; //Espace entre chaque éléments en X
+    private final double espacesGraduationsY = 80; // Hauteur de entre chaque élément en Y
+    private final double espacesGraduationsX = 60; //Espace entre chaque éléments en X
     
 
     /**
@@ -133,6 +132,8 @@ public class GanttPane extends BorderPane {
         // Label avec l'ID du de la tache
         Label labelTache = new Label(tache.getId());
         labelTache.setTextFill(Color.BLACK);
+        labelTache.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+
 
 
         stack.getChildren().addAll(rectangle,labelTache); //On empile le rectangle et le texte (au centre )

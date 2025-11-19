@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.ExecutionInfo;
@@ -17,7 +18,7 @@ import com.ordonnancement.service.runner.Runner;
 import com.ordonnancement.util.ProcessUtils;
 
 public class AncienMain {
-    public static void lancerExecution() {
+    public static void lancerExecution() throws Exception {
         
 
 
@@ -73,7 +74,7 @@ public class AncienMain {
 
         
 
-        try {
+        
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Resultats resultats = Runner.run(fileConfig,
             settingsDir.resolve("config.json").toString()
@@ -88,16 +89,13 @@ public class AncienMain {
 
             //Test affichage des Métriques : 
             afficherMetrics(resultats.getListeMetrics());
-            
+            ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
             AppState state = AppState.getInstance();
             state.setResultats(resultats);
 
             
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage()); // Affiche juste le message principal
-        }
+        
         
         
 
@@ -107,7 +105,7 @@ public class AncienMain {
 
 
 
-    }
+
 
 
 

@@ -97,7 +97,8 @@ public class ProcessUtils {
         Set<String> ensembleCpu = new HashSet<>();
         for(Process p : listeProcessus){ //Pour chaque processus
             for(Allocation al : ProcessUtils.getAllocations(p, nomAlgo)){ //Récupération de l'alloc réalisée sur l'algo
-                ensembleCpu.add(al.getProcessor()); //Ajout de l'id cpu à l'ensemble
+                        
+            ensembleCpu.add(al.getProcessor()); //Ajout de l'id cpu à l'ensemble
             }
 
         }

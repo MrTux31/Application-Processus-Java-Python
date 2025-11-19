@@ -3,7 +3,6 @@ package com.ordonnancement.ui.controller;
 
 import java.util.List;
 
-import com.ordonnancement.model.Resultats;
 import com.ordonnancement.service.AppState;
 import com.ordonnancement.ui.Alert.AlertUtils;
 
@@ -45,11 +44,7 @@ public class AppMainFrameController {
     //Controleurs 
     GanttProcessorController ganttProcessorController;
     MetricController comparaisonController;
-    private List<Resultats> listeResultats;
-
-    public void setListeResultats(List<Resultats> resultats) {
-    this.listeResultats = resultats;
-    }
+    
 
 
     /**
@@ -84,7 +79,7 @@ public class AppMainFrameController {
                     "Erreur",
                     "Erreur affichange Gantt CPU :\n" + cleanMessage,
                     (Stage) mainContentPane.getScene().getWindow());
-
+            e.printStackTrace();
         }
 
     }
