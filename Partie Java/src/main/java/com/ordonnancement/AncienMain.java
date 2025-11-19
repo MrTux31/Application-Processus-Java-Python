@@ -12,12 +12,12 @@ import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.model.Resultats;
+import com.ordonnancement.service.AppState;
 import com.ordonnancement.service.runner.Runner;
-import com.ordonnancement.ui.controller.GanttProcessorController;
 import com.ordonnancement.util.ProcessUtils;
 
-public class Main {
-    public static void main(String[] args) {
+public class AncienMain {
+    public static void lancerExecution() {
         
 
 
@@ -26,8 +26,8 @@ public class Main {
         //Démo création du fichier de configuration + récupération des résultats python////////////////////////////////////////////
 
         //Ne pas se fier a cette récupértion de chemins c'est teporaire pour les tests
-        Path jarDir = Paths.get("").toAbsolutePath().getParent(); // dossier courant pour test
-        Path resultsDir = jarDir.resolve("python/Resultats");
+        
+        Path resultsDir = Paths.get("python/Resultats");
 
         AlgoConfiguration algo1 = new AlgoConfiguration(
             "ROUND ROBIN",
@@ -43,7 +43,7 @@ public class Main {
             null
         );
 
-        Path settingsDir = jarDir.resolve("python/Settings");
+        Path settingsDir = Paths.get("python/Settings");
 
         
 
@@ -71,6 +71,8 @@ public class Main {
             liste
         );
 
+        
+
         try {
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Resultats resultats = Runner.run(fileConfig,
@@ -87,8 +89,10 @@ public class Main {
             //Test affichage des Métriques : 
             afficherMetrics(resultats.getListeMetrics());
             
+            AppState state = AppState.getInstance();
+            state.setResultats(resultats);
 
-            GanttProcessorController.runApp(resultats);
+            
         }
         catch (Exception e) {
             e.printStackTrace();
