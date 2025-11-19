@@ -1,6 +1,10 @@
 package com.ordonnancement.ui.controller;
 
 
+import java.util.List;
+
+import com.ordonnancement.model.Resultats;
+import com.ordonnancement.service.AppState;
 import com.ordonnancement.ui.Alert.AlertUtils;
 
 import javafx.fxml.FXML;
@@ -31,6 +35,8 @@ public class AppMainFrameController {
     @FXML
     Menu metricsMenu;
     @FXML
+    MenuItem graphMetric;
+    @FXML
     MenuItem ganttCpuMenu;
     @FXML
     MenuItem ganttProcessMenu;
@@ -38,6 +44,13 @@ public class AppMainFrameController {
     
     //Controleurs 
     GanttProcessorController ganttProcessorController;
+    MetricController comparaisonController;
+    private List<Resultats> listeResultats;
+
+    public void setListeResultats(List<Resultats> resultats) {
+    this.listeResultats = resultats;
+    }
+
 
     /**
      * Affiche le gantt par cpu
@@ -57,6 +70,35 @@ public class AppMainFrameController {
         }
     }
 
+    /**
+     * Affiche les graphiques de comparaison des algorithme d'ordonnacement
+     * @author Antonin Le donné
+     */
+    @FXML
+    private void doAfficherComparaisonAlgos() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MetricView.fxml"));
+            BorderPane comparaisonPane = loader.load();
 
+            comparaisonPane.prefWidthProperty().bind(mainContentPane.widthProperty());
+            comparaisonPane.prefHeightProperty().bind(mainContentPane.heightProperty());
+
+            mainContentPane.getChildren().setAll(comparaisonPane);
+
+            comparaisonController = loader.getController();
+
+            comparaisonController.setResultats(
+                List.of(AppState.getInstance().getResultats())
+            );
+
+        } catch (Exception e) {
+            AlertUtils.showError(
+                    "Erreur",
+                    "Impossible d'ouvrir la comparaison des algorithmes :\n" + e.getMessage(),
+                    (Stage) mainContentPane.getScene().getWindow()
+            );
+            e.printStackTrace();
+        }
+    }
 
 }
