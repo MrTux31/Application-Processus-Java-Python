@@ -1,9 +1,12 @@
 package com.ordonnancement.ui.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.Process;
+import com.ordonnancement.model.gantt.IGanttTask;
+import com.ordonnancement.model.gantt.impl.CpuTask;
 import com.ordonnancement.service.AppState;
 import com.ordonnancement.ui.components.GanttPane;
 import com.ordonnancement.util.ProcessUtils;
@@ -26,7 +29,7 @@ public class GanttProcessorController extends Application {
     private ScrollPane scrollPane;
 
     private static List<Process> listeProcessus;
-
+    private String nomAlgo;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -40,7 +43,7 @@ public class GanttProcessorController extends Application {
 
     @FXML
     private void initialize() {
-
+        this.nomAlgo = "ROUND ROBIN";
         this.listeProcessus = AppState.getInstance().getResultats().getListeProcessus();
 
         // Créer le GanttPane
@@ -57,28 +60,43 @@ public class GanttProcessorController extends Application {
         
         if(listeProcessus!= null){
             // Dessin
-            drawPane("ROUND ROBIN", ganttPane);
+            List<IGanttTask> tachesGantt = initialiseGanttTask(); //On récupère la liste d'objets convertis en gantt task
+            drawPane(tachesGantt, ganttPane); //Dessiner
         }
         
 
     }
-
-    public void drawPane(String nomAlgo, GanttPane ganttPane) {
-
+    public List<IGanttTask> initialiseGanttTask(){
+        //Récupérer liste des allocations pour l'algo
         List<Allocation> allocations = ProcessUtils.getAllocations(listeProcessus, nomAlgo); //Liste qui va garder les allocations de TOUS les processus
+        
+        //Liste qui va stocker les taches du gantt
+        List<IGanttTask> tachesGantt = new ArrayList<>();
+        //Pour chaque allocation, conversion en IGanttTask
+        for(Allocation a : allocations){
+            IGanttTask tache = new CpuTask(a); //(CPU task car gantt par CPU en Y)
+            tachesGantt.add(tache);
+        }
+        return tachesGantt;
 
-        //Récupération de la date de fin max
+    }
+
+    public void drawPane(List<IGanttTask> tachesGantt, GanttPane ganttPane) {
+
+
+        //Récupération de la date de fin max 
         int dateFinMax = 0;
-        for (Allocation a : allocations) {
-            if (a.getDateFinExecution() > dateFinMax) {
-                dateFinMax = a.getDateFinExecution();
+        for (IGanttTask tache : tachesGantt) { //Pour chaque tache de la liste on cherche la date max
+            if (tache.getDateFin() > dateFinMax) {
+                dateFinMax = tache.getDateFin();
             }
         }
 
-        //Récupérer la liste des cpus
+        //Récupérer la liste des cpus (soit la liste des catégoies)
         List<String> cpus = ProcessUtils.getAllCpus(listeProcessus, nomAlgo);
 
-        ganttPane.dessinerGanttProcessor(allocations, dateFinMax, cpus);
+        //On dessine le gantt avec en taches les allocation, et en catégories les ID Cpu.
+        ganttPane.dessinerGanttProcessor(tachesGantt, dateFinMax, cpus);
 
     }
 
