@@ -63,13 +63,4 @@ public class CpuTask implements IGanttTask {
         return allocation.getDateFinExecution();
     }
 
-    /**
-     * Retourne un identifiant utilisé pour générer la couleur du rectangle.
-     * 
-     * @return entier représentant la couleur
-     */
-    @Override
-    public int getColorId() {
-       return this.colorId; //On renvoie le hashcode unique du processus concerné
-    }
 }

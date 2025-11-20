@@ -2,6 +2,7 @@
 package com.ordonnancement.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,7 +103,9 @@ public class ProcessUtils {
             }
 
         }
-        return new ArrayList<>(ensembleCpu);
+        List<String> cpus = new ArrayList<>(ensembleCpu);
+        Collections.sort(cpus); //Trie croissant
+        return cpus;
 
     }
 }

@@ -33,10 +33,5 @@ public interface IGanttTask {
      */
     public int getDateFin();
 
-    /**
-     * Retourne un identifiant pour générer la couleur du rectangle.
-     * 
-     * @return entier utilisé pour la couleur
-     */
-    public int getColorId();
+    
 }
