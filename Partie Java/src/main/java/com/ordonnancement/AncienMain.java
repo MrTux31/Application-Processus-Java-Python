@@ -13,7 +13,6 @@ import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Metrics;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.model.Resultats;
-import com.ordonnancement.service.AppState;
 import com.ordonnancement.service.runner.Runner;
 import com.ordonnancement.util.ProcessUtils;
 
@@ -90,8 +89,8 @@ public class AncienMain {
             //Test affichage des Métriques : 
             afficherMetrics(resultats.getListeMetrics());
             ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
-            AppState state = AppState.getInstance();
-            state.setResultats(resultats);
+            //AppState state = AppState.getInstance();
+            //state.setResultats(resultats);
 
             
         }

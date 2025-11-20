@@ -8,12 +8,10 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.GanttProcessorController">
-   <center>
-      <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" BorderPane.alignment="CENTER" />
-   </center>
    <bottom>
       <HBox alignment="CENTER" spacing="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -47,4 +45,12 @@
          </BorderPane.margin>
       </HBox>
    </bottom>
+   <center>
+      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" />
+            <Label fx:id="message" alignment="CENTER" contentDisplay="CENTER" visible="false" />
+         </children>
+      </StackPane>
+   </center>
 </BorderPane>
