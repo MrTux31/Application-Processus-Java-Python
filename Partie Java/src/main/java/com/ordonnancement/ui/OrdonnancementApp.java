@@ -1,6 +1,7 @@
 package com.ordonnancement.ui;
 
 import com.ordonnancement.AncienMain;
+import com.ordonnancement.ui.Alert.AlertUtils;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -42,6 +43,7 @@ public class OrdonnancementApp extends Application {
             AncienMain.lancerExecution();
 
         } catch (Exception e) {
+            AlertUtils.showError("Erreur", "Erreur d'execution ordonnancement :\n"+e.getMessage(), primaryStage);
             e.printStackTrace();
         
         }

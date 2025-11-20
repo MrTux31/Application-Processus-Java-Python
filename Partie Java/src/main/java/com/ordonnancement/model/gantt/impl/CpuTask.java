@@ -11,6 +11,7 @@ import com.ordonnancement.model.gantt.IGanttTask;
 public class CpuTask implements IGanttTask {
 
     private final Allocation allocation;
+    private final int colorId;
 
     /**
      * Constructeur.
@@ -19,6 +20,7 @@ public class CpuTask implements IGanttTask {
      */
     public CpuTask(Allocation allocation){
         this.allocation = allocation;
+        colorId = allocation.getProcessus().hashCode();
     }
 
     /**
@@ -61,13 +63,4 @@ public class CpuTask implements IGanttTask {
         return allocation.getDateFinExecution();
     }
 
-    /**
-     * Retourne un identifiant utilisé pour générer la couleur du rectangle.
-     * 
-     * @return entier représentant la couleur
-     */
-    @Override
-    public int getColorId() {
-        return allocation.hashCode();
-    }
 }

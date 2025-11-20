@@ -85,7 +85,9 @@ public class Runner {
         //Parser le fichier des métriques et récupérer la liste des métriques
         List<Metrics> listeMetriques = parserMetrics.parse(fileConfiguration.getFichierMetriquesGlobales());
         
-        
+        if(processusInitiaux.isEmpty() || listeMetriques.isEmpty()){ //Si aucun processus / metriques récupérés
+            throw new RunnerException("Vous n'avez exécuté aucun processus !");
+        }
         //On return les résultats obtenus après l'exécution du script python
         return new Resultats(processusInitiaux, listeMetriques);
         

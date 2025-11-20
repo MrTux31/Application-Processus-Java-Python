@@ -1,9 +1,10 @@
 package com.ordonnancement.ui.components;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.ordonnancement.model.Allocation;
 import com.ordonnancement.model.gantt.IGanttTask;
 
 import javafx.geometry.Insets;
@@ -22,14 +23,19 @@ import javafx.scene.shape.Rectangle;
  */
 public class GanttPane extends BorderPane {
 
-    private final double espacesGraduationsY = 50; // Hauteur de entre chaque élément en Y
-    private final double espacesGraduationsX = 40; //Espace entre chaque éléments en X
-    
+    private final double espacesGraduationsY = 80; // Hauteur de entre chaque élément en Y
+    private final double espacesGraduationsX = 60; //Espace entre chaque éléments en X
+    private Map<String, Integer> idCouleurs; //Map pour référencer l'identifiant de chaque tache avec un id de couleur
+    private int nextColor = 0; //Indice de la couleur suivante
+
+    public GanttPane(){
+        idCouleurs = new HashMap<>();
+    }
 
     /**
      * Classe permettant de dessiner un diagramme de gantt
      *
-     * @param listeTask : la liste des tâches du gantt a afficher
+     * @param listeTask : la liste des tâches du gantt a afficher en X
      * @param dateFinMax Temps maximal à afficher sur l'échelle de temps.
      * @param listeCategories : liste des catégories à afficher en Y
      */
@@ -50,9 +56,7 @@ public class GanttPane extends BorderPane {
         echelleTemps.setPadding(new Insets(0, 0, 0, 80)); //Marge a gauche pour faire commencer graduation au bon endroit 
 
         this.setTop(echelleTemps); //L'échelle temps en haut du border pane
-        this.setCenter(lignesCategories); //On ajoute ces lignes au centre du border pane
-
-        
+        this.setCenter(lignesCategories); //On ajoute ces lignes au centre du border pane        
 
     }
     
@@ -89,6 +93,7 @@ public class GanttPane extends BorderPane {
         //Pour chaque allocation dans la liste des allocations
         for (IGanttTask t : listeTache) {
             if (t.getCategorie().equals(categorie)) { //On prend les taches qui ont la catégorie passée en paramètre
+                idCouleurs.computeIfAbsent(t.getId(), k->nextColor++); //On enregistre l'id de couleur de cette tache (si son id est déjà la pas de recalcul)
                 StackPane tache = creerTache(t); //Récupérer la tache 
                 zoneTaches.getChildren().add(tache); //Ajouter la tache créée dans le pane
 
@@ -125,14 +130,17 @@ public class GanttPane extends BorderPane {
 
         //Création du rectangle
         Rectangle rectangle = new Rectangle(largeur, espacesGraduationsY-1); //-1 pour rentrer bien entre les lignes tracées (par zoneTaches)
-        //Couleur du rectangle 
-        rectangle.setFill(Color.hsb(tache.getColorId() % 360, 0.6, 0.8)); //Couleur en HSB (s'exprime de 0 à 360) 
+        //Couleur du rectangle
+        int couleurTache = idCouleurs.get(tache.getId()); //On récup l'id couleur de la tache courante
+        rectangle.setFill(Color.hsb(couleurTache*137 % 360, 0.6, 0.8)); //Couleur en HSB (s'exprime de 0 à 360) 
         rectangle.setStroke(Color.BLACK); // Couleur de la bordure                                  donc on prend reste division euclidienne de 360 pour avoir valeur dans intervalle)
         rectangle.setStrokeWidth(1); //epaisseur trait
         
         // Label avec l'ID du de la tache
         Label labelTache = new Label(tache.getId());
         labelTache.setTextFill(Color.BLACK);
+        labelTache.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+
 
 
         stack.getChildren().addAll(rectangle,labelTache); //On empile le rectangle et le texte (au centre )
@@ -158,6 +166,19 @@ public class GanttPane extends BorderPane {
         }
         return ligne;
     }
+
+
+    /**
+     * Permet d'effacer le gantt
+     */
+    public void clear() {
+        this.setTop(null);
+        this.setBottom(null);
+        this.setLeft(null);
+        this.setRight(null);
+        this.setCenter(null);
+    }
+
 
 }
 

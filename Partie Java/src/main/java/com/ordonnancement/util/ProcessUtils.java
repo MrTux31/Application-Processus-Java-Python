@@ -2,6 +2,7 @@
 package com.ordonnancement.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -97,11 +98,14 @@ public class ProcessUtils {
         Set<String> ensembleCpu = new HashSet<>();
         for(Process p : listeProcessus){ //Pour chaque processus
             for(Allocation al : ProcessUtils.getAllocations(p, nomAlgo)){ //Récupération de l'alloc réalisée sur l'algo
-                ensembleCpu.add(al.getProcessor()); //Ajout de l'id cpu à l'ensemble
+                        
+            ensembleCpu.add(al.getProcessor()); //Ajout de l'id cpu à l'ensemble
             }
 
         }
-        return new ArrayList<>(ensembleCpu);
+        List<String> cpus = new ArrayList<>(ensembleCpu);
+        Collections.sort(cpus); //Trie croissant
+        return cpus;
 
     }
 }
