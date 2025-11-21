@@ -31,7 +31,7 @@ public class AncienMain {
         Path resultsDir = Paths.get("python/Resultats");
 
         AlgoConfiguration algo1 = new AlgoConfiguration(
-            "ROUND ROBIN",
+            "Round Robin",
             resultsDir.resolve("RoundRobin/rDetailedROUNDROBIN.csv").toString(),
             resultsDir.resolve("RoundRobin/rGlobauxROUNDROBIN.csv").toString(),
             2
@@ -41,6 +41,13 @@ public class AncienMain {
             "FIFO",
             resultsDir.resolve("Fifo/rDetailedFIFO.csv").toString(),
             resultsDir.resolve("Fifo/rGlobauxFIFO.csv").toString(),
+            null
+        );
+
+        AlgoConfiguration algo3 = new AlgoConfiguration(
+            "Priorite",
+            resultsDir.resolve("Priorite/rDetailedPriorite.csv").toString(),
+            resultsDir.resolve("Priorite/rGlobauxPriorite.csv").toString(),
             null
         );
 
@@ -61,6 +68,7 @@ public class AncienMain {
         List<AlgoConfiguration> liste = new ArrayList<>();
         liste.add(algo1);
         liste.add(algo2);
+        liste.add(algo3);
         //Création de l'objet FileConfig représentant le fichier de configuration
         //FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources.json", liste);
        

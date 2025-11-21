@@ -108,4 +108,23 @@ public class ProcessUtils {
         return cpus;
 
     }
+
+    // public static List<String> getAllCpus(List<Process> listeProcessus){
+
+    //     Set<String> ensembleCpu = new HashSet<>();
+    //     for(Process p : listeProcessus){ //Pour chaque processus
+    //         for(String algo : p.getAllAllocations().keySet()){ //Récupération de l'alloc réalisée sur l'algo
+    //             List<Allocation> a = p.getAllAllocations().get(algo);
+    //             for(Allocation)     
+    //         ensembleCpu.add(al.getProcessor()); //Ajout de l'id cpu à l'ensemble
+    //         }
+
+    //     }
+    //     List<String> cpus = new ArrayList<>(ensembleCpu);
+    //     Collections.sort(cpus); //Trie croissant
+    //     return cpus;
+
+    // }
+
+
 }

@@ -192,14 +192,14 @@ def verifierAlgos(algos : dict):
 
     for a in algos:
         try:
-            if a == "ROUND ROBIN" and algos[a]["quantum"] is None:
+            if a.strip().upper() == "ROUND ROBIN" and algos[a]["quantum"] is None:
                 print("Erreur dans le fichier de configuration, quantum manquant pour le Round Robin", file=sys.stderr)
                 sys.exit(13)
 
-            if a == "ROUND ROBIN" and algos[a]["quantum"] <=0:
+            if a.strip().upper() == "ROUND ROBIN" and algos[a]["quantum"] <=0:
                 print("Erreur dans le fichier de configuration, quantum <=0 pour le Round Robin", file=sys.stderr)
                 sys.exit(13)
-            elif a != "ROUND ROBIN" and algos[a]["quantum"] is not None: #Pour d'autres algos qui n'ont pas besoin de quantum
+            elif a.strip().upper() != "ROUND ROBIN" and algos[a]["quantum"] is not None: #Pour d'autres algos qui n'ont pas besoin de quantum
                 print(f"Erreur dans le fichier de configuration, quantum doit être null pour l'algo {a} ", file=sys.stderr)
                 sys.exit(13)
         except Exception:

@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.ordonnancement.model.gantt.IGanttTask;
 
@@ -40,10 +42,9 @@ public class GanttPane extends BorderPane {
      * @param listeCategories : liste des catégories à afficher en Y
      */
     public void dessinerGanttProcessor(List<IGanttTask> listeTask, int dateFinMax, List<String> listeCategories) {
-
         this.getChildren().clear();
+        initialiserCouleurs(listeTask); //On initialise le dico des couleurs pour chaque tache
         Collections.sort(listeCategories); //Trier la liste des catégories dans l'ordre (éléments affichés en Y)
-
         //Créer vertical box pour empiler les catégories 
         VBox lignesCategories = new VBox(5);
         for (String categorie : listeCategories) { //Pour chaque catégorie
@@ -93,7 +94,6 @@ public class GanttPane extends BorderPane {
         //Pour chaque allocation dans la liste des allocations
         for (IGanttTask t : listeTache) {
             if (t.getCategorie().equals(categorie)) { //On prend les taches qui ont la catégorie passée en paramètre
-                idCouleurs.computeIfAbsent(t.getId(), k->nextColor++); //On enregistre l'id de couleur de cette tache (si son id est déjà la pas de recalcul)
                 StackPane tache = creerTache(t); //Récupérer la tache 
                 zoneTaches.getChildren().add(tache); //Ajouter la tache créée dans le pane
 
@@ -166,6 +166,22 @@ public class GanttPane extends BorderPane {
         }
         return ligne;
     }
+
+
+    private void initialiserCouleurs(List<IGanttTask> taches) {
+        idCouleurs.clear();
+        nextColor = 0;
+        // Récupérer tous les IDs uniques et les trier
+        Set<String> ids = new TreeSet<>(); //On les garde dans un ensemble qui les trie automatiquement en ordre croissant
+        for (IGanttTask t : taches) {
+            ids.add(t.getId());
+        }
+        // Assigner une couleur unique par ID
+        for (String id : ids) {
+            idCouleurs.put(id, nextColor++);
+        }
+    }
+
 
 
     /**
