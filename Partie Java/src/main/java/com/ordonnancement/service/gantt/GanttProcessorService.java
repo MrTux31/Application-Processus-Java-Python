@@ -1,7 +1,10 @@
 package com.ordonnancement.service.gantt;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
@@ -10,8 +13,6 @@ import com.ordonnancement.model.Process;
 import com.ordonnancement.model.gantt.IGanttTask;
 import com.ordonnancement.model.gantt.impl.CpuTask;
 import com.ordonnancement.util.ProcessUtils;
-
-import javafx.collections.FXCollections;
 
 /**
  * Classe service pour le controller GanttProcessorController
@@ -22,10 +23,12 @@ import javafx.collections.FXCollections;
 
 public class GanttProcessorService {
     private String nomAlgo;
+    private List<String> algosDispos;
     private final List<Process> processus;
     private List<String> listeCpusDisponibles; //Liste de tous les cpus utilisés dans l'algo d'ordonnancement courant
     private int dateFinMax;
     private List<IGanttTask> listeTachesGantt;
+    private List<String> allCpus; //Tous les cpus dispos
 
     /**
      * Construteur
@@ -34,6 +37,8 @@ public class GanttProcessorService {
     public GanttProcessorService(List<Process> processus) {
         this.processus = processus;
         this.listeCpusDisponibles = new ArrayList<>();
+        trouverAlgosDisponibles();
+        trouverTousLesCpus();
         
     }
     /**
@@ -67,20 +72,6 @@ public class GanttProcessorService {
     };
     
     
-    /**
-     * Retourne la liste des de tous les noms d'algorithmes
-     *
-     * @return Liste des noms d'algorithmes.
-     */
-    public List<String> getNomAlgosDisponibles(){
-        List<AlgoConfiguration> algos = ConfigurationManager.getInstance().getFileConfiguration().getListeAlgorithmes(); //Récupération de la liste des algorithmes exécutés dans le singleton
-        List<String> nomAlgos = FXCollections.observableArrayList();
-        for (AlgoConfiguration algo : algos) { //On récup le nom de chaque algo exécuté
-            nomAlgos.add(algo.getNomAlgorithme()); 
-
-        }
-        return nomAlgos;
-    };
 
     /**
      * Retourne la liste des CPUs disponibles pour l'algorithme courant.
@@ -90,6 +81,18 @@ public class GanttProcessorService {
     public List<String> getCpusDisponibles(){
         return this.listeCpusDisponibles;
     };
+
+
+    /**
+     * Retourne renvoie la liste des tous les cpus pour tous les algos
+     *
+     * @return Listede tous les cpus
+     */
+    public List<String> getAllCpus(){
+        return allCpus;
+    };
+
+
 
     /**
      * Recharge la liste des CPUs utilisés pour l'algorithme courant.
@@ -127,6 +130,41 @@ public class GanttProcessorService {
         this.dateFinMax = max;
         this.listeTachesGantt = tachesGantt;
        
+    }
+
+
+    /**
+     * Retourne la liste des de tous les noms d'algorithmes
+     *
+     * @return Liste des noms d'algorithmes.
+     */
+    public List<String> getNomAlgosDisponibles(){
+        
+        return this.algosDispos;
+    };
+
+    private void trouverAlgosDisponibles(){
+        List<AlgoConfiguration> algos = ConfigurationManager.getInstance().getFileConfiguration().getListeAlgorithmes(); //Récupération de la liste des algorithmes exécutés dans le singleton
+        algosDispos = new ArrayList<>();
+        for (AlgoConfiguration algo : algos) { //On récup le nom de chaque algo exécuté
+            algosDispos.add(algo.getNomAlgorithme()); 
+
+        }
+    }
+
+    /**
+     * Permet de trouver tous les cpus pour tous les algos
+     *
+     * @return Listede tous les cpus
+     */
+    private void trouverTousLesCpus(){
+        Set<String> cpus = new HashSet<>();
+        for(String algo : algosDispos){
+            cpus.addAll(ProcessUtils.getAllCpus(processus, algo));
+        }
+        this.allCpus =  new ArrayList<>(cpus);
+        Collections.sort(allCpus);
+        
     }
 
 

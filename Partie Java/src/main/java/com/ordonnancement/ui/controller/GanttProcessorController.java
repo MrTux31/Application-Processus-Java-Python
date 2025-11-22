@@ -1,12 +1,13 @@
 package com.ordonnancement.ui.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ordonnancement.model.Process;
 import com.ordonnancement.model.gantt.IGanttTask;
 import com.ordonnancement.service.AppState;
 import com.ordonnancement.service.gantt.GanttProcessorService;
-import com.ordonnancement.ui.components.GanttPane;
+import com.ordonnancement.ui.components.GanttPresenter;
 
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
@@ -43,13 +44,13 @@ public class GanttProcessorController extends Application {
     private Label labelCpu;
     @FXML
     private Label message;
+    @FXML VBox vBoxGantts;
 
     ///////
-    private GanttPane ganttPane;
+    private List<GanttPresenter> listeGanttPresenters;
     private List<Process> listeProcessus; //La liste de tous les processus ordonnancés
-    private ObservableList<String> listeCpusDisponibles = FXCollections.observableArrayList(); //Liste de tous les cpus utilisés dans l'algo d'ordonnancement courant
-    private ObservableList<String> listeCpusSelectionnes = FXCollections.observableArrayList(); //La liste de tous les cpus actuellement sélectionnés dans la list view des cpus
-
+    private ObservableList<String> listeCpusDisponibles; //Liste de tous les cpus utilisés dans l'algo d'ordonnancement courant
+    private ObservableList<String> listeCpusSelectionnes; //La liste de tous les cpus actuellement sélectionnés dans la list view des cpus
     private GanttProcessorService ganttService;
 
     @Override
@@ -69,13 +70,15 @@ public class GanttProcessorController extends Application {
     private void initialize() {
         
         try {
+            
             this.listeProcessus = AppState.getInstance().getResultats().getListeProcessus();
             this.ganttService = new GanttProcessorService(listeProcessus);
             setupListView();
-            setupGanttPane();
-            setupComboBoxAlgos();
-            selectDefaultAlgo();
-            initialiserListeners();
+            setupListeCpus();
+            setupAllGanttPresenter(ganttService.getNomAlgosDisponibles());
+            drawAllGantts();
+            
+            
         }catch(IllegalStateException e){
             afficherMessage("Aucun résultat disponible.\nLancez d'abord un ordonnancement.");
             cacherElements();
@@ -84,94 +87,17 @@ public class GanttProcessorController extends Application {
     }
 
     /**
-     * Configure la ListView des CPUs avec des CheckBox. Chaque
-     * sélection/déselection met à jour la liste des CPUs sélectionnés et
-     * redessine le Gantt.
-     */
-    private void setupListView() {
-        listeCpusDisponibles = FXCollections.observableArrayList(); //Créer une arraylist observable
-        listViewCpu.setItems(listeCpusDisponibles);
-        //Cell factory pour mettre des checkbox dans la list view
-        listViewCpu.setCellFactory(CheckBoxListCell.forListView(cpu -> {
-            BooleanProperty property = new SimpleBooleanProperty(listeCpusSelectionnes.contains(cpu)); //Booléen observable qui est true/false si le cpu sélectionné est présent dans la liste
-            property.addListener((obs, wasSelected, isSelected) -> {
-                if (isSelected) {
-                    listeCpusSelectionnes.add(cpu); //Si il est sélectionné on l'ajoute a la liste
-                } else {
-                    listeCpusSelectionnes.remove(cpu); //Sinon on l'enlève de la liste
-                }
-                drawPane(); //On redessine le gantt avec les nouveaux cpus
-            });
-            return property;
-        }));
-    }
-
-    /**
-     * Configure la ComboBox des algorithmes disponibles. Récupère la liste des
-     * algorithmes exécutés et les ajoute à la ComboBox.
-     */
-    private void setupComboBoxAlgos() {
-        ObservableList<String> nomAlgos = FXCollections.observableArrayList();
-        nomAlgos.addAll(ganttService.getNomAlgosDisponibles()); //On ajoute les noms d'algos disponibles
-        algosComboBox.setItems(nomAlgos); //On met tout dans la comboBox
-    }
-
-    /**
      * Met à jour les listes de CPUs disponibles et sélectionnés.
      *
      * @param cpus Liste des CPUs à afficher et sélectionner
      */
-    private void updateListeCpu() {
-        List<String> cpus = ganttService.getCpusDisponibles();
+    private void setupListeCpus() {
+        List<String> cpus = ganttService.getAllCpus();
         //Rénitialiser le contenu des listes
         listeCpusDisponibles.clear();
         listeCpusSelectionnes.clear();
         listeCpusDisponibles.setAll(cpus);         // met à jour la vue
         listeCpusSelectionnes.setAll(cpus);       // sélection par défaut : tout coché
-    }
-
-    /**
-     * Sélectionne l'algorithme par défaut (le premier de la liste) et
-     * initialise la liste des CPUs et les tâches Gantt associées.
-     */
-    private void selectDefaultAlgo() {
-        if (!algosComboBox.getItems().isEmpty()) {
-            String defaultAlgo = algosComboBox.getItems().get(0);  //Récup le premier nom d'algo
-            this.algosComboBox.getSelectionModel().selectFirst(); //Sélectionner le premier elt
-            changerAlgo(defaultAlgo); //On effectue le changement d'algo
-        }
-
-    }
-
-    /**
-     * Change l'algorithme courant affiché dans le Gantt.
-     *
-     * Cette méthode met à jour le nom de l'algorithme courant, recharge la
-     * liste des CPUs disponibles et sélectionnés pour cet algorithme, crée les
-     * tâches Gantt correspondantes et redessine le diagramme.
-     *
-     * @param nomAlgo Nom de l'algorithme à sélectionner
-     */
-    private void changerAlgo(String nomAlgo) {
-        this.ganttService.changerAlgo(nomAlgo); //On change le nom d'algo dans le service
-        updateListeCpu(); //On met a jour la liste des CPU dispo
-        drawPane(); //Redessiner le gantt
-
-    }
-
-    /**
-     * Initialise les listeners pour les changements de sélection de
-     * l'algorithme dans la checkbox. Met à jour la liste des CPUs, les tâches
-     * Gantt et redessine le Gantt à chaque changement.
-     */
-    private void initialiserListeners() {
-        // Écouter les changements de sélection
-        algosComboBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    changerAlgo(newValue); //On effectue le changement d'algo (newValue = le nouveau nom d'algo)
-                }
-        );
-
     }
 
     /**
@@ -189,55 +115,53 @@ public class GanttProcessorController extends Application {
         
     }
 
-    /**
-     * Configure et initialise le GanttPane.
-     */
-    private void setupGanttPane() {
-        // Créer le GanttPane
-        ganttPane = new GanttPane();
-        //On met le gantt dans une v box pour le centrer dedans
-        VBox boite = new VBox(ganttPane);
-        boite.setAlignment(Pos.CENTER);
-        // Force la VBox à prendre au minimum la hauteur du ScrollPane pour permettre le centrage vertical même en fullscreen
-        boite.minHeightProperty().bind(scrollPane.heightProperty());
-        scrollPane.setContent(boite); //On met la boite dans le scroll
-        
-        afficherGantt();
-        scrollPane.setPannable(true);
-    }
-
+    
     /**
      * Affiche le GanttPane dans le ScrollPane et centre verticalement le
      * contenu.
      */
-    private void afficherGantt() {
+    private void afficherGantts() {
         scrollPane.setVisible(true);
         message.setVisible(false);
     }
 
     /**
-     * Permet de lancer le dessin du diagramme de gantt
+     * Permet de mettre en place un GanttPresenter pour chaque
+     * algo d'ordonnancement exécuté
+     * @param listeAlgos
      */
-    public void drawPane() {
-        List<IGanttTask> tachesGantt = ganttService.getTachesGantt();
-        int dateFinMax = ganttService.getDateFinMax();
-        if (tachesGantt == null || tachesGantt.isEmpty()) {
-            ganttPane.clear();
-            afficherMessage("Aucune allocation trouvée pour cet algorithme.\nVérifiez vos paramètres ou relancez une exécution.");
+    private void setupAllGanttPresenter(List<String> listeAlgos){
+        listeGanttPresenters = new ArrayList<>();
+        // Bloquer le scroll horizontal du ScrollPane principal
+        scrollPane.setFitToWidth(true); // Force le contenu à prendre toute la largeur
+        
+        for(String a : listeAlgos){
+            GanttPresenter presenter = new GanttPresenter(a); //Créer le gantt presenter de l'algo
+            vBoxGantts.getChildren().add(presenter); //Ajout a la Vbox
+            listeGanttPresenters.add(presenter); //Ajout à l'array list
             
         }
-        else if (listeCpusSelectionnes.isEmpty()) {
-            ganttPane.clear();
+
+    }
+
+    /**
+     * Permet de lancer le dessin des gantts sur les différents gantt presenters
+     */
+    public void drawAllGantts() {
+        afficherGantts();
+        if (listeCpusSelectionnes.isEmpty()) {
             afficherMessage("Aucun CPU sélectionné.");
-            
-
         } 
-        else {
-            afficherGantt(); //On met le gantt dans le scroll pane
-            //On dessine le gantt avec en taches les allocation, et en catégories les ID Cpu.
-            ganttPane.dessinerGanttProcessor(tachesGantt, dateFinMax, listeCpusSelectionnes);
+        else{
+            for(GanttPresenter presenter : listeGanttPresenters){
+                String nomAlgo = presenter.getText(); //Récupérer le nom de l'algo
+                ganttService.changerAlgo(nomAlgo); //Changer d'algo dans le service
+                List<IGanttTask> tachesGantt = ganttService.getTachesGantt(); //Récupérer les différentes taches de l'algo
+                int dateFinMax = ganttService.getDateFinMax(); //Récupérer la date de fin max des taches
+                presenter.presentGantt(tachesGantt, dateFinMax, listeCpusSelectionnes); //On redessinne le gantt
+            }
         }
-
+    
     }
 
     /**
@@ -249,5 +173,33 @@ public class GanttProcessorController extends Application {
         labelAlgo.setVisible(false); //Cacher les labels
         labelCpu.setVisible(false);
     }
+
+
+    /**
+     * Configure la ListView des CPUs avec des CheckBox. Chaque
+     * sélection/déselection met à jour la liste des CPUs sélectionnés et
+     * redessine le Gantt.
+     */
+    private void setupListView() {
+        listeCpusSelectionnes = FXCollections.observableArrayList();
+        listeCpusDisponibles = FXCollections.observableArrayList(); //Créer une arraylist observable
+        listViewCpu.setItems(listeCpusDisponibles);
+        //Cell factory pour mettre des checkbox dans la list view
+        listViewCpu.setCellFactory(CheckBoxListCell.forListView(cpu -> {
+            BooleanProperty property = new SimpleBooleanProperty(listeCpusSelectionnes.contains(cpu)); //Booléen observable qui est true/false si le cpu sélectionné est présent dans la liste
+            property.addListener((obs, wasSelected, isSelected) -> {
+                if (isSelected) {
+                    listeCpusSelectionnes.add(cpu); //Si il est sélectionné on l'ajoute a la liste
+                } else {
+                    listeCpusSelectionnes.remove(cpu); //Sinon on l'enlève de la liste
+                }
+                drawAllGantts();//On redessine tous les gantts avec les nouveaux cpus
+            });
+            return property;
+        }));
+    }
+
+
+    
 
 }
