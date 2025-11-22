@@ -21,7 +21,7 @@ public class PythonLauncher {
 
         //TO DO : Faire en sorte que ca marche pour linux: python3 et faire en sorte que ca marche sur windows avec juste "python" : attention variable path non configurée
 
-        String commande[] = {"C:\\Users\\anton\\AppData\\Local\\Programs\\Python\\Python312\\python.exe", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python
+        String commande[] = {"python", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python;
         ProcessBuilder builder = new ProcessBuilder(commande); //Construction de la commande
         
         try {
