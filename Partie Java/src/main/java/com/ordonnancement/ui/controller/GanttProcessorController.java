@@ -132,18 +132,14 @@ public class GanttProcessorController extends Application {
      */
     private void setupAllGanttPresenter(List<String> listeAlgos){
         listeGanttPresenters = new ArrayList<>();
-        for(String a : listeAlgos){
-            GanttPresenter presenter = new GanttPresenter(a); //Créer le gantt presenter de l'algo
-          // Bloquer le scroll horizontal du ScrollPane principal
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        // Bloquer le scroll horizontal du ScrollPane principal
         scrollPane.setFitToWidth(true); // Force le contenu à prendre toute la largeur
         
-        // Configuration de la VBox
-        vBoxGantts.setMaxWidth(Double.MAX_VALUE);
-        vBoxGantts.setFillWidth(true);
-            
+        for(String a : listeAlgos){
+            GanttPresenter presenter = new GanttPresenter(a); //Créer le gantt presenter de l'algo
             vBoxGantts.getChildren().add(presenter); //Ajout a la Vbox
             listeGanttPresenters.add(presenter); //Ajout à l'array list
+            
         }
 
     }

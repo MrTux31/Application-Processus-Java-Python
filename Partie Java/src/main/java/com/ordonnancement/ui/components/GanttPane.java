@@ -25,7 +25,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class GanttPane extends BorderPane {
 
-    private final double espacesGraduationsY = 80; // Hauteur de entre chaque élément en Y
+    private final double espacesGraduationsY = 70; // Hauteur de entre chaque élément en Y
     private final double espacesGraduationsX = 60; //Espace entre chaque éléments en X
     private Map<String, Integer> idCouleurs; //Map pour référencer l'identifiant de chaque tache avec un id de couleur
     private int nextColor = 0; //Indice de la couleur suivante

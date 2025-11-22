@@ -15,18 +15,21 @@ public class GanttPresenter extends TitledPane{
     public GanttPresenter(){
         scrollPane = new ScrollPane();
         ganttPane = new GanttPane();
-        // Mettre directement le GanttPane dans le ScrollPane
+        //Mettre le gantt pane dans le scroll pane
         scrollPane.setContent(ganttPane);
         scrollPane.setPannable(true);
-        
-        this.setMaxHeight(600); // Hauteur fixe
+        //Mettre le scroll bane dans la titled pane
         this.setContent(scrollPane);
+        scrollPane.setMaxHeight(400); //Hauteur max de chaque gantt dans le gantt
 
         // INTERCEPTER le scroll AVANT qu'il arrive au ScrollPane
         // et le consommer pour qu'il ne remonte pas au parent
         scrollPane.setOnScroll(event -> {
-            event.consume(); // Consommer ici empêche la propagation au parent
+            event.consume(); //Pour pas propager au parent
         });
+
+
+
 
     }
 
@@ -39,6 +42,9 @@ public class GanttPresenter extends TitledPane{
 
     public void presentGantt(List<IGanttTask> tachesGantt,int dateFinMax, List<String> listeCategories ){
         ganttPane.dessinerGanttProcessor(tachesGantt, dateFinMax, listeCategories);
+        
+    
+    
     };
 
 }
