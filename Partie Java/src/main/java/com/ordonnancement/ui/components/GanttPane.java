@@ -1,5 +1,6 @@
 package com.ordonnancement.ui.components;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +22,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Objet graphique permettant de créer un gantt
+ * Objet graphique permettant de créer un Gantt
+ * @author ROMA Quentin
  */
 public class GanttPane extends BorderPane {
 
     private final double espacesGraduationsY = 70; // Hauteur de entre chaque élément en Y
     private final double espacesGraduationsX = 60; //Espace entre chaque éléments en X
     private Map<String, Integer> idCouleurs; //Map pour référencer l'identifiant de chaque tache avec un id de couleur
+    private Map<String, List<IGanttTask>> tachesParCategorie = new HashMap<>(); //Map pour regrouper les catégories et leurs taches
     private int nextColor = 0; //Indice de la couleur suivante
 
     public GanttPane(){
@@ -42,13 +45,17 @@ public class GanttPane extends BorderPane {
      * @param listeCategories : liste des catégories à afficher en Y
      */
     public void dessinerGanttProcessor(List<IGanttTask> listeTask, int dateFinMax, List<String> listeCategories) {
-        this.getChildren().clear();
+        this.getChildren().clear(); //Effacer tout
+        
+        initialiserMapCategories(listeTask); //On initialise un map qui associe à chaque catégorie sa liste de IGantTask (pour les récupérer plus facilement)
         initialiserCouleurs(listeTask); //On initialise le dico des couleurs pour chaque tache
+
         Collections.sort(listeCategories); //Trier la liste des catégories dans l'ordre (éléments affichés en Y)
         //Créer vertical box pour empiler les catégories 
         VBox lignesCategories = new VBox(5);
         for (String categorie : listeCategories) { //Pour chaque catégorie
-            HBox ligne = creerLigneTachesCategorie(categorie, listeTask, dateFinMax); //Générer la ligne avec les taches
+            List<IGanttTask> tachesCategorie = tachesParCategorie.getOrDefault(categorie, Collections.emptyList()); //Récupérer les taches de la catégorie (si la catégorie existe pas, on crée une liste vide)
+            HBox ligne = creerLigneTachesCategorie(categorie, tachesCategorie, dateFinMax); //Générer la ligne avec les taches
             lignesCategories.getChildren().add(ligne); //On ajoute la ligne des taches de cette cétagorie
         }
 
@@ -93,11 +100,8 @@ public class GanttPane extends BorderPane {
 
         //Pour chaque allocation dans la liste des allocations
         for (IGanttTask t : listeTache) {
-            if (t.getCategorie().equals(categorie)) { //On prend les taches qui ont la catégorie passée en paramètre
-                StackPane tache = creerTache(t); //Récupérer la tache 
-                zoneTaches.getChildren().add(tache); //Ajouter la tache créée dans le pane
-
-            }
+            StackPane tache = creerTache(t); //Récupérer la tache 
+            zoneTaches.getChildren().add(tache); //Ajouter la tache créée dans le pane
         }
         //Ajouter le label de la catégorie en face du pane contenant toutes les taches
         ligne.getChildren().addAll(labelCategorie,zoneTaches); 
@@ -165,6 +169,22 @@ public class GanttPane extends BorderPane {
             ligne.getChildren().add(temps); //On ajoute le label avec la date correspondante dans la HBOX
         }
         return ligne;
+    }
+
+
+    private void initialiserMapCategories(List<IGanttTask> listeTask){
+        for(IGanttTask tache : listeTask){ //Pour chaque tache dans la liste
+            List<IGanttTask> liste;
+            if (tachesParCategorie.containsKey(tache.getCategorie())) { //Si la catégorie est présente, récupérer la liste de taches associée à la catégorie
+                liste = tachesParCategorie.get(tache.getCategorie());
+            } else { //Si la catégorie de la tache n'est pas présente, créer une nouvelle liste
+                liste = new ArrayList<>();
+                tachesParCategorie.put(tache.getCategorie(), liste); //Associer la catégorie a la liste
+            }
+            liste.add(tache); //On ajoute la tache dans la liste
+        }
+        
+        
     }
 
 

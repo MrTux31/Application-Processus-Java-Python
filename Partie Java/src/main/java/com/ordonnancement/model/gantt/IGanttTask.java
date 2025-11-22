@@ -2,6 +2,7 @@ package com.ordonnancement.model.gantt;
 
 /**
  * Interface représentant une tâche à afficher dans un Gantt.
+ * @author ROMA Quentin
  */
 public interface IGanttTask {
 

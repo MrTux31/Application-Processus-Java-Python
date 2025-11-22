@@ -8,6 +8,11 @@ import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 
+/**
+ * Classe correspondant à un objet graphique
+ * permettant de présenter un GanttPane facilement
+ * @author ROMA Quentin
+ */
 public class GanttPresenter extends TitledPane{
 
     private final GanttPane ganttPane;
