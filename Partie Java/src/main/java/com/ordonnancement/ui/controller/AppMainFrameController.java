@@ -1,6 +1,5 @@
 package com.ordonnancement.ui.controller;
 
-
 import java.util.List;
 
 import com.ordonnancement.service.AppState;
@@ -14,16 +13,18 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
 /**
  * Contrôleur principal de l'application.
- * Gère la fenêtre principale et la navigation entre les différentes fonctionnalités.
+ * Gère la fenêtre principale et la navigation entre les différentes
+ * fonctionnalités.
  */
 public class AppMainFrameController {
 
-    //Charger éléments de la vue FXML
-    @FXML 
-    StackPane mainContentPane; //Conteneur principal
-    @FXML 
+    // Charger éléments de la vue FXML
+    @FXML
+    StackPane mainContentPane; // Conteneur principal
+    @FXML
     MenuBar menuBar;
     @FXML
     Menu configMenu;
@@ -40,12 +41,10 @@ public class AppMainFrameController {
     @FXML
     MenuItem ganttProcessMenu;
     //////
-    
-    //Controleurs 
+
+    // Controleurs
     GanttProcessorController ganttProcessorController;
     MetricController comparaisonController;
-    
-
 
     /**
      * Affiche le gantt par cpu
@@ -85,7 +84,34 @@ public class AppMainFrameController {
     }
 
     /**
+     * Affiche le gantt par processus
+     */
+    @FXML
+    private void doAfficherGanttProcessus() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GanttProcessusView.fxml"));
+            BorderPane ganttProcessus = loader.load();
+            mainContentPane.getChildren().setAll(ganttProcessus);
+        } catch (Exception e) {
+            Throwable root = e;
+            while (root.getCause() != null) {
+                root = root.getCause();
+            }
+            String cleanMessage = root.getMessage();
+            if (cleanMessage == null || cleanMessage.isEmpty()) {
+                cleanMessage = root.toString();
+            }
+            AlertUtils.showError(
+                    "Erreur",
+                    "Erreur affichage Gantt Processus :\n" + cleanMessage,
+                    (Stage) mainContentPane.getScene().getWindow());
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Affiche les graphiques de comparaison des algorithme d'ordonnacement
+     * 
      * @author Antonin Le donné
      */
     @FXML
@@ -102,15 +128,13 @@ public class AppMainFrameController {
             comparaisonController = loader.getController();
 
             comparaisonController.setResultats(
-                List.of(AppState.getInstance().getResultats())
-            );
+                    List.of(AppState.getInstance().getResultats()));
 
         } catch (Exception e) {
             AlertUtils.showError(
                     "Erreur",
                     "Impossible d'ouvrir la comparaison des algorithmes :\n" + e.getMessage(),
-                    (Stage) mainContentPane.getScene().getWindow()
-            );
+                    (Stage) mainContentPane.getScene().getWindow());
             e.printStackTrace();
         }
     }
