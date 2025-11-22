@@ -135,7 +135,9 @@ public class GanttProcessorController extends Application {
             GanttPresenter presenter = new GanttPresenter(a); //Créer le gantt presenter de l'algo
             vBoxGantts.getChildren().add(presenter); //Ajout du presenter dans la vbox
             listeGanttPresenters.add(presenter); //Ajout à l'array list
-            
+            if(listeGanttPresenters.size() > 1){ //Si ce ne sont pas les premiers, on les fermes
+                presenter.setExpanded(false);
+            }
         }
 
     }
