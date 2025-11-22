@@ -5,7 +5,8 @@ import com.ordonnancement.model.Resultats;
 import com.ordonnancement.service.AppState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.LineChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
@@ -16,19 +17,19 @@ import java.util.*;
 public class MetricController implements Initializable {
 
     @FXML
-    private LineChart<Number, Number> lineChartGauche;
+    private BarChart<String, Number> barChartGauche;
 
     @FXML
-    private NumberAxis xAxisGauche;
+    private CategoryAxis xAxisGauche;
 
     @FXML
     private NumberAxis yAxisGauche;
 
     @FXML
-    private LineChart<Number, Number> lineChartDroite;
+    private BarChart<String, Number> barChartDroite;
 
     @FXML
-    private NumberAxis xAxisDroite;
+    private CategoryAxis xAxisDroite;
 
     @FXML
     private NumberAxis yAxisDroite;
@@ -45,7 +46,6 @@ public class MetricController implements Initializable {
     private final Map<String, List<Metrics>> metricsParAlgorithme = new HashMap<>();
 
     private List<Resultats> listeResultats = new ArrayList<>();
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,7 +66,6 @@ public class MetricController implements Initializable {
         xAxisDroite.setTickMarkVisible(false);
         xAxisDroite.setOpacity(0);
 
-        // Charger automatiquement les résultats depuis AppState
         try {
             listeResultats = List.of(AppState.getInstance().getResultats());
         } catch (Exception e) {
@@ -78,7 +77,6 @@ public class MetricController implements Initializable {
         rafraichirGraphiqueDroite();
     }
 
-
     public void setResultats(List<Resultats> resultats) {
         if (resultats == null)
             this.listeResultats = new ArrayList<>();
@@ -89,7 +87,6 @@ public class MetricController implements Initializable {
         rafraichirGraphiqueGauche();
         rafraichirGraphiqueDroite();
     }
-
 
     private void construireMapMetricsParAlgo() {
         metricsParAlgorithme.clear();
@@ -111,17 +108,15 @@ public class MetricController implements Initializable {
         }
     }
 
-
     private void rafraichirGraphiqueGauche() {
-        remplirGraphique(lineChartGauche, comboAlgoGauche.getValue());
+        remplirGraphique(barChartGauche, comboAlgoGauche.getValue());
     }
 
     private void rafraichirGraphiqueDroite() {
-        remplirGraphique(lineChartDroite, comboAlgoDroite.getValue());
+        remplirGraphique(barChartDroite, comboAlgoDroite.getValue());
     }
 
-
-    private void remplirGraphique(LineChart<Number, Number> chart, String nomAlgoDemande) {
+    private void remplirGraphique(BarChart<String, Number> chart, String nomAlgoDemande) {
         chart.getData().clear();
 
         if (nomAlgoDemande == null) {
@@ -135,23 +130,30 @@ public class MetricController implements Initializable {
             return;
         }
 
-        XYChart.Series<Number, Number> serieMakespan = new XYChart.Series<>();
+        XYChart.Series<String, Number> serieMakespan = new XYChart.Series<>();
         serieMakespan.setName("Makespan");
 
-        XYChart.Series<Number, Number> serieAttente = new XYChart.Series<>();
+        XYChart.Series<String, Number> serieAttente = new XYChart.Series<>();
         serieAttente.setName("Temps d'attente moyen");
 
-        XYChart.Series<Number, Number> serieReponse = new XYChart.Series<>();
+        XYChart.Series<String, Number> serieReponse = new XYChart.Series<>();
         serieReponse.setName("Temps de réponse moyen");
 
         int indexScenario = 1;
         for (Metrics m : liste) {
-            serieMakespan.getData().add(new XYChart.Data<>(indexScenario, m.getMakespan()));
-            serieAttente.getData().add(new XYChart.Data<>(indexScenario, m.getTempsAttenteMoyen()));
-            serieReponse.getData().add(new XYChart.Data<>(indexScenario, m.getTempsReponseMoyen()));
+            String scenarioLabel = "Scénario " + indexScenario;
+
+            serieMakespan.getData().add(new XYChart.Data<>(scenarioLabel, m.getMakespan()));
+            serieAttente.getData().add(new XYChart.Data<>(scenarioLabel, m.getTempsAttenteMoyen()));
+            serieReponse.getData().add(new XYChart.Data<>(scenarioLabel, m.getTempsReponseMoyen()));
+
             indexScenario++;
         }
 
         chart.getData().addAll(serieMakespan, serieAttente, serieReponse);
+
+        chart.setCategoryGap(15);
+        chart.setBarGap(3);
+        chart.setAnimated(false);
     }
 }

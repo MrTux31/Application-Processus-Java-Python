@@ -12,7 +12,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.ordonnancement.ui.controller.MetricController">
 
-    <!-- Zone centrale : deux LineChart pour comparer les graphiques -->
+    <!-- Zone centrale : deux BarChart pour comparer les graphiques -->
     <center>
         <HBox spacing="10" BorderPane.alignment="CENTER">
             <padding>
@@ -20,24 +20,24 @@
             </padding>
 
             <!-- Graphique de gauche -->
-            <LineChart fx:id="lineChartGauche">
+            <BarChart fx:id="barChartGauche" title="Comparaison gauche">
                 <xAxis>
-                    <NumberAxis fx:id="xAxisGauche" label="Temps"/>
+                    <CategoryAxis fx:id="xAxisGauche" label="Scénario"/>
                 </xAxis>
                 <yAxis>
                     <NumberAxis fx:id="yAxisGauche" label="Valeur"/>
                 </yAxis>
-            </LineChart>
+            </BarChart>
 
             <!-- Graphique de droite -->
-            <LineChart fx:id="lineChartDroite">
+            <BarChart fx:id="barChartDroite" title="Comparaison droite">
                 <xAxis>
-                    <NumberAxis fx:id="xAxisDroite" label="Temps"/>
+                    <CategoryAxis fx:id="xAxisDroite" label="Scénario"/>
                 </xAxis>
                 <yAxis>
                     <NumberAxis fx:id="yAxisDroite" label="Valeur"/>
                 </yAxis>
-            </LineChart>
+            </BarChart>
         </HBox>
     </center>
 
