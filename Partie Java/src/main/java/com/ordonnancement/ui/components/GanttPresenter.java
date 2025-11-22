@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ordonnancement.model.gantt.IGanttTask;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 
@@ -20,17 +21,7 @@ public class GanttPresenter extends TitledPane{
         scrollPane.setPannable(true);
         //Mettre le scroll bane dans la titled pane
         this.setContent(scrollPane);
-        scrollPane.setMaxHeight(400); //Hauteur max de chaque gantt dans le gantt
-
-        // INTERCEPTER le scroll AVANT qu'il arrive au ScrollPane
-        // et le consommer pour qu'il ne remonte pas au parent
-        scrollPane.setOnScroll(event -> {
-            event.consume(); //Pour pas propager au parent
-        });
-
-
-
-
+        ganttPane.setPadding(new Insets(0, 0, 30, 0)); //Padding bottom pour laisser petit espace evec le gantt
     }
 
 

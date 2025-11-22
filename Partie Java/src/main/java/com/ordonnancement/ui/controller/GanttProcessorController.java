@@ -21,7 +21,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -32,8 +31,7 @@ import javafx.stage.Stage;
 public class GanttProcessorController extends Application {
 
     //Chargement elements fxml
-    @FXML
-    private ScrollPane scrollPane;
+    
     @FXML
     private ComboBox<String> algosComboBox;
     @FXML
@@ -110,7 +108,7 @@ public class GanttProcessorController extends Application {
         this.message.setMaxWidth(Double.MAX_VALUE);   // Le Label prend toute la largeur
         this.message.setAlignment(Pos.CENTER);        // Centrage horizontal DU TEXTE
         this.message.setStyle("-fx-font-size: 20px; -fx-text-fill: black;");
-        scrollPane.setVisible(false);
+        vBoxGantts.setVisible(false);
         this.message.setVisible(true);
         
     }
@@ -121,7 +119,7 @@ public class GanttProcessorController extends Application {
      * contenu.
      */
     private void afficherGantts() {
-        scrollPane.setVisible(true);
+        vBoxGantts.setVisible(true);
         message.setVisible(false);
     }
 
@@ -132,12 +130,10 @@ public class GanttProcessorController extends Application {
      */
     private void setupAllGanttPresenter(List<String> listeAlgos){
         listeGanttPresenters = new ArrayList<>();
-        // Bloquer le scroll horizontal du ScrollPane principal
-        scrollPane.setFitToWidth(true); // Force le contenu à prendre toute la largeur
-        
+        vBoxGantts.setAlignment(Pos.TOP_LEFT);
         for(String a : listeAlgos){
             GanttPresenter presenter = new GanttPresenter(a); //Créer le gantt presenter de l'algo
-            vBoxGantts.getChildren().add(presenter); //Ajout a la Vbox
+            vBoxGantts.getChildren().add(presenter); //Ajout du presenter dans la vbox
             listeGanttPresenters.add(presenter); //Ajout à l'array list
             
         }

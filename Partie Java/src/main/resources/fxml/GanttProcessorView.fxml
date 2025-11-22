@@ -4,7 +4,6 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -35,10 +34,7 @@
    <center>
       <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ScrollPane fx:id="scrollPane" StackPane.alignment="CENTER">
-               <content>
-                  <VBox fx:id="vBoxGantts" alignment="CENTER" />
-               </content></ScrollPane>
+            <VBox fx:id="vBoxGantts" alignment="CENTER" />
             <Label fx:id="message" alignment="CENTER" contentDisplay="CENTER" visible="false" />
          </children>
       </StackPane>
