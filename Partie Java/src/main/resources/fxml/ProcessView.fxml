@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.SplitPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.ProcessController">
+   <top>
+      <Label alignment="CENTER" text="Liste des processus" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="20" />
+         </font>
+         <BorderPane.margin>
+            <Insets left="20" right="20" top="20" bottom="10" />
+         </BorderPane.margin>
+      </Label>
+   </top>
+   <center>
+      <SplitPane dividerPositions="0.3" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets top="10" right="10" bottom="10" left="10" />
+         </padding>
+         <!-- Liste des processus à gauche -->
+         <VBox>
+            <Label text="Processus :" />
+            <ListView fx:id="listViewProcessus" VBox.vgrow="ALWAYS" />
+         </VBox>
+         <!-- Zone de détails à droite -->
+         <ScrollPane fitToWidth="true">
+            <VBox fx:id="detailsPane" spacing="15">
+               <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+               </padding>
+               <Label fx:id="labelTitre" text="Sélectionnez un processus pour voir ses détails" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+               <VBox fx:id="detailsContent" spacing="10" visible="false">
+                  <Label text="Informations générales" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                  <HBox spacing="10">
+                     <Label text="ID :" style="-fx-font-weight: bold;" />
+                     <Label fx:id="labelId" />
+                  </HBox>
+                  <HBox spacing="10">
+                     <Label text="Date de soumission :" style="-fx-font-weight: bold;" />
+                     <Label fx:id="labelDateSoumission" />
+                  </HBox>
+                  <HBox spacing="10">
+                     <Label text="Temps d'exécution :" style="-fx-font-weight: bold;" />
+                     <Label fx:id="labelTempsExecution" />
+                  </HBox>
+                  <HBox spacing="10">
+                     <Label text="RAM requise :" style="-fx-font-weight: bold;" />
+                     <Label fx:id="labelRequiredRam" />
+                  </HBox>
+                  <HBox spacing="10">
+                     <Label text="Deadline :" style="-fx-font-weight: bold;" />
+                     <Label fx:id="labelDeadline" />
+                  </HBox>
+                  <HBox spacing="10">
+                     <Label text="Priorité :" style="-fx-font-weight: bold;" />
+                     <Label fx:id="labelPriority" />
+                  </HBox>
+                  <Label text="Informations d'exécution par algorithme" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                  <VBox fx:id="executionInfoContainer" spacing="10" />
+               </VBox>
+            </VBox>
+         </ScrollPane>
+      </SplitPane>
+   </center>
+</BorderPane>
+

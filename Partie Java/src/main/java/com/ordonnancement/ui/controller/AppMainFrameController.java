@@ -47,6 +47,7 @@ public class AppMainFrameController {
     //Controleurs 
     GanttProcessorController ganttProcessorController;
     MetricController comparaisonController;
+    ProcessController processController;
     
 
     /**
@@ -136,6 +137,26 @@ public class AppMainFrameController {
                     "Impossible d'ouvrir la comparaison des algorithmes :\n" + e.getMessage(),
                     (Stage) mainContentPane.getScene().getWindow()
             );
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Affiche la liste des processus avec leurs détails
+     */
+    @FXML
+    private void doAfficherProcessus() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProcessView.fxml"));
+            BorderPane processPane = loader.load();
+            mainContentPane.getChildren().setAll(processPane);
+            processController = loader.getController();
+
+        } catch (Exception e) {
+            AlertUtils.showError(
+                    "Erreur",
+                    "Erreur affichage des processus :\n" + e.getMessage(),
+                    (Stage) mainContentPane.getScene().getWindow());
             e.printStackTrace();
         }
     }
