@@ -11,17 +11,17 @@ import com.ordonnancement.model.Resultats;
  */
 public class AppState {
 
-    /**
+    /*
      * Instance unique du singleton AppState
      */
-    private static AppState instance;
+    private static final AppState instance = new AppState();
 
-    /**
+    /*
      * Résultats complets retournés par l'exécution Python
      */
     private Resultats resultats;
 
-    /**
+    /*
      * Constructeur privé pour empêcher l'instanciation directe.
      */
     private AppState() {
@@ -32,15 +32,13 @@ public class AppState {
      *
      * @return L'instance unique de AppState
      */
-    public static AppState getInstance() {
-        if (instance == null) {
-            instance = new AppState();
-        }
+    public final static AppState getInstance() {
         return instance;
     }
 
     /**
      * Retourne les résultats actuellement stockés.
+     *
      * @return Les résultats de l'ordonnanceur
      * @throws IllegalStateException si aucun résultat n'a encore été enregistré
      */
@@ -54,10 +52,12 @@ public class AppState {
 
     /**
      * Définit les résultats retournés par l'exécution du programme Python.
-     * @param resultats L'objet contenant l'ensemble des données produites par le programme
-     * python
+     *
+     * @param resultats L'objet contenant l'ensemble des données produites par
+     * le programme python
      */
     public void setResultats(Resultats resultats) {
         this.resultats = resultats;
     }
+
 }

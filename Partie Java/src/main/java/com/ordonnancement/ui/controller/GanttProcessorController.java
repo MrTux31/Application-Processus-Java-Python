@@ -18,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.CheckBoxListCell;
@@ -32,12 +31,9 @@ public class GanttProcessorController extends Application {
 
     //Chargement elements fxml
     
-    @FXML
-    private ComboBox<String> algosComboBox;
+    
     @FXML
     private ListView<String> listViewCpu;
-    @FXML
-    private Label labelAlgo;
     @FXML
     private Label labelCpu;
     @FXML
@@ -78,7 +74,7 @@ public class GanttProcessorController extends Application {
             
             
         }catch(IllegalStateException e){
-            afficherMessage("Aucun résultat disponible.\nLancez d'abord un ordonnancement.");
+            afficherMessage("Aucun résultat disponible.\nLancez d'abord un ordonnancement ou rafraichir la page.");
             cacherElements();
         }
 
@@ -167,8 +163,6 @@ public class GanttProcessorController extends Application {
      */
     private void cacherElements() {
         this.listViewCpu.setVisible(false);
-        this.algosComboBox.setVisible(false);
-        labelAlgo.setVisible(false); //Cacher les labels
         labelCpu.setVisible(false);
     }
 

@@ -19,7 +19,7 @@ public class PythonLauncher {
      */
     public static void runPythonScript(Path cheminScript, String cheminConfig){
 
-        Thread lanceurPython = new Thread(() ->{
+        
 
         String commande[] = {"python", "-X", "utf8", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python;
         ProcessBuilder builder = new ProcessBuilder(commande); //Construction de la commande
@@ -27,6 +27,8 @@ public class PythonLauncher {
         try {
             //Démarrage du processus
             Process process = builder.start();
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> process.destroy())); //Arreter le python si on arrete l'app java
+
 
             // Variable pour stocker les erreurs
             StringBuilder erreurs = new StringBuilder(); //Stringbuilder pour stocker les lignes d'erreurs de manière plus performante
@@ -52,9 +54,7 @@ public class PythonLauncher {
             throw new PythonException("Exécution du script Python interrompue.", e);
         }
 
-        });
         
-        lanceurPython.start();
     }
 
 

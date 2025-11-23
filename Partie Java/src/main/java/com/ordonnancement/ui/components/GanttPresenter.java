@@ -36,6 +36,12 @@ public class GanttPresenter extends TitledPane{
         
     }
 
+    /**
+     * Permet de lancer l'affichage du gantt dans le presenter
+     * @param tachesGantt : Les taches à afficher
+     * @param dateFinMax : La date de fin max des taches
+     * @param listeCategories : La liste des catégories
+     */
     public void presentGantt(List<IGanttTask> tachesGantt,int dateFinMax, List<String> listeCategories ){
         ganttPane.dessinerGanttProcessor(tachesGantt, dateFinMax, listeCategories);
         
