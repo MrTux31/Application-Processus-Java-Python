@@ -21,7 +21,7 @@ public class PythonLauncher {
 
         
 
-        String commande[] = {"python", "-X", "utf8", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python;
+        String commande[] = {"python3", "-X", "utf8", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python;
         ProcessBuilder builder = new ProcessBuilder(commande); //Construction de la commande
         
         try {

@@ -20,7 +20,11 @@
                  </items>
                </Menu>
                     <Menu fx:id="configMenu" text="Configuration" />
-                    <Menu fx:id="processMenu" text="Processus" />
+                    <Menu fx:id="processMenu" text="Processus">
+                        <items>
+                            <MenuItem fx:id="processListMenu" mnemonicParsing="false" onAction="#doAfficherProcessus" text="Liste des processus" />
+                        </items>
+                    </Menu>
                     <Menu fx:id="ganttMenu" text="Gantt">
                         <MenuItem fx:id="ganttCpuMenu" onAction="#doAfficherGanttCPU" text="Gantt CPU" />
                         <MenuItem fx:id="ganttProcessMenu" text="Gantt Processus" />
