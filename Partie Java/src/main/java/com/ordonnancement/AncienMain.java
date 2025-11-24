@@ -31,19 +31,19 @@ public class AncienMain {
                 2
         );
 
-        AlgoConfiguration algo2 = new AlgoConfiguration(
+       AlgoConfiguration algo2 = new AlgoConfiguration(
                 "FIFO",
                 resultsDir.resolve("Fifo/rDetailedFIFO.csv").toString(),
                 resultsDir.resolve("Fifo/rGlobauxFIFO.csv").toString(),
                 null
         );
 
-        AlgoConfiguration algo3 = new AlgoConfiguration(
-                "Priorite",
-                resultsDir.resolve("Priorite/rDetailedPriorite.csv").toString(),
-                resultsDir.resolve("Priorite/rGlobauxPriorite.csv").toString(),
-                null
-        );
+       AlgoConfiguration algo3 = new AlgoConfiguration(
+                 "Priorite",
+                 resultsDir.resolve("Priorite/rDetailedPriorite.csv").toString(),
+                 resultsDir.resolve("Priorite/rGlobauxPriorite.csv").toString(),
+                 null
+         );
 
         Path settingsDir = Paths.get("python/Settings");
 
