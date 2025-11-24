@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.ConfigController">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.ConfigController">
 
     <!-- ======================================
                TITRE
@@ -40,12 +40,12 @@
                         </columnConstraints>
 
                         <!-- Ressources -->
-                        <Label text="Fichier ressources :" GridPane.rowIndex="0" />
+                        <Label text="Fichier des ressources :" GridPane.rowIndex="0" />
                         <Button fx:id="btnRessources" onAction="#choisirRessources" text="Choisir..." GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         <Label fx:id="labelRessourcesPath" style="-fx-text-fill:#555;" text="Aucun fichier" GridPane.columnIndex="2" GridPane.rowIndex="0" />
 
                         <!-- Process -->
-                        <Label text="Fichier process :" GridPane.rowIndex="1" />
+                        <Label text="Fichier des processus :" GridPane.rowIndex="1" />
                         <Button fx:id="btnProcess" onAction="#choisirProcess" text="Choisir..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label fx:id="labelProcessPath" style="-fx-text-fill:#555;" text="Aucun fichier" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
@@ -93,6 +93,7 @@
                     </GridPane>
                 </content>
             </TitledPane>
+         <TitledPane fx:id="tpResultats" expanded="true" text="Fichiers de résultats" visible="false" />
 
         </VBox>
     </center>

@@ -1,7 +1,7 @@
 {
   "fichierProcessus": "C:\\Users\\Quentin\\Downloads\\processus_initiaux.csv",
   "fichierRessourcesDisponibles": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\Partie Java\\python\\Settings\\ressources.json",
-  "fichierMetriquesGlobales": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\Metriques\\metriquesGlobales.csv",
+  "fichierMetriquesGlobales": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\Metriques\\Metriques\\metriquesGlobales.csv",
   "listeAlgorithmes": [
     {
       "nomAlgorithme": "FIFO",

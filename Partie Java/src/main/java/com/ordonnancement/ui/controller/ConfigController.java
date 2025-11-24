@@ -2,7 +2,9 @@ package com.ordonnancement.ui.controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
@@ -16,12 +18,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ConfigController {
 
+    @FXML
+    TitledPane tpResultats;
     // Labels pour afficher les chemins choisis
     @FXML
     private Label labelRessourcesPath;
@@ -57,6 +64,8 @@ public class ConfigController {
     private final String destination = ConfigurationManager.getInstance().getCheminFichierConfig(); //Dossier où sera sauvegardé la config
     private AppMainFrameController appMainFrameController;
 
+    private Map<String, List<TextField>> mapAlgoFichiersResultats = new HashMap<>();
+
     @FXML
     private void initialize() {
         // Initialisation si besoin
@@ -66,11 +75,31 @@ public class ConfigController {
         cbRR.selectedProperty().addListener((obs, oldVal, newVal) -> {
             tfQuantum.setDisable(!newVal);
             checkReadyToSave();
+            if (newVal) {
+                // initialiser si absent
+                mapAlgoFichiersResultats.putIfAbsent("ROUND ROBIN", creerListeChampsVides());
+            }
+            updateResultatsPane();
 
         });
-        
-        cbFifo.selectedProperty().addListener((obs, oldVal, newVal) -> checkReadyToSave());
-        cbPriorite.selectedProperty().addListener((obs, oldVal, newVal) -> checkReadyToSave());
+
+        cbFifo.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            checkReadyToSave();
+            if (newVal) {
+                // initialiser si absent
+                mapAlgoFichiersResultats.putIfAbsent("FIFO", creerListeChampsVides());
+            } 
+            updateResultatsPane();
+        }
+        );
+        cbPriorite.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            checkReadyToSave();
+            if (newVal) {
+                // initialiser si absent
+                mapAlgoFichiersResultats.putIfAbsent("PRIORITE", creerListeChampsVides());
+            } 
+            updateResultatsPane();
+        });
         tfQuantum.textProperty().addListener((obs, oldVal, newVal) -> checkReadyToSave());
 
         Platform.runLater(() -> preremplir()); //Charger le fichier de configuration.
@@ -80,7 +109,6 @@ public class ConfigController {
         this.appMainFrameController = appMainFrameController;
     }
 
-
     @FXML
     private void doAnnuler() {
         // Action pour annuler, par exemple vider les champs ou fermer la vue
@@ -88,136 +116,131 @@ public class ConfigController {
         System.out.println("Annulation");
     }
 
-    
-
     private void checkReadyToSave() {
-    boolean fichiersOk =
-    !labelRessourcesPath.getText().equals("Aucun fichier") &&
-    !labelProcessPath.getText().equals("Aucun fichier") &&
-    !labelResultatPath.getText().equals("Aucun fichier");
+        boolean fichiersOk
+                = !labelRessourcesPath.getText().equals("Aucun fichier")
+                && !labelProcessPath.getText().equals("Aucun fichier")
+                && !labelResultatPath.getText().equals("Aucun fichier");
 
-    boolean algoOk = cbFifo.isSelected() || cbRR.isSelected() || cbPriorite.isSelected();
+        boolean algoOk = cbFifo.isSelected() || cbRR.isSelected() || cbPriorite.isSelected();
 
-    btnEnregistrer.setDisable(!(fichiersOk && algoOk));
-    
+        btnEnregistrer.setDisable(!(fichiersOk && algoOk));
 
-}
-
+    }
 
     @FXML
     private void doValider() {
 
-    // Si Round Robin est coche mais quantum vide -> erreur
-    if (cbRR.isSelected() && (tfQuantum.getText() == null || tfQuantum.getText().isBlank())) {
-        AlertUtils.showError(
-                "Erreur",
-                "Vous avez choisi Round Robin mais aucun quantum n'a été saisi.",
-                btnEnregistrer.getScene().getWindow()
-        );
-        return; // On stoppe l'exécution
-    }
-
-    if (cbRR.isSelected()) {
-        int quantumSelected;
-    try {
-        quantumSelected = Integer.parseInt(tfQuantum.getText());
-        if(quantumSelected <= 0){
+        // Si Round Robin est coche mais quantum vide -> erreur
+        if (cbRR.isSelected() && (tfQuantum.getText() == null || tfQuantum.getText().isBlank())) {
             AlertUtils.showError(
-                "Erreur",
-                "Le quantum doit être un entier naturel non null !",
-                btnEnregistrer.getScene().getWindow()
+                    "Erreur",
+                    "Vous avez choisi Round Robin mais aucun quantum n'a été saisi.",
+                    btnEnregistrer.getScene().getWindow()
             );
+            return; // On stoppe l'exécution
+        }
+
+        if (cbRR.isSelected()) {
+            int quantumSelected;
+            try {
+                quantumSelected = Integer.parseInt(tfQuantum.getText());
+                if (quantumSelected <= 0) {
+                    AlertUtils.showError(
+                            "Erreur",
+                            "Le quantum doit être un entier naturel non null !",
+                            btnEnregistrer.getScene().getWindow()
+                    );
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                AlertUtils.showError(
+                        "Erreur",
+                        "Le quantum doit être un nombre !!!",
+                        btnEnregistrer.getScene().getWindow()
+                );
+                return;
+            }
+        }
+
+        if (btnEnregistrer.isDisabled()) {
+            System.out.println("Impossible d'enregistrer : champs manquants");
             return;
         }
-    } catch (NumberFormatException e) {
-        AlertUtils.showError(
-                "Erreur",
-                "Le quantum doit être un nombre !!!",
-                btnEnregistrer.getScene().getWindow()
+
+        List<AlgoConfiguration> algos = new ArrayList<>();
+
+        if (cbFifo.isSelected()) {
+            algos.add(new AlgoConfiguration(
+                    "FIFO",
+                    mapAlgoFichiersResultats.get("FIFO").get(0).getText(),
+                    mapAlgoFichiersResultats.get("FIFO").get(1).getText(),
+                    null
+            ));
+        }
+
+        if (cbPriorite.isSelected()) {
+            algos.add(new AlgoConfiguration(
+                    "PRIORITE",
+                    mapAlgoFichiersResultats.get("PRIORITE").get(0).getText(),
+                    mapAlgoFichiersResultats.get("PRIORITE").get(1).getText(),
+                    null
+            ));
+        }
+
+        if (cbRR.isSelected()) {
+            algos.add(new AlgoConfiguration(
+                    "ROUND ROBIN",
+                    mapAlgoFichiersResultats.get("ROUND ROBIN").get(0).getText(),
+                    mapAlgoFichiersResultats.get("ROUND ROBIN").get(1).getText(),
+                    Integer.parseInt(tfQuantum.getText())
+            ));
+        }
+
+        String metriquesFile = labelResultatPath.getText() + "\\Metriques\\metriquesGlobales.csv";
+
+        FileConfiguration fileConfig = new FileConfiguration(
+                labelProcessPath.getText(),
+                metriquesFile,
+                labelRessourcesPath.getText(),
+                algos
         );
-        return;
-    }
-}
-    
-    if (btnEnregistrer.isDisabled()) {
-        System.out.println("Impossible d'enregistrer : champs manquants");
-        return;
-    }
 
-    List<AlgoConfiguration> algos = new ArrayList<>();
+        new ConfigurationWriter().writeConfiguration(fileConfig, destination); //On écrase la config précédente
+        System.out.println("Configuration enregistrée !");
+        ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
+        AlertUtils.showInfo("Enregistrement", " Enregistrement effectué, retour à l'accueil ...", btnEnregistrer.getScene().getWindow());
+        goHome();
 
-    if (cbFifo.isSelected()) {
-        algos.add(new AlgoConfiguration(
-            "FIFO",
-            labelResultatPath.getText() + "\\FIFO\\rDetailedFIFO.csv",
-            labelResultatPath.getText() + "\\FIFO\\rGlobauxFIFO.csv",
-            null
-        ));
     }
 
-    if (cbPriorite.isSelected()) {
-        algos.add(new AlgoConfiguration(
-            "PRIORITE",
-            labelResultatPath.getText() + "\\PRIORITE\\rDetailedPRIORITE.csv",
-            labelResultatPath.getText() + "\\PRIORITE\\rGlobauxPRIORITE.csv",
-            null
-        ));
-    }
-
-    if (cbRR.isSelected()) {
-        algos.add(new AlgoConfiguration(
-            "ROUND ROBIN",
-            labelResultatPath.getText() + "\\ROUND ROBIN\\rDetailedROUNDROBIN.csv",
-            labelResultatPath.getText() + "\\ROUND ROBIN\\rGlobauxROUNDROBIN.csv",
-            Integer.parseInt(tfQuantum.getText())
-        ));
-    }
-
-    String metriquesFile = labelResultatPath.getText() + "\\Metriques\\metriquesGlobales.csv";
-
-    FileConfiguration fileConfig = new FileConfiguration(
-            labelProcessPath.getText(),
-            metriquesFile,
-            labelRessourcesPath.getText(),
-            algos
-    );
-
-    
-   
-    new ConfigurationWriter().writeConfiguration(fileConfig, destination); //On écrase la config précédente
-    System.out.println("Configuration enregistrée !");
-    ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
-    AlertUtils.showInfo("Enregistrement"," Enregistrement effectué, retour à l'accueil ...", btnEnregistrer.getScene().getWindow());
-    goHome();
-    
-    
-    }
-
-   private void goHome() {
+    private void goHome() {
         appMainFrameController.afficherHome();
     }
-
 
     private void preremplir() {
         try {
             ConfigurationManager.getInstance().loadConfiguration(); //Charger la configuration déjà existante
             FileConfiguration conf = ConfigurationManager.getInstance().getFileConfiguration(); //Récupérer l'objet FileConfiguration
 
-            if (conf == null)
+            if (conf == null) {
                 return; // rien à préremplir
-
+            }
             // --- Chemins des fichiers ---
-            if (conf.getFichierRessourcesDisponibles() != null)
+            if (conf.getFichierRessourcesDisponibles() != null) {
                 labelRessourcesPath.setText(conf.getFichierRessourcesDisponibles());
+            }
 
-            if (conf.getFichierProcessus() != null)
+            if (conf.getFichierProcessus() != null) {
                 labelProcessPath.setText(conf.getFichierProcessus());
+            }
 
             if (conf.getFichierMetriquesGlobales() != null) {
                 // On récupère juste le dossier parent des résultats
                 File parent = new File(conf.getFichierMetriquesGlobales()).getParentFile();
-                if (parent != null)
+                if (parent != null) {
                     labelResultatPath.setText(parent.getAbsolutePath());
+                }
             }
 
             // --- Algorithmes cochés ---
@@ -229,7 +252,7 @@ public class ConfigController {
             if (conf.getListeAlgorithmes() != null) {
                 conf.getListeAlgorithmes().forEach(a -> {
 
-                    switch(a.getNomAlgorithme()) {
+                    switch (a.getNomAlgorithme().toUpperCase()) { //upper pour ignorer la casse
 
                         case "FIFO":
                             cbFifo.setSelected(true);
@@ -247,19 +270,118 @@ public class ConfigController {
                             }
                             break;
                     }
+                    
                 });
+                prechargerFichiersResultats();
             }
 
             checkReadyToSave();
 
         } catch (Exception e) { //Si il y a une erreur de parsing, on affiche l'erreur et on met des champs vides à compléter.
-            AlertUtils.showError("Erreur","Impossible de charger la configuration existante.\nRemplissez les champs pour créer une nouvelle configuration correcte." , btnEnregistrer.getScene().getWindow());
+            AlertUtils.showError("Erreur", "Impossible de charger la configuration existante.\nRemplissez les champs pour créer une nouvelle configuration correcte.", btnEnregistrer.getScene().getWindow());
 
         }
     }
 
+    /**
+ * Précharge les fichiers de résultats depuis la config existante
+ * en remplissant mapAlgoFichiersResultats puis met à jour l'affichage.
+ */
+private void prechargerFichiersResultats() {
 
+    mapAlgoFichiersResultats.clear(); // On repart propre
 
+    List<AlgoConfiguration> algos = ConfigurationManager.getInstance()
+            .getFileConfiguration()
+            .getListeAlgorithmes();
+
+    for (AlgoConfiguration a : algos) {
+
+        // On crée les champs déjà remplis
+        TextField tfDet = new TextField(a.getFichierResultatsDetailles());
+        TextField tfGlob = new TextField(a.getFichierResultatsGlobaux());
+
+        List<TextField> fields = new ArrayList<>();
+        fields.add(tfDet);
+        fields.add(tfGlob);
+
+        // Nom algo normalisé
+        String nom = a.getNomAlgorithme().toUpperCase();
+
+        mapAlgoFichiersResultats.put(nom, fields);
+    }
+
+    // Mise à jour visuelle
+    updateResultatsPane();
+}
+
+    private List<TextField> creerListeChampsVides() {
+        List<TextField> l = new ArrayList<>();
+        l.add(new TextField());
+        l.add(new TextField());
+        return l;
+    }
+
+    /**
+     * Permet de recréer le titled pane des fichiers de résultats après
+     * changement sur les checkbox
+     *
+     */
+    private void updateResultatsPane() {
+    VBox contenu = new VBox(12);
+    contenu.setStyle("-fx-padding:10;");
+
+    if (cbFifo.isSelected()) {
+        ajouterBloc(contenu, "FIFO");
+    }
+    if (cbPriorite.isSelected()) {
+        ajouterBloc(contenu, "PRIORITE");
+    }
+    if (cbRR.isSelected()) {
+        ajouterBloc(contenu, "ROUND ROBIN");
+    }
+
+    boolean hasAlgo = !contenu.getChildren().isEmpty();
+    tpResultats.setManaged(hasAlgo);
+    tpResultats.setVisible(hasAlgo);
+    tpResultats.setContent(contenu);
+}
+
+private void ajouterBloc(VBox box, String algo) {
+    List<TextField> fields = mapAlgoFichiersResultats.get(algo);
+    if (fields != null) {
+        box.getChildren().add(
+            creerBlocResultats(algo, fields.get(0), fields.get(1))
+        );
+    }
+}
+
+    /**
+     * Crée un gird pane contenant les infos concernant les fichiers de
+     * résultats d'un algo
+     *
+     * @param nomAlgo
+     * @param fichierResultatsDetailles
+     * @param fichierResultatsGlobaux
+     * @return
+     */
+    private GridPane creerBlocResultats(String nomAlgo, TextField fieldDetailles, TextField fieldGlobaux) {
+
+        GridPane grid = new GridPane();
+        grid.setHgap(15);
+        grid.setVgap(8);
+
+        grid.add(new Label("Nom algo :"), 0, 0);
+        grid.add(new Label(nomAlgo), 1, 0);
+
+        grid.add(new Label("Résultats détaillés :"), 0, 1);
+        grid.add(fieldDetailles, 1, 1);
+
+        grid.add(new Label("Résultats globaux :"), 0, 2);
+        grid.add(fieldGlobaux, 1, 2);
+
+        return grid;
+    }
 
     private FileChooser creerCorrectFileChooser(String title, String extension, Label labelPath) {
 
@@ -289,8 +411,6 @@ public class ConfigController {
         return chooser;
     }
 
-
-
     private DirectoryChooser creerCorrectDirectoryChooser(String title, Label labelPath) {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle(title);
@@ -306,9 +426,6 @@ public class ConfigController {
 
         return chooser;
     }
-
-
-
 
     @FXML
     public void choisirRessources() {
@@ -327,8 +444,6 @@ public class ConfigController {
         }
     }
 
-
-
     @FXML
     public void choisirProcess() {
 
@@ -346,7 +461,6 @@ public class ConfigController {
         }
     }
 
-
     @FXML
     private void choisirDossierResultats() {
 
@@ -362,7 +476,5 @@ public class ConfigController {
             checkReadyToSave();
         }
     }
-
-
 
 }
