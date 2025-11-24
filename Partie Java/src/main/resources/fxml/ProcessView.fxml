@@ -50,7 +50,7 @@
                             <columnConstraints>
                                 <ColumnConstraints halignment="RIGHT" prefWidth="150"/>
                                 <ColumnConstraints halignment="LEFT" prefWidth="200"/>
-                            </columnConstraints>
+                            </columnConstraints>    
 
                             <Label text="ID :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                             <Label fx:id="labelId" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
@@ -74,7 +74,7 @@
                         <!-- Informations d'exécution -->
                         <Label text="Informations d'exécution"
                                style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                        <ScrollPane fitToWidth="true" prefHeight="300">
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
                             <content>
                                 <VBox fx:id="executionInfoContainer" spacing="10"/>
                             </content>

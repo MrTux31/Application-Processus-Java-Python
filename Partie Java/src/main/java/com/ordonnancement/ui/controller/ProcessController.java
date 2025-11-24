@@ -102,6 +102,7 @@ public class ProcessController {
                         masquerDetails();
                     }
                 });
+                listViewProcessus.getSelectionModel().select(0);
     }
 
     /**
@@ -191,6 +192,10 @@ public class ProcessController {
                 labelAllocs.setStyle("-fx-font-weight: bold;");
                 allocBox.getChildren().add(labelAllocs);
                 
+                Label labelFormatExample = new Label("Format : CPUX : [début - fin]");
+                labelFormatExample.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666; -fx-font-style: italic;");
+                allocBox.getChildren().add(labelFormatExample);
+                
                 for (Allocation alloc : allocs) {
                     HBox hboxAlloc = new HBox(10);
                     hboxAlloc.setPadding(new Insets(2, 0, 0, 10));
@@ -207,6 +212,9 @@ public class ProcessController {
 
             executionInfoContainer.getChildren().add(algoBox);
         }
+        
+        
+
     }
 
     /**
