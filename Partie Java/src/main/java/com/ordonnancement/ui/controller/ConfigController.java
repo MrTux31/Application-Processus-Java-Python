@@ -8,7 +8,6 @@ import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.service.configuration.ConfigurationWriter;
-import com.ordonnancement.service.parser.config.ConfigParser;
 import com.ordonnancement.ui.Alert.AlertUtils;
 
 import javafx.application.Platform;
@@ -55,9 +54,7 @@ public class ConfigController {
     private Button btnEnregistrer;
     @FXML
     private Button btnAnnuler;
-
-    private final String destination = "python/Settings/config.json"; //Dossier où sera sauvegardé la config
-
+    private final String destination = ConfigurationManager.getInstance().getCheminFichierConfig(); //Dossier où sera sauvegardé la config
     private AppMainFrameController appMainFrameController;
 
     @FXML
@@ -186,9 +183,10 @@ public class ConfigController {
     );
 
     
-    ConfigurationManager.getInstance().setCheminFichierConfig(destination);
+   
     new ConfigurationWriter().writeConfiguration(fileConfig, destination); //On écrase la config précédente
     System.out.println("Configuration enregistrée !");
+    ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
     AlertUtils.showInfo("Enregistrement"," Enregistrement effectué, retour à l'accueil ...", btnEnregistrer.getScene().getWindow());
     goHome();
     
@@ -202,8 +200,8 @@ public class ConfigController {
 
     private void preremplir() {
         try {
-            
-            FileConfiguration conf = ConfigParser.parse(destination); //Récupérer le contenu du fichier de config
+            ConfigurationManager.getInstance().loadConfiguration(); //Charger la configuration déjà existante
+            FileConfiguration conf = ConfigurationManager.getInstance().getFileConfiguration(); //Récupérer l'objet FileConfiguration
 
             if (conf == null)
                 return; // rien à préremplir

@@ -1,13 +1,12 @@
 package com.ordonnancement.ui.controller;
 
-import java.nio.file.Path;
-
 import com.ordonnancement.AncienMain;
 import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Resultats;
 import com.ordonnancement.service.AppState;
+import com.ordonnancement.service.parser.FileParsingException;
 import com.ordonnancement.service.runner.Runner;
 import com.ordonnancement.ui.Alert.AlertUtils;
 
@@ -33,8 +32,11 @@ public class HomeController {
         try {
             //Récupérer les infos sur le fichier de config dans le singleton
             String fichierConfig = ConfigurationManager.getInstance().getCheminFichierConfig();
-            FileConfiguration configuration = ConfigurationManager.getInstance().getFileConfiguration();
+            //on charge la configuration depuis le fichier de configuration précédent
+            ConfigurationManager.getInstance().loadConfiguration(); //On parse le json
+            FileConfiguration configuration = ConfigurationManager.getInstance().getFileConfiguration(); //On récup l'objet
             
+        
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Runner.runAsync(configuration,
                     fichierConfig,
@@ -43,13 +45,16 @@ public class HomeController {
                         AncienMain.AfficherResultats(); // TO DO : A SUPPRIMER
                     },
                     e -> { //Si une exception arrive lors de l'execution
-                            AlertUtils.showError("Erreur", e.getMessage(), null);
+                            AlertUtils.showError("Erreur", e.getMessage(), btnStart.getParent().getScene().getWindow());
                             e.printStackTrace();
                         
                         });
                 
-        }catch(IllegalStateException e){
-            AlertUtils.showError("Erreur","Impossible de lancer l'exécution, aucune configuration n'est définie.",null);
+        }catch(FileParsingException e){
+            AlertUtils.showError("Erreur de configuration", e.getMessage(),btnStart.getParent().getScene().getWindow());
+        }
+        catch(Exception e){
+            AlertUtils.showError("Erreur",e.getMessage(),btnStart.getParent().getScene().getWindow());
         }
 
     }

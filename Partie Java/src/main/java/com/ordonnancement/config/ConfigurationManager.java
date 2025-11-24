@@ -1,8 +1,8 @@
 package com.ordonnancement.config;
 
-import java.nio.file.Path;
-
 import com.ordonnancement.model.FileConfiguration;
+import com.ordonnancement.service.parser.FileParsingException;
+import com.ordonnancement.service.parser.config.ConfigParser;
 
 /**
  * Singleton responsable de la gestion du fichier de configuration de
@@ -13,7 +13,7 @@ public class ConfigurationManager {
 
     private static final ConfigurationManager instance = new ConfigurationManager(); //Instance du singleton
     private FileConfiguration fileConfiguration; //L'objet de configuration du fichier actuellement utilisé
-    private String cheminFichierConfiguration; //L'emplacement du fichier
+    private final String cheminFichierConfiguration = "python/Settings/config.json"; //L'emplacement du fichier
 
     /**
      * Constructeur privé
@@ -59,18 +59,16 @@ public class ConfigurationManager {
      * @return cheminFichierConfiguration : Le chemin de l'emplacement du fichier de configuration
      */
     public String getCheminFichierConfig() {
-        if (this.cheminFichierConfiguration == null) {
-            throw new IllegalStateException("Le chemin du fichier de configuration n'est pas défini !");
-        }
         return this.cheminFichierConfiguration;
     }
 
     /**
-     * Définit l'emplacement du fichier de configuration.
-     *
-     * @param cheminFichierConfiguration chemin du fichier config
+     * Méthode permettant de charger automatiquement le fichier de configuration existant
+     * @throws ConfigParseException
      */
-    public void setCheminFichierConfig(String cheminFichierConfiguration) {
-        this.cheminFichierConfiguration = cheminFichierConfiguration;
+    public void loadConfiguration() throws FileParsingException {
+        this.fileConfiguration = ConfigParser.parse(cheminFichierConfiguration);
     }
+
+    
 }
