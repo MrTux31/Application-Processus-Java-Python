@@ -18,67 +18,67 @@ import com.ordonnancement.util.ProcessUtils;
 
 public class AncienMain {
 
-    public static void lancerExecution() {
+//     public static void lancerExecution() {
 
-        //Démo création du fichier de configuration + récupération des résultats python////////////////////////////////////////////
-        //Ne pas se fier a cette récupértion de chemins c'est teporaire pour les tests
-        Path resultsDir = Paths.get("python/Resultats");
+//         //Démo création du fichier de configuration + récupération des résultats python////////////////////////////////////////////
+//         //Ne pas se fier a cette récupértion de chemins c'est teporaire pour les tests
+//         Path resultsDir = Paths.get("python/Resultats");
 
-        AlgoConfiguration algo1 = new AlgoConfiguration(
-                "Round Robin",
-                resultsDir.resolve("RoundRobin/rDetailedROUNDROBIN.csv").toString(),
-                resultsDir.resolve("RoundRobin/rGlobauxROUNDROBIN.csv").toString(),
-                2
-        );
+//         AlgoConfiguration algo1 = new AlgoConfiguration(
+//                 "Round Robin",
+//                 resultsDir.resolve("RoundRobin/rDetailedROUNDROBIN.csv").toString(),
+//                 resultsDir.resolve("RoundRobin/rGlobauxROUNDROBIN.csv").toString(),
+//                 2
+//         );
 
-        AlgoConfiguration algo2 = new AlgoConfiguration(
-                "FIFO",
-                resultsDir.resolve("Fifo/rDetailedFIFO.csv").toString(),
-                resultsDir.resolve("Fifo/rGlobauxFIFO.csv").toString(),
-                null
-        );
+//         AlgoConfiguration algo2 = new AlgoConfiguration(
+//                 "FIFO",
+//                 resultsDir.resolve("Fifo/rDetailedFIFO.csv").toString(),
+//                 resultsDir.resolve("Fifo/rGlobauxFIFO.csv").toString(),
+//                 null
+//         );
 
-        AlgoConfiguration algo3 = new AlgoConfiguration(
-                "Priorite",
-                resultsDir.resolve("Priorite/rDetailedPriorite.csv").toString(),
-                resultsDir.resolve("Priorite/rGlobauxPriorite.csv").toString(),
-                null
-        );
+//         AlgoConfiguration algo3 = new AlgoConfiguration(
+//                 "Priorite",
+//                 resultsDir.resolve("Priorite/rDetailedPriorite.csv").toString(),
+//                 resultsDir.resolve("Priorite/rGlobauxPriorite.csv").toString(),
+//                 null
+//         );
 
-        Path settingsDir = Paths.get("python/Settings");
+//         Path settingsDir = Paths.get("python/Settings");
 
-        ////////////
+//         ////////////
 
        
-        // //Création des algos qui vont être utilisés par l'ordonnanceur
-        // AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.csv", 2);
-        // AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.csv", null);
+//         // //Création des algos qui vont être utilisés par l'ordonnanceur
+//         // AlgoConfiguration algo1 = new AlgoConfiguration("ROUND ROBIN",  "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedROUNDROBIN.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxROUNDROBIN.csv", 2);
+//         // AlgoConfiguration algo2 = new AlgoConfiguration("FIFO", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rDetailedFIFO.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\rGlobauxFIFO.csv", null);
         
         
-        //Ajouts de ces algos dans une liste
-        List<AlgoConfiguration> liste = new ArrayList<>();
-        liste.add(algo1);
-        liste.add(algo2);
-        liste.add(algo3);
-        //Création de l'objet FileConfig représentant le fichier de configuration
-        //FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources.json", liste);
+//         //Ajouts de ces algos dans une liste
+//         List<AlgoConfiguration> liste = new ArrayList<>();
+//         liste.add(algo1);
+//         liste.add(algo2);
+//         liste.add(algo3);
+//         //Création de l'objet FileConfig représentant le fichier de configuration
+//         //FileConfiguration fileConfig = new FileConfiguration("C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\processusInitiaux.csv", "C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\fichierMetriquesGlobales.csv","C:\\Users\\Quentin\\Documents\\SAE\\Tests fichiers JSON\\Ressources.json", liste);
 
-        FileConfiguration fileConfig = new FileConfiguration(
-                settingsDir.resolve("processusInitiaux.csv").toString(),
-                settingsDir.resolve("fichierMetriquesGlobales.csv").toString(),
-                settingsDir.resolve("ressources.json").toString(),
-                liste
-        );
+//         FileConfiguration fileConfig = new FileConfiguration(
+//                 settingsDir.resolve("processusInitiaux.csv").toString(),
+//                 settingsDir.resolve("fichierMetriquesGlobales.csv").toString(),
+//                 settingsDir.resolve("ressources.json").toString(),
+//                 liste
+//         );
 
-        ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
-        ConfigurationManager.getInstance().setCheminFichierConfig(settingsDir.resolve("config.json"));
-// //Lancer l'execution / écriture fichier config + récup des résultats de python
-// Runner.runAsync(fileConfig,
-//         settingsDir.resolve("config.json").toString(),
-//         () -> {
-//             AncienMain.AfficherResultats();
-//         });
-}
+//         ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
+//         ConfigurationManager.getInstance().setCheminFichierConfig(settingsDir.resolve("config.json"));
+// // //Lancer l'execution / écriture fichier config + récup des résultats de python
+// // Runner.runAsync(fileConfig,
+// //         settingsDir.resolve("config.json").toString(),
+// //         () -> {
+// //             AncienMain.AfficherResultats();
+// //         });
+// }
 
     public static void AfficherResultats() {
         Resultats resultats = AppState.getInstance().getResultats();

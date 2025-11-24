@@ -73,12 +73,7 @@ public class Runner {
      */
     private static Resultats run(FileConfiguration fileConfiguration, String destinationFichierConfig) throws RunnerException {
 
-        //Création du configuration writer
-        ConfigurationWriter writer = new ConfigurationWriter();
-
-        //Créer le fichier JSON de configuration
-        writer.writeConfiguration(fileConfiguration, destinationFichierConfig);
-
+       
         Path cheminAppPython = getCheminAppPython();
 
         //Lancement python, execution script 

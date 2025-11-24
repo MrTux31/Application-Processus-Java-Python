@@ -20,6 +20,7 @@ public class HomeController {
     private Button btnStart;
     @FXML
     private Button btnConfig;
+    private AppMainFrameController appMainFrameController;
     
 
     /**
@@ -27,22 +28,24 @@ public class HomeController {
      */
     @FXML
     private void doLancerExecution() {
-        AncienMain.lancerExecution();//TO DO : A SUPPRIMER, TEMPORAIRE CAR ATTENTE DE LA PARTIE CONFIGURATION
+        // AncienMain.lancerExecution();//TO DO : A SUPPRIMER, TEMPORAIRE CAR ATTENTE DE LA PARTIE CONFIGURATION
 
         try {
             //Récupérer les infos sur le fichier de config dans le singleton
-            Path fichierConfig = ConfigurationManager.getInstance().getCheminFichierConfig();
+            String fichierConfig = ConfigurationManager.getInstance().getCheminFichierConfig();
             FileConfiguration configuration = ConfigurationManager.getInstance().getFileConfiguration();
             
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Runner.runAsync(configuration,
-                    fichierConfig.toString(),
+                    fichierConfig,
                     () -> {
                         afficherResumeExecution();
                         AncienMain.AfficherResultats(); // TO DO : A SUPPRIMER
                     },
                     e -> { //Si une exception arrive lors de l'execution
                             AlertUtils.showError("Erreur", e.getMessage(), null);
+                            e.printStackTrace();
+                        
                         });
                 
         }catch(IllegalStateException e){
@@ -75,6 +78,19 @@ public class HomeController {
 
         AlertUtils.showInfo("Fin de l'execution", sb.toString(), null);
 
+    }
+
+    @FXML
+    private void doAfficherConfig(){
+        appMainFrameController.doAfficherConfig();
+    }
+
+
+
+
+
+    public void setAppMainFrameController(AppMainFrameController appMainFrameController) {
+        this.appMainFrameController=appMainFrameController;
     }
 
 }

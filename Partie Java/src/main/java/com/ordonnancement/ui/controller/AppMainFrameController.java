@@ -27,7 +27,7 @@ public class AppMainFrameController {
     @FXML 
     MenuBar menuBar;
     @FXML
-    Menu configMenu;
+    MenuItem configMenu;
     @FXML
     Menu processMenu;
     @FXML
@@ -47,6 +47,8 @@ public class AppMainFrameController {
     //Controleurs 
     GanttProcessorController ganttProcessorController;
     MetricController comparaisonController;
+    ConfigController configController;
+    HomeController homeController;
     
 
     /**
@@ -58,12 +60,13 @@ public class AppMainFrameController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomeView.fxml")); // Préparer le chargement du FXML
             BorderPane home = loader.load(); // Charger le fxml
             mainContentPane.getChildren().setAll(home); // Mettre le border pane dans le stackpane
-
+            homeController=loader.getController();
+            homeController.setAppMainFrameController(this);
         } catch (Exception e) {
 
             AlertUtils.showError(
                     "Erreur",
-                    "Erreur affichange du menu :\n" + e.getMessage(),
+                    "Erreur affichage du menu :\n" + e.getMessage(),
                     (Stage) mainContentPane.getScene().getWindow());
             
             e.printStackTrace();
@@ -139,6 +142,26 @@ public class AppMainFrameController {
             e.printStackTrace();
         }
     }
+
+
+    @FXML
+    public void doAfficherConfig(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ConfigView.fxml")); // Préparer le chargement du FXML
+            BorderPane config = loader.load(); //Charger le fxml
+            mainContentPane.getChildren().setAll(config);  //Mettre le border pane dans le stackpane
+            configController = loader.getController(); //Récupérer le controleur de la vue
+            configController.setAppMainFrameController(this);
+            
+
+
+        } catch (Exception e) {
+            AlertUtils.showError("Erreur", "Impossible d'ouvrir la configuration :\n" + e.getMessage(),(Stage) mainContentPane.getScene().getWindow());
+            e.printStackTrace();
+        }
+    }
+
+
 
     /**
      * Permet de quitter l'application JavaFX

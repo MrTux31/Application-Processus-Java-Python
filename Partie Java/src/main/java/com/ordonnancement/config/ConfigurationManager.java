@@ -13,7 +13,7 @@ public class ConfigurationManager {
 
     private static final ConfigurationManager instance = new ConfigurationManager(); //Instance du singleton
     private FileConfiguration fileConfiguration; //L'objet de configuration du fichier actuellement utilisé
-    private Path cheminFichierConfiguration; //L'emplacement du fichier
+    private String cheminFichierConfiguration; //L'emplacement du fichier
 
     /**
      * Constructeur privé
@@ -56,9 +56,9 @@ public class ConfigurationManager {
     /**
      * Permet d'obtenir la localisation du fichier de configuration
      *
-     * @return
+     * @return cheminFichierConfiguration : Le chemin de l'emplacement du fichier de configuration
      */
-    public Path getCheminFichierConfig() {
+    public String getCheminFichierConfig() {
         if (this.cheminFichierConfiguration == null) {
             throw new IllegalStateException("Le chemin du fichier de configuration n'est pas défini !");
         }
@@ -70,7 +70,7 @@ public class ConfigurationManager {
      *
      * @param cheminFichierConfiguration chemin du fichier config
      */
-    public void setCheminFichierConfig(Path cheminFichierConfiguration) {
+    public void setCheminFichierConfig(String cheminFichierConfiguration) {
         this.cheminFichierConfiguration = cheminFichierConfiguration;
     }
 }
