@@ -23,7 +23,8 @@ import javafx.scene.layout.VBox;
  * Affiche une ListView des processus à gauche et les détails du processus sélectionné à droite.
  */
 public class ProcessController {
-
+    @FXML
+    private VBox detailsPane;
     @FXML
     private ListView<Process> listViewProcessus;
     @FXML
