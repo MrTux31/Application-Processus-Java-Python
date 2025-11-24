@@ -1,24 +1,24 @@
 {
-  "fichierProcessus": "python/Settings/processusInitiaux.csv",
-  "fichierRessourcesDisponibles": "python/Settings/ressources.json",
-  "fichierMetriquesGlobales": "python/Settings/fichierMetriquesGlobales.csv",
+  "fichierProcessus": "python\\Settings\\processusInitiaux.csv",
+  "fichierRessourcesDisponibles": "python\\Settings\\ressources.json",
+  "fichierMetriquesGlobales": "python\\Settings\\fichierMetriquesGlobales.csv",
   "listeAlgorithmes": [
     {
       "nomAlgorithme": "Round Robin",
-      "fichierResultatsDetailles": "python/Resultats/RoundRobin/rDetailedROUNDROBIN.csv",
-      "fichierResultatsGlobaux": "python/Resultats/RoundRobin/rGlobauxROUNDROBIN.csv",
+      "fichierResultatsDetailles": "python\\Resultats\\RoundRobin\\rDetailedROUNDROBIN.csv",
+      "fichierResultatsGlobaux": "python\\Resultats\\RoundRobin\\rGlobauxROUNDROBIN.csv",
       "quantum": 2
     },
     {
       "nomAlgorithme": "FIFO",
-      "fichierResultatsDetailles": "python/Resultats/Fifo/rDetailedFIFO.csv",
-      "fichierResultatsGlobaux": "python/Resultats/Fifo/rGlobauxFIFO.csv",
+      "fichierResultatsDetailles": "python\\Resultats\\Fifo\\rDetailedFIFO.csv",
+      "fichierResultatsGlobaux": "python\\Resultats\\Fifo\\rGlobauxFIFO.csv",
       "quantum": null
     },
     {
       "nomAlgorithme": "Priorite",
-      "fichierResultatsDetailles": "python/Resultats/Priorite/rDetailedPriorite.csv",
-      "fichierResultatsGlobaux": "python/Resultats/Priorite/rGlobauxPriorite.csv",
+      "fichierResultatsDetailles": "python\\Resultats\\Priorite\\rDetailedPriorite.csv",
+      "fichierResultatsGlobaux": "python\\Resultats\\Priorite\\rGlobauxPriorite.csv",
       "quantum": null
     }
   ]

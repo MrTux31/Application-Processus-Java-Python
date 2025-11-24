@@ -39,37 +39,12 @@ public class MetricController implements Initializable {
     @FXML private Label labelAlgoGauche;
 
     // --- Données internes ---
-    private final List<String> algorithmes =
-            Arrays.asList("FIFO", "ROUND ROBIN", "PRIORITE");
     private final Map<String, List<Metrics>> metricsParAlgorithme = new HashMap<>();
     private List<Resultats> listeResultats = new ArrayList<>();
 
-    // --------------------------------------------------------
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            int nbAlgos = trouverAlgosDisponibles();
-
-            if (nbAlgos == 0) {
-                // Aucun algo lancé → affiche message centré, cache les graphiques et combos
-                afficherMessage("Aucun résultat disponible.\nLancez d'abord un ordonnancement.");
-                cacherLesGraphiques();
-                return;
-            } else if (nbAlgos == 1) {
-                afficherUnSeulGraphique();
-            } else {
-                afficherDeuxGraphiques();
-            }
-
-            comboAlgoGauche.getItems().setAll(algorithmes);
-            comboAlgoDroite.getItems().setAll(algorithmes);
-
-            comboAlgoGauche.getSelectionModel().select("FIFO");
-            comboAlgoDroite.getSelectionModel().select("ROUND ROBIN");
-
-            comboAlgoGauche.valueProperty().addListener((obs, oldVal, newVal) -> rafraichirGraphiqueGauche());
-            comboAlgoDroite.valueProperty().addListener((obs, oldVal, newVal) -> rafraichirGraphiqueDroite());
-
             try {
                 listeResultats = List.of(AppState.getInstance().getResultats());
             } catch (Exception e) {
@@ -77,25 +52,62 @@ public class MetricController implements Initializable {
             }
 
             construireMapMetricsParAlgo();
+
+            List<String> algosTrouvés = new ArrayList<>(metricsParAlgorithme.keySet());
+            Collections.sort(algosTrouvés);
+
+            if (algosTrouvés.isEmpty()) {
+                afficherMessage("Aucun résultat disponible.\nLancez d'abord un ordonnancement.");
+                cacherLesGraphiques();
+                return;
+            } else if (algosTrouvés.size() == 1) {
+                afficherUnSeulGraphique();
+            } else {
+                afficherDeuxGraphiques();
+            }
+
+            comboAlgoGauche.getItems().setAll(algosTrouvés);
+            comboAlgoDroite.getItems().setAll(algosTrouvés);
+
+            comboAlgoGauche.getSelectionModel().selectFirst();
+            if (algosTrouvés.size() > 1)
+                comboAlgoDroite.getSelectionModel().select(1);
+            else
+                comboAlgoDroite.getSelectionModel().selectFirst();
+
+            // Listeners
+            comboAlgoGauche.valueProperty().addListener((obs, oldVal, newVal) -> rafraichirGraphiqueGauche());
+            comboAlgoDroite.valueProperty().addListener((obs, oldVal, newVal) -> rafraichirGraphiqueDroite());
+
+            // Premier affichage
             rafraichirGraphiqueGauche();
             rafraichirGraphiqueDroite();
 
         } catch (Exception e) {
-            // Aucune popup : juste le message texte au centre
             afficherMessage("Erreur : impossible de charger les métriques.");
             cacherLesGraphiques();
         }
     }
 
-    // --------------------------------------------------------
     public void setResultats(List<Resultats> resultats) {
         this.listeResultats = (resultats == null) ? new ArrayList<>() : new ArrayList<>(resultats);
         construireMapMetricsParAlgo();
+
+        List<String> algosTrouvés = new ArrayList<>(metricsParAlgorithme.keySet());
+        Collections.sort(algosTrouvés);
+
+        comboAlgoGauche.getItems().setAll(algosTrouvés);
+        comboAlgoDroite.getItems().setAll(algosTrouvés);
+
+        if (!algosTrouvés.isEmpty()) {
+            comboAlgoGauche.getSelectionModel().selectFirst();
+            comboAlgoDroite.getSelectionModel().select(Math.min(1, algosTrouvés.size() - 1));
+        }
+
         rafraichirGraphiqueGauche();
         rafraichirGraphiqueDroite();
     }
 
-    // --------------------------------------------------------
     private void construireMapMetricsParAlgo() {
         metricsParAlgorithme.clear();
         for (Resultats res : listeResultats) {
@@ -148,29 +160,6 @@ public class MetricController implements Initializable {
         chart.setAnimated(false);
     }
 
-    // --------------------------------------------------------
-    private int trouverAlgosDisponibles() {
-        try {
-            List<AlgoConfiguration> algos = ConfigurationManager
-                    .getInstance()
-                    .getFileConfiguration()
-                    .getListeAlgorithmes();
-
-            if (algos == null) return 0;
-
-            Set<String> algosDispos = new HashSet<>();
-            for (AlgoConfiguration algo : algos) {
-                if (algo != null && algo.getNomAlgorithme() != null)
-                    algosDispos.add(algo.getNomAlgorithme().trim().toUpperCase());
-            }
-
-            return algosDispos.size();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    // --------------------------------------------------------
     private void afficherMessage(String message) {
         if (messageLabel != null) {
             messageLabel.setText(message);
