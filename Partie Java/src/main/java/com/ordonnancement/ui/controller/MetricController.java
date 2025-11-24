@@ -21,41 +21,26 @@ import java.util.*;
 public class MetricController implements Initializable {
 
     // --- Graphiques & axes ---
-    @FXML
-    private BarChart<String, Number> barChartGauche;
+    @FXML private BarChart<String, Number> barChartGauche;
+    @FXML private CategoryAxis xAxisGauche;
+    @FXML private NumberAxis yAxisGauche;
 
-    @FXML
-    private CategoryAxis xAxisGauche;
-
-    @FXML
-    private NumberAxis yAxisGauche;
-
-    @FXML
-    private BarChart<String, Number> barChartDroite;
-
-    @FXML
-    private CategoryAxis xAxisDroite;
-
-    @FXML
-    private NumberAxis yAxisDroite;
+    @FXML private BarChart<String, Number> barChartDroite;
+    @FXML private CategoryAxis xAxisDroite;
+    @FXML private NumberAxis yAxisDroite;
 
     // --- Comboboxes ---
-    @FXML
-    private ComboBox<String> comboAlgoGauche;
-
-    @FXML
-    private ComboBox<String> comboAlgoDroite;
+    @FXML private ComboBox<String> comboAlgoGauche;
+    @FXML private ComboBox<String> comboAlgoDroite;
 
     // --- Labels ---
-    @FXML
-    private Label messageLabel;
+    @FXML private Label messageLabel;
+    @FXML private Label labelAlgoDroite;
+    @FXML private Label labelAlgoGauche;
 
-    @FXML
-    private Label labelAlgoDroite;
-
+    // --- Données internes ---
     private final List<String> algorithmes =
             Arrays.asList("FIFO", "ROUND ROBIN", "PRIORITE");
-
     private final Map<String, List<Metrics>> metricsParAlgorithme = new HashMap<>();
     private List<Resultats> listeResultats = new ArrayList<>();
 
@@ -66,6 +51,7 @@ public class MetricController implements Initializable {
             int nbAlgos = trouverAlgosDisponibles();
 
             if (nbAlgos == 0) {
+                // Aucun algo lancé → affiche message centré, cache les graphiques et combos
                 afficherMessage("Aucun résultat disponible.\nLancez d'abord un ordonnancement.");
                 cacherLesGraphiques();
                 return;
@@ -84,14 +70,6 @@ public class MetricController implements Initializable {
             comboAlgoGauche.valueProperty().addListener((obs, oldVal, newVal) -> rafraichirGraphiqueGauche());
             comboAlgoDroite.valueProperty().addListener((obs, oldVal, newVal) -> rafraichirGraphiqueDroite());
 
-            xAxisGauche.setTickLabelsVisible(true);
-            xAxisGauche.setTickMarkVisible(true);
-            xAxisGauche.setOpacity(1);
-
-            xAxisDroite.setTickLabelsVisible(true);
-            xAxisDroite.setTickMarkVisible(true);
-            xAxisDroite.setOpacity(1);
-
             try {
                 listeResultats = List.of(AppState.getInstance().getResultats());
             } catch (Exception e) {
@@ -103,6 +81,7 @@ public class MetricController implements Initializable {
             rafraichirGraphiqueDroite();
 
         } catch (Exception e) {
+            // Aucune popup : juste le message texte au centre
             afficherMessage("Erreur : impossible de charger les métriques.");
             cacherLesGraphiques();
         }
@@ -206,24 +185,31 @@ public class MetricController implements Initializable {
         comboAlgoGauche.setVisible(false);
         comboAlgoDroite.setVisible(false);
         if (labelAlgoDroite != null) labelAlgoDroite.setVisible(false);
+        if (labelAlgoGauche != null) labelAlgoGauche.setVisible(false);
         messageLabel.setVisible(true);
     }
 
     private void afficherUnSeulGraphique() {
         barChartGauche.setVisible(true);
         comboAlgoGauche.setVisible(true);
+        if (labelAlgoGauche != null) labelAlgoGauche.setVisible(true);
+
         barChartDroite.setVisible(false);
         comboAlgoDroite.setVisible(false);
         if (labelAlgoDroite != null) labelAlgoDroite.setVisible(false);
+
         messageLabel.setVisible(false);
     }
 
     private void afficherDeuxGraphiques() {
         barChartGauche.setVisible(true);
         comboAlgoGauche.setVisible(true);
+        if (labelAlgoGauche != null) labelAlgoGauche.setVisible(true);
+
         barChartDroite.setVisible(true);
         comboAlgoDroite.setVisible(true);
         if (labelAlgoDroite != null) labelAlgoDroite.setVisible(true);
+
         messageLabel.setVisible(false);
     }
 }

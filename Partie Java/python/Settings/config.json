@@ -8,6 +8,18 @@
       "fichierResultatsDetailles": "python/Resultats/RoundRobin/rDetailedROUNDROBIN.csv",
       "fichierResultatsGlobaux": "python/Resultats/RoundRobin/rGlobauxROUNDROBIN.csv",
       "quantum": 2
+    },
+    {
+      "nomAlgorithme": "FIFO",
+      "fichierResultatsDetailles": "python/Resultats/Fifo/rDetailedFIFO.csv",
+      "fichierResultatsGlobaux": "python/Resultats/Fifo/rGlobauxFIFO.csv",
+      "quantum": null
+    },
+    {
+      "nomAlgorithme": "Priorite",
+      "fichierResultatsDetailles": "python/Resultats/Priorite/rDetailedPriorite.csv",
+      "fichierResultatsGlobaux": "python/Resultats/Priorite/rGlobauxPriorite.csv",
+      "quantum": null
     }
   ]
 }

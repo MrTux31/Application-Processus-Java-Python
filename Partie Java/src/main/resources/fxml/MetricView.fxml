@@ -43,26 +43,26 @@
                 </HBox>
             </VBox>
 
-            <!-- Label de message d’erreur ou d’information -->
+            <!-- Label message central -->
             <Label fx:id="messageLabel"
                    text="Aucun résultat disponible"
                    visible="false"
                    alignment="CENTER"
                    style="-fx-font-size: 18px; -fx-text-fill: black;"
-                   StackPane.alignment="CENTER" />
+                   StackPane.alignment="CENTER"/>
         </StackPane>
     </center>
 
-    <!-- Bas de la fenêtre : choix des algos -->
+    <!-- Bas : choix des algorithmes -->
     <bottom>
         <HBox spacing="20" alignment="CENTER">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <!-- Choix pour le graphique de gauche -->
+            <!-- Choix du graphique gauche -->
             <VBox spacing="5" alignment="CENTER_LEFT">
-                <Label text="Algorithme (graphique gauche)"/>
+                <Label fx:id="labelAlgoGauche" text="Algorithme (graphique gauche)"/>
                 <ComboBox fx:id="comboAlgoGauche" prefWidth="150">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
@@ -74,7 +74,7 @@
                 </ComboBox>
             </VBox>
 
-            <!-- Choix pour le graphique de droite -->
+            <!-- Choix du graphique droit -->
             <VBox spacing="5" alignment="CENTER_LEFT">
                 <Label fx:id="labelAlgoDroite" text="Algorithme (graphique droit)"/>
                 <ComboBox fx:id="comboAlgoDroite" prefWidth="150">

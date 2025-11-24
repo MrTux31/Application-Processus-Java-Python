@@ -131,11 +131,6 @@ public class AppMainFrameController {
             );
 
         } catch (Exception e) {
-            AlertUtils.showError(
-                    "Erreur",
-                    "Impossible d'ouvrir la comparaison des algorithmes :\n" + e.getMessage(),
-                    (Stage) mainContentPane.getScene().getWindow()
-            );
             e.printStackTrace();
         }
     }
