@@ -129,7 +129,7 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
             if not p["idProcessus"].strip(): #Si l'id du processus est  "    "
                 print("Erreur dans le fichier des processus, il y a un Processus avec un ID vide", file=sys.stderr)
                 sys.exit(8)
-            if not (re.fullmatch(r'P\d+', p["idProcessus"]) or re.fullmatch(r'\d+', p["idProcessus"])): #Format : un nombre ou P Nombre
+            if not (re.fullmatch(r'P\d+', p['idProcessus']) or re.fullmatch(r'\d+', p['idProcessus'])): #Format : un nombre ou P Nombre
                 print(f"Erreur dans le fichier des processus, le processus avec l'id { p["idProcessus"]} ne respecte pas le format attendu.", file=sys.stderr)
                 sys.exit(8)
             if p["idProcessus"] in ids_vus: #Test de l'unicité de l'id du processus
