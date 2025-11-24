@@ -63,7 +63,7 @@ public class AppMainFrameController {
 
             AlertUtils.showError(
                     "Erreur",
-                    "Erreur affichange du menu :\n" + e.getMessage(),
+                    "Erreur affichage du menu :\n" + e.getMessage(),
                     (Stage) mainContentPane.getScene().getWindow());
             
             e.printStackTrace();
@@ -131,7 +131,6 @@ public class AppMainFrameController {
             );
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
