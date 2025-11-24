@@ -1,16 +1,8 @@
 {
-  "nombreTotalProcesseurs": 9,
-  "ramTotale": 8000,
+  "nombreTotalProcesseurs": 1,
+  "ramTotale": 2048,
   "processeurs": [
-    {"idProcesseur": "CPU1"},
-    {"idProcesseur": "CPU2"},
-    {"idProcesseur": "CPU3"},
-    {"idProcesseur": "CPU4"},
-    {"idProcesseur": "CPU5"},
-    {"idProcesseur": "CPU6"},
-    {"idProcesseur": "CPU7"},
-    {"idProcesseur": "CPU8"},
-    {"idProcesseur": "CPU9"}
+    {"idProcesseur": "CPU1"}
 
   ]
 }

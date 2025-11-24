@@ -8,8 +8,10 @@ import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.service.configuration.ConfigurationWriter;
+import com.ordonnancement.service.parser.config.ConfigParser;
 import com.ordonnancement.ui.Alert.AlertUtils;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -54,6 +56,8 @@ public class ConfigController {
     @FXML
     private Button btnAnnuler;
 
+    private final String destination = "python/Settings/config.json"; //Dossier où sera sauvegardé la config
+
     private AppMainFrameController appMainFrameController;
 
     @FXML
@@ -72,59 +76,13 @@ public class ConfigController {
         cbPriorite.selectedProperty().addListener((obs, oldVal, newVal) -> checkReadyToSave());
         tfQuantum.textProperty().addListener((obs, oldVal, newVal) -> checkReadyToSave());
 
-        preremplir();
+        Platform.runLater(() -> preremplir()); //Charger le fichier de configuration.
     }
 
     public void setAppMainFrameController(AppMainFrameController appMainFrameController) {
         this.appMainFrameController = appMainFrameController;
     }
 
-    private File enregistrerSousJson(){
-        Stage stage = (Stage) btnEnregistrer.getScene().getWindow();
-
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Enregistrer le fichier JSON");
-
-        // Filtre d'extension : .json uniquement
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Fichier JSON (*.json)", "*.json")
-        );
-
-        // Si un dossier resultat a déjà été choisi -> on l'utilise
-        File initialDir = null;
-        if (labelResultatPath.getText() != null 
-                && !labelResultatPath.getText().equals("Aucun fichier")) {
-            File dirFromConfig = new File(labelResultatPath.getText());
-            System.out.println(labelResultatPath.getText());
-            if (dirFromConfig.exists() && dirFromConfig.isDirectory()) {
-                initialDir = dirFromConfig;
-            }
-        }
-
-        // Sinon -> Home
-        if (initialDir == null) {
-            initialDir = new File(System.getProperty("user.home"));
-        }
-
-        fileChooser.setInitialDirectory(initialDir);
-
-        fileChooser.setInitialFileName("config.json");
-
-
-        // Fenêtre "Enregistrer sous"
-        File selectedFile = fileChooser.showSaveDialog(stage);
-
-        if (selectedFile != null) {
-            // Vérifier que le fichier se termine bien par .json
-            String filePath = selectedFile.getAbsolutePath();
-            if (!filePath.endsWith(".json")) {
-                selectedFile = new File(filePath + ".json");
-            }
-        }
-        return selectedFile;
-
-    }
 
     @FXML
     private void doAnnuler() {
@@ -227,15 +185,13 @@ public class ConfigController {
             algos
     );
 
-    File destination = enregistrerSousJson();
-    if (destination != null) {
-        ConfigurationManager.getInstance().setCheminFichierConfig(destination.toString());
-        ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
-        new ConfigurationWriter().writeConfiguration(fileConfig, destination.toString());
-        System.out.println("Configuration enregistrée !");
-        AlertUtils.showInfo("Enregistrement"," Enregistrement effectué, retour à l'accueil ...", null);
-        goHome();
-    }
+    
+    ConfigurationManager.getInstance().setCheminFichierConfig(destination);
+    new ConfigurationWriter().writeConfiguration(fileConfig, destination); //On écrase la config précédente
+    System.out.println("Configuration enregistrée !");
+    AlertUtils.showInfo("Enregistrement"," Enregistrement effectué, retour à l'accueil ...", btnEnregistrer.getScene().getWindow());
+    goHome();
+    
     
     }
 
@@ -246,7 +202,8 @@ public class ConfigController {
 
     private void preremplir() {
         try {
-            FileConfiguration conf = ConfigurationManager.getInstance().getFileConfiguration();
+            
+            FileConfiguration conf = ConfigParser.parse(destination); //Récupérer le contenu du fichier de config
 
             if (conf == null)
                 return; // rien à préremplir
@@ -297,8 +254,9 @@ public class ConfigController {
 
             checkReadyToSave();
 
-        } catch (Exception e) {
-            System.out.println("Aucune configuration précédente");
+        } catch (Exception e) { //Si il y a une erreur de parsing, on affiche l'erreur et on met des champs vides à compléter.
+            AlertUtils.showError("Erreur","Impossible de charger la configuration existante.\nRemplissez les champs pour créer une nouvelle configuration correcte." , btnEnregistrer.getScene().getWindow());
+
         }
     }
 

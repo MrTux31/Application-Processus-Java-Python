@@ -1,25 +1,25 @@
 {
-  "fichierProcessus": "python\\Settings\\processusInitiaux.csv",
-  "fichierRessourcesDisponibles": "python\\Settings\\ressources.json",
-  "fichierMetriquesGlobales": "python\\Settings\\fichierMetriquesGlobales.csv",
+  "fichierProcessus": "C:\\Users\\Quentin\\Downloads\\processus_initiaux.csv",
+  "fichierRessourcesDisponibles": "C:\\Users\\Quentin\\Documents\\SAE\\Dépot git hub\\Partie Java\\python\\Settings\\ressources.json",
+  "fichierMetriquesGlobales": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\Metriques\\metriquesGlobales.csv",
   "listeAlgorithmes": [
     {
-      "nomAlgorithme": "Round Robin",
-      "fichierResultatsDetailles": "python\\Resultats\\RoundRobin\\rDetailedROUNDROBIN.csv",
-      "fichierResultatsGlobaux": "python\\Resultats\\RoundRobin\\rGlobauxROUNDROBIN.csv",
-      "quantum": 2
-    },
-    {
       "nomAlgorithme": "FIFO",
-      "fichierResultatsDetailles": "python\\Resultats\\Fifo\\rDetailedFIFO.csv",
-      "fichierResultatsGlobaux": "python\\Resultats\\Fifo\\rGlobauxFIFO.csv",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\FIFO\\rDetailedFIFO.csv",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\FIFO\\rGlobauxFIFO.csv",
       "quantum": null
     },
     {
-      "nomAlgorithme": "Priorite",
-      "fichierResultatsDetailles": "python\\Resultats\\Priorite\\rDetailedPriorite.csv",
-      "fichierResultatsGlobaux": "python\\Resultats\\Priorite\\rGlobauxPriorite.csv",
+      "nomAlgorithme": "PRIORITE",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Tests config\\PRIORITE\\rDetailedPRIORITE.csv",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\PRIORITE\\rGlobauxPRIORITE.csv",
       "quantum": null
+    },
+    {
+      "nomAlgorithme": "ROUND ROBIN",
+      "fichierResultatsDetailles": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\ROUND ROBIN\\rDetailedROUNDROBIN.csv",
+      "fichierResultatsGlobaux": "C:\\Users\\Quentin\\Documents\\SAE\\Tests config\\ROUND ROBIN\\rGlobauxROUNDROBIN.csv",
+      "quantum": 2
     }
   ]
 }
