@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="500" prefWidth="620" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.ordonnancement.ui.controller.ConfigController">
+<BorderPane prefHeight="500" prefWidth="620" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.ConfigController">
 
     <center>
         <VBox spacing="12" style="-fx-padding:15;" VBox.vgrow="ALWAYS">
@@ -53,15 +53,26 @@
                 <TextField fx:id="tfQuantum" promptText="Quantum" />
             </HBox>
 
-            <!-- BOUTON METRIQUES -->
-            <HBox spacing="10">
-                <Label style="-fx-font-weight: bold;" text="Dossier métriques :" />
-                <Button onAction="#choisirDossierMetriques" text="Choisir..." />
-                <Label fx:id="metriquesLabel" style="-fx-text-fill:#666;" text="Aucun dossier" />
-            </HBox>
-
             <!-- TITLED PANE POUR LES RESULTATS DYNAMIQUES -->
-            <TitledPane fx:id="tpResultats" expanded="true" text="Résultats" />
+            <TitledPane fx:id="tpResultats" expanded="true" text="Résultats">
+            <content>
+               <VBox spacing="5.0">
+                  <children>
+            
+                                    <!-- BOUTON METRIQUES -->
+                        <HBox spacing="10">
+                            <Label style="-fx-font-weight: bold;" text="Dossier métriques :" />
+                            <Button onAction="#choisirDossierMetriques" text="Choisir..." />
+                            <Label fx:id="metriquesLabel" style="-fx-text-fill:#666;" text="Aucun dossier" />
+                        </HBox>
+                     <HBox fx:id="hboxResultatsAlgos">
+                        <children>
+                           <VBox fx:id="vBoxResultats" spacing="5.0" />
+                        </children>
+                     </HBox>
+                  </children>
+               </VBox>
+            </content></TitledPane>
 
             <!-- ESPACE VERTICAL FLEXIBLE -->
             <Pane VBox.vgrow="ALWAYS" />

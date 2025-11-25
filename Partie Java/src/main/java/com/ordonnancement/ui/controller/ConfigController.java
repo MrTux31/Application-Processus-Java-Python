@@ -13,7 +13,11 @@ import com.ordonnancement.ui.Alert.AlertUtils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -33,6 +37,7 @@ public class ConfigController {
     @FXML private CheckBox cbRR;
     @FXML private TextField tfQuantum;
     @FXML private TitledPane tpResultats;
+    @FXML private VBox vBoxResultats;
 
     private final Label fifoDet = new Label("Aucun");
     private final Label fifoGlob = new Label("Aucun");
@@ -184,20 +189,23 @@ public class ConfigController {
     }
 
     private void refreshUI() {
-        VBox content = new VBox(12);
-        content.setStyle("-fx-padding:10;");
 
-        // Algorithmes sélectionnés
-        if (cbFifo.isSelected()) content.getChildren().add(buildAlgoBlock("FIFO", fifoDet, fifoGlob));
-        if (cbPriorite.isSelected()) content.getChildren().add(buildAlgoBlock("PRIORITE", prioriteDet, prioriteGlob));
-        if (cbRR.isSelected()) content.getChildren().add(buildAlgoBlock("ROUND ROBIN", rrDet, rrGlob));
+    // Vider la zone des algos
+    vBoxResultats.getChildren().clear();
 
-        tpResultats.setContent(content);
-        tpResultats.setVisible(!content.getChildren().isEmpty());
-        tpResultats.setManaged(!content.getChildren().isEmpty());
+    // Recréer dynamiquement les blocs d’algorithmes
+    if (cbFifo.isSelected()) vBoxResultats.getChildren().add(buildAlgoBlock("FIFO", fifoDet, fifoGlob));
+    if (cbPriorite.isSelected()) vBoxResultats.getChildren().add(buildAlgoBlock("PRIORITE", prioriteDet, prioriteGlob));
+    if (cbRR.isSelected()) vBoxResultats.getChildren().add(buildAlgoBlock("ROUND ROBIN", rrDet, rrGlob));
 
-        btnEnregistrer.setDisable(!canSave());
-    }
+    // Si aucune sélection → hboxResultatsAlgos vide, mais on NE TOUCHE PAS au reste du contenu
+    boolean hasAlgo = !vBoxResultats.getChildren().isEmpty();
+    vBoxResultats.setVisible(hasAlgo);
+    vBoxResultats.setManaged(hasAlgo);
+
+    // Bouton valider activé ou pas
+    btnEnregistrer.setDisable(!canSave());
+}
 
 
     private VBox buildAlgoBlock(String nom, Label det, Label glob) {
