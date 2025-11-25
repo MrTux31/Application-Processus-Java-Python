@@ -9,106 +9,70 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.ConfigController">
+<BorderPane prefHeight="500" prefWidth="620" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.ordonnancement.ui.controller.ConfigController">
 
-    <!-- ======================================
-               TITRE
-    ======================================= -->
-    <top>
-        <Label style="-fx-font-size:20px; -fx-text-fill:#3579f6; -fx-font-weight:bold; -fx-padding:15 0 10 0;" text="Configuration" BorderPane.alignment="CENTER" />
-    </top>
-
-    <!-- ======================================
-               CONTENU CENTRE
-    ======================================= -->
     <center>
-        <VBox spacing="18" style="-fx-padding:20;" BorderPane.alignment="CENTER">
-            
-            <!-- =============================
-                 TITLED PANE : FICHIERS
-            ============================== -->
-            <TitledPane expanded="true" text="Sélection des fichiers">
-                <content>
-                    <GridPane hgap="15" style="-fx-padding:8;" vgap="12">
-                        <columnConstraints>
-                            <ColumnConstraints prefWidth="160" />
-                            <ColumnConstraints prefWidth="280" />
-                            <ColumnConstraints prefWidth="200" />
-                        </columnConstraints>
+        <VBox spacing="12" style="-fx-padding:15;" VBox.vgrow="ALWAYS">
 
-                        <!-- Ressources -->
-                        <Label text="Fichier des ressources :" GridPane.rowIndex="0" />
-                        <Button fx:id="btnRessources" onAction="#choisirRessources" text="Choisir..." GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Label fx:id="labelRessourcesPath" style="-fx-text-fill:#555;" text="Aucun fichier" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <!-- FICHIERS SPECIFIQUES -->
+            <TitledPane expanded="true" text="Fichiers d'entrée">
+                <GridPane hgap="10" vgap="10">
+                    <Label text="Fichier des processus :" GridPane.rowIndex="0" />
+                    <Button onAction="#choisirFichierProcess" text="Choisir..." GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <Label fx:id="labelProcessPath" style="-fx-text-fill:#666;" text="Aucun fichier" GridPane.columnIndex="2" GridPane.rowIndex="0" />
 
-                        <!-- Process -->
-                        <Label text="Fichier des processus :" GridPane.rowIndex="1" />
-                        <Button fx:id="btnProcess" onAction="#choisirProcess" text="Choisir..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label fx:id="labelProcessPath" style="-fx-text-fill:#555;" text="Aucun fichier" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-
-                        <!-- Dossier résultat -->
-                        <Label text="Dossier résultats :" GridPane.rowIndex="2" />
-                        <Button fx:id="btnResultat" onAction="#choisirDossierResultats" text="Choisir..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label fx:id="labelResultatPath" style="-fx-text-fill:#555;" text="Aucun fichier" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                  <rowConstraints>
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                  </rowConstraints>
-                    </GridPane>
-                </content>
+                    <Label text="Fichier des ressources :" GridPane.rowIndex="1" />
+                    <Button onAction="#choisirFichierRessources" text="Choisir..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="labelRessourcesPath" style="-fx-text-fill:#666;" text="Aucun fichier" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+                </GridPane>
             </TitledPane>
 
-            <!-- =============================
-                 TITLED PANE : ALGORITHMES
-            ============================== -->
+            <!-- ALGORITHMES -->
             <TitledPane expanded="true" text="Algorithmes">
-                <content>
-                    <GridPane hgap="15" style="-fx-padding:8;" vgap="12">
-                        <columnConstraints>
-                            <ColumnConstraints prefWidth="150" />
-                            <ColumnConstraints prefWidth="250" />
-                            <ColumnConstraints prefWidth="150" />
-                        </columnConstraints>
-
-                        <!-- Cases algorithmes -->
-                        <Label text="Algorithmes :" GridPane.rowIndex="0" />
-                        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <CheckBox fx:id="cbFifo" text="FIFO" />
-                            <CheckBox fx:id="cbPriorite" text="Priorité" />
-                            <CheckBox fx:id="cbRR" text="Round Robin" />
-                        </VBox>
-
-                        <!-- Quantum RR -->
-                        <HBox alignment="CENTER_LEFT" spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                            <Label text="Quantum :" />
-                            <TextField fx:id="tfQuantum" disable="true" prefWidth="80" promptText="valeur" />
-                        </HBox>
-                  <rowConstraints>
-                     <RowConstraints />
-                  </rowConstraints>
-                    </GridPane>
-                </content>
+                <VBox fx:id="algoContainer" spacing="20" />
             </TitledPane>
-         <TitledPane fx:id="tpResultats" expanded="true" text="Fichiers de résultats" visible="false" />
+
+            <!-- CHECKBOX + QUANTUM -->
+            <HBox spacing="15">
+                <CheckBox fx:id="cbFifo" text="FIFO" />
+                <CheckBox fx:id="cbPriorite" text="Priorité" />
+                <CheckBox fx:id="cbRR" text="Round Robin" />
+                <TextField fx:id="tfQuantum" promptText="Quantum" />
+            </HBox>
+
+            <!-- TITLED PANE POUR LES RESULTATS DYNAMIQUES -->
+            <TitledPane fx:id="tpResultats" expanded="true" text="Résultats" />
+
+                        <!-- BOUTON METRIQUES déplacé juste au-dessus de résultats -->
+            <HBox spacing="10">
+                <Label style="-fx-font-weight: bold;" text="Dossier métriques :" />
+                <Button onAction="#choisirDossierMetriques" text="Choisir..." />
+                <Label fx:id="metriquesLabel" style="-fx-text-fill:#666;" text="Aucun dossier" />
+            </HBox>
+
+            <!-- ESPACE VERTICAL FLEXIBLE -->
+            <Pane VBox.vgrow="ALWAYS" />
+
+            <!-- VALIDATION EN BAS A DROITE -->
+            <HBox alignment="BOTTOM_RIGHT" spacing="15">
+                <Button fx:id="btnEnregistrer" onAction="#doValider" text="Valider" />
+                <Button onAction="#doAnnuler" text="Annuler" />
+            </HBox>
 
         </VBox>
     </center>
-
-    <!-- ======================================
-               BAS : BOUTONS
-    ======================================= -->
-    <bottom>
-        <HBox alignment="CENTER_RIGHT" spacing="15" style="-fx-padding: 10 20 15 20;" BorderPane.alignment="CENTER">
-
-            <Button fx:id="btnEnregistrer" onAction="#doValider" style="-fx-background-color:#3579f6; -fx-text-fill:white; -fx-padding:6 18; -fx-background-radius:6;" text="Enregistrer" />
-
-            <Button fx:id="btnAnnuler" onAction="#doAnnuler" style="-fx-background-color:#ddd; -fx-text-fill:black; -fx-padding:6 18; -fx-background-radius:6;" text="Annuler" />
-
-        </HBox>
-    </bottom>
 
 </BorderPane>

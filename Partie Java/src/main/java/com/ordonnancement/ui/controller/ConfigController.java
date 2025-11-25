@@ -2,479 +2,307 @@ package com.ordonnancement.ui.controller;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.service.configuration.ConfigurationWriter;
+import com.ordonnancement.service.configuration.ConfigurationWriterException;
 import com.ordonnancement.ui.Alert.AlertUtils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class ConfigController {
 
-    @FXML
-    TitledPane tpResultats;
-    // Labels pour afficher les chemins choisis
-    @FXML
-    private Label labelRessourcesPath;
-    @FXML
-    private Label labelProcessPath;
-    @FXML
-    private Label labelResultatPath;
+    @FXML private Label metriquesLabel;
+    @FXML private Label labelProcessPath;
+    @FXML private Label labelRessourcesPath;
+    @FXML private VBox algoContainer;
+    @FXML private Button btnEnregistrer;
 
-    // Boutons pour sélectionner les fichiers
-    @FXML
-    private Button btnRessources;
-    @FXML
-    private Button btnProcess;
-    @FXML
-    private Button btnResultat;
+    @FXML private CheckBox cbFifo;
+    @FXML private CheckBox cbPriorite;
+    @FXML private CheckBox cbRR;
+    @FXML private TextField tfQuantum;
+    @FXML private TitledPane tpResultats;
 
-    // Algorithmes
-    @FXML
-    private CheckBox cbFifo;
-    @FXML
-    private CheckBox cbRR;
-    @FXML
-    private CheckBox cbPriorite;
+    private final Label fifoDet = new Label("Aucun");
+    private final Label fifoGlob = new Label("Aucun");
+    private final Label prioriteDet = new Label("Aucun");
+    private final Label prioriteGlob = new Label("Aucun");
+    private final Label rrDet = new Label("Aucun");
+    private final Label rrGlob = new Label("Aucun");
 
-    @FXML
-    private TextField tfQuantum;
-
-    // Boutons en bas
-    @FXML
-    private Button btnEnregistrer;
-    @FXML
-    private Button btnAnnuler;
-    private final String destination = ConfigurationManager.getInstance().getCheminFichierConfig(); //Dossier où sera sauvegardé la config
-    private AppMainFrameController appMainFrameController;
-
-    private Map<String, List<TextField>> mapAlgoFichiersResultats = new HashMap<>();
+    private final String destination = ConfigurationManager.getInstance().getCheminFichierConfig();
+    private AppMainFrameController mainController;
 
     @FXML
     private void initialize() {
-        // Initialisation si besoin
-        tfQuantum.setDisable(true);
-        btnEnregistrer.setDisable(true);
+        if (tfQuantum != null) tfQuantum.setDisable(true);
+        if (btnEnregistrer != null) btnEnregistrer.setDisable(true);
 
-        cbRR.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            tfQuantum.setDisable(!newVal);
-            checkReadyToSave();
-            if (newVal) {
-                // initialiser si absent
-                mapAlgoFichiersResultats.putIfAbsent("ROUND ROBIN", creerListeChampsVides());
-            }
-            updateResultatsPane();
-
+        cbFifo.selectedProperty().addListener((obs,o,n) -> refreshUI());
+        cbPriorite.selectedProperty().addListener((obs,o,n) -> refreshUI());
+        cbRR.selectedProperty().addListener((obs,o,n) -> {
+            if (tfQuantum != null) tfQuantum.setDisable(!n);
+            refreshUI();
         });
+        if (tfQuantum != null) tfQuantum.textProperty().addListener((obs,o,n) -> refreshUI());
 
-        cbFifo.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            checkReadyToSave();
-            if (newVal) {
-                // initialiser si absent
-                mapAlgoFichiersResultats.putIfAbsent("FIFO", creerListeChampsVides());
-            } 
-            updateResultatsPane();
-        }
-        );
-        cbPriorite.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            checkReadyToSave();
-            if (newVal) {
-                // initialiser si absent
-                mapAlgoFichiersResultats.putIfAbsent("PRIORITE", creerListeChampsVides());
-            } 
-            updateResultatsPane();
-        });
-        tfQuantum.textProperty().addListener((obs, oldVal, newVal) -> checkReadyToSave());
-
-        Platform.runLater(() -> preremplir()); //Charger le fichier de configuration.
+        Platform.runLater(this::reloadExistingConfig);
     }
 
-    public void setAppMainFrameController(AppMainFrameController appMainFrameController) {
-        this.appMainFrameController = appMainFrameController;
+    public void setAppMainFrameController(AppMainFrameController c) {
+        this.mainController = c;
+    }
+
+    @FXML
+    private void choisirDossierMetriques() {
+        Window owner = getOwnerWindow();
+        DirectoryChooser dc = new DirectoryChooser();
+        dc.setTitle("Choisir le dossier métriques");
+        if (metriquesLabel != null && metriquesLabel.getText() != null && !metriquesLabel.getText().equals("Aucun dossier")) {
+            File prev = new File(metriquesLabel.getText());
+            if (prev.exists()) dc.setInitialDirectory(prev.isDirectory() ? prev : prev.getParentFile());
+        }
+        File chosen = dc.showDialog(owner);
+        if (chosen != null) {
+            metriquesLabel.setText(chosen.getAbsolutePath());
+            refreshUI();
+        }
+    }
+
+    @FXML
+    private void choisirFichierProcess() {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Choisir le fichier des processus");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+        File sel = fc.showOpenDialog(getOwnerWindow());
+        if (sel != null) {
+            labelProcessPath.setText(sel.getAbsolutePath());
+            refreshUI();
+        }
+    }
+
+    @FXML
+    private void choisirFichierRessources() {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Choisir le fichier des ressources");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+        File sel = fc.showOpenDialog(getOwnerWindow());
+        if (sel != null) {
+            labelRessourcesPath.setText(sel.getAbsolutePath());
+            refreshUI();
+        }
     }
 
     @FXML
     private void doAnnuler() {
-        // Action pour annuler, par exemple vider les champs ou fermer la vue
-        goHome();
-        System.out.println("Annulation");
-    }
-
-    private void checkReadyToSave() {
-        boolean fichiersOk
-                = !labelRessourcesPath.getText().equals("Aucun fichier")
-                && !labelProcessPath.getText().equals("Aucun fichier")
-                && !labelResultatPath.getText().equals("Aucun fichier");
-
-        boolean algoOk = cbFifo.isSelected() || cbRR.isSelected() || cbPriorite.isSelected();
-
-        btnEnregistrer.setDisable(!(fichiersOk && algoOk));
-
+        Window owner = getOwnerWindow();
+        if (owner != null) owner.hide();
+        if (mainController != null) mainController.afficherHome();
     }
 
     @FXML
     private void doValider() {
-
-        // Si Round Robin est coche mais quantum vide -> erreur
-        if (cbRR.isSelected() && (tfQuantum.getText() == null || tfQuantum.getText().isBlank())) {
-            AlertUtils.showError(
-                    "Erreur",
-                    "Vous avez choisi Round Robin mais aucun quantum n'a été saisi.",
-                    btnEnregistrer.getScene().getWindow()
-            );
-            return; // On stoppe l'exécution
-        }
-
-        if (cbRR.isSelected()) {
-            int quantumSelected;
-            try {
-                quantumSelected = Integer.parseInt(tfQuantum.getText());
-                if (quantumSelected <= 0) {
-                    AlertUtils.showError(
-                            "Erreur",
-                            "Le quantum doit être un entier naturel non null !",
-                            btnEnregistrer.getScene().getWindow()
-                    );
+        Window owner = getOwnerWindow();
+        List<AlgoConfiguration> algos = new ArrayList<>();
+        try {
+            if (cbFifo.isSelected()) algos.add(new AlgoConfiguration("FIFO", fifoDet.getText(), fifoGlob.getText(), null));
+            if (cbPriorite.isSelected()) algos.add(new AlgoConfiguration("PRIORITE", prioriteDet.getText(), prioriteGlob.getText(), null));
+            if (cbRR.isSelected()) {
+                if (tfQuantum.getText() == null || tfQuantum.getText().isBlank()) {
+                    AlertUtils.showError("Erreur", "Vous avez choisi Round Robin mais aucun quantum n'a été saisi.", owner);
                     return;
                 }
-            } catch (NumberFormatException e) {
-                AlertUtils.showError(
-                        "Erreur",
-                        "Le quantum doit être un nombre !!!",
-                        btnEnregistrer.getScene().getWindow()
-                );
-                return;
+                int q;
+                try { q = Integer.parseInt(tfQuantum.getText()); if(q<=0) throw new NumberFormatException(); }
+                catch(NumberFormatException ex) {
+                    AlertUtils.showError("Erreur", "Le quantum doit être un entier naturel non nul !", owner);
+                    return;
+                }
+                algos.add(new AlgoConfiguration("ROUND ROBIN", rrDet.getText(), rrGlob.getText(), q));
             }
-        }
-
-        if (btnEnregistrer.isDisabled()) {
-            System.out.println("Impossible d'enregistrer : champs manquants");
+        } catch (IllegalArgumentException iae) {
+            AlertUtils.showError("Erreur", "Erreur de configuration d'un algorithme : " + iae.getMessage(), owner);
             return;
         }
 
-        List<AlgoConfiguration> algos = new ArrayList<>();
-
-        if (cbFifo.isSelected()) {
-            algos.add(new AlgoConfiguration(
-                    "FIFO",
-                    mapAlgoFichiersResultats.get("FIFO").get(0).getText(),
-                    mapAlgoFichiersResultats.get("FIFO").get(1).getText(),
-                    null
-            ));
+        if (algos.isEmpty()) {
+            AlertUtils.showError("Erreur", "Vous devez sélectionner au moins un algorithme.", owner);
+            return;
         }
 
-        if (cbPriorite.isSelected()) {
-            algos.add(new AlgoConfiguration(
-                    "PRIORITE",
-                    mapAlgoFichiersResultats.get("PRIORITE").get(0).getText(),
-                    mapAlgoFichiersResultats.get("PRIORITE").get(1).getText(),
-                    null
-            ));
+        if (metriquesLabel == null || metriquesLabel.getText() == null || metriquesLabel.getText().equals("Aucun dossier")) {
+            AlertUtils.showError("Erreur", "Le dossier métriques n'est pas renseigné.", owner);
+            return;
         }
 
-        if (cbRR.isSelected()) {
-            algos.add(new AlgoConfiguration(
-                    "ROUND ROBIN",
-                    mapAlgoFichiersResultats.get("ROUND ROBIN").get(0).getText(),
-                    mapAlgoFichiersResultats.get("ROUND ROBIN").get(1).getText(),
-                    Integer.parseInt(tfQuantum.getText())
-            ));
+        File metDir = new File(metriquesLabel.getText());
+        if (!metDir.exists() && !metDir.mkdirs()) {
+            AlertUtils.showError("Erreur", "Impossible de créer le dossier Métriques : " + metDir.getAbsolutePath(), owner);
+            return;
         }
 
-        String metriquesFile = labelResultatPath.getText() + "\\Metriques\\metriquesGlobales.csv";
-
-        FileConfiguration fileConfig = new FileConfiguration(
+        FileConfiguration fileConfig;
+        try {
+            fileConfig = new FileConfiguration(
                 labelProcessPath.getText(),
-                metriquesFile,
+                new File(metDir,"metriquesGlobales.csv").getAbsolutePath(),
                 labelRessourcesPath.getText(),
                 algos
-        );
+            );
+        } catch (IllegalArgumentException e) {
+            AlertUtils.showError("Erreur", "Configuration invalide : " + e.getMessage(), owner);
+            return;
+        }
 
-        new ConfigurationWriter().writeConfiguration(fileConfig, destination); //On écrase la config précédente
-        System.out.println("Configuration enregistrée !");
-        ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
-        AlertUtils.showInfo("Enregistrement", " Enregistrement effectué, retour à l'accueil ...", btnEnregistrer.getScene().getWindow());
-        goHome();
-
-    }
-
-    private void goHome() {
-        appMainFrameController.afficherHome();
-    }
-
-    private void preremplir() {
         try {
-            ConfigurationManager.getInstance().loadConfiguration(); //Charger la configuration déjà existante
-            FileConfiguration conf = ConfigurationManager.getInstance().getFileConfiguration(); //Récupérer l'objet FileConfiguration
+            new ConfigurationWriter().writeConfiguration(fileConfig, destination);
+            ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
+            AlertUtils.showInfo("Succès", "Configuration enregistrée !", owner);
+            if (mainController != null) mainController.afficherHome();
+        } catch (ConfigurationWriterException e) {
+            AlertUtils.showError("Erreur", "Impossible d'enregistrer : " + e.getMessage(), owner);
+        }
+    }
 
+    private Window getOwnerWindow() {
+        if (btnEnregistrer != null && btnEnregistrer.getScene() != null)
+            return btnEnregistrer.getScene().getWindow();
+        if (labelProcessPath != null && labelProcessPath.getScene() != null)
+            return labelProcessPath.getScene().getWindow();
+        return null;
+    }
+
+    private void refreshUI() {
+        VBox content = new VBox(12);
+        content.setStyle("-fx-padding:10;");
+
+        // ALGORITHMES sélectionnés
+        if (cbFifo.isSelected()) content.getChildren().add(buildAlgoBlock("FIFO", fifoDet, fifoGlob));
+        if (cbPriorite.isSelected()) content.getChildren().add(buildAlgoBlock("PRIORITE", prioriteDet, prioriteGlob));
+        if (cbRR.isSelected()) content.getChildren().add(buildAlgoBlock("ROUND ROBIN", rrDet, rrGlob));
+
+        tpResultats.setContent(content);
+        tpResultats.setVisible(!content.getChildren().isEmpty());
+        tpResultats.setManaged(!content.getChildren().isEmpty());
+
+        btnEnregistrer.setDisable(!canSave());
+    }
+
+    private VBox buildAlgoBlock(String nom, Label det, Label glob) {
+        VBox box = new VBox(8);
+        box.setStyle("-fx-padding:10; -fx-border-color:#ddd; -fx-border-radius:6;");
+        Label title = new Label(nom);
+        title.setStyle("-fx-font-weight:bold;");
+        box.getChildren().add(title);
+
+        GridPane g = new GridPane();
+        g.setHgap(10);
+        g.setVgap(8);
+
+        Button bDet = new Button("Choisir...");
+        bDet.setOnAction(e -> {
+            File chosen = chooseDirectoryForLabel(det);
+            if (chosen != null) det.setText(chosen.getAbsolutePath());
+            refreshUI();
+        });
+        g.add(new Label("Résultats détaillés :"), 0, 0);
+        g.add(bDet, 1, 0);
+        g.add(det, 2, 0);
+
+        Button bGlob = new Button("Choisir...");
+        bGlob.setOnAction(e -> {
+            File chosen = chooseDirectoryForLabel(glob);
+            if (chosen != null) glob.setText(chosen.getAbsolutePath());
+            refreshUI();
+        });
+        g.add(new Label("Résultats globaux :"), 0, 1);
+        g.add(bGlob, 1, 1);
+        g.add(glob, 2, 1);
+
+        box.getChildren().add(g);
+        return box;
+    }
+
+    private File chooseDirectoryForLabel(Label ref) {
+        DirectoryChooser dc = new DirectoryChooser();
+        dc.setTitle("Choisir dossier");
+        if (ref != null && ref.getText() != null && !ref.getText().startsWith("Aucun")) {
+            File prev = new File(ref.getText());
+            if (prev.exists()) dc.setInitialDirectory(prev.isDirectory() ? prev : prev.getParentFile());
+        }
+        return dc.showDialog(getOwnerWindow());
+    }
+
+    private void reloadExistingConfig() {
+        try {
+            ConfigurationManager.getInstance().loadConfiguration();
+            FileConfiguration conf = ConfigurationManager.getInstance().getFileConfiguration();
             if (conf == null) {
-                return; // rien à préremplir
+                if (labelProcessPath != null) labelProcessPath.setText("Aucun fichier");
+                if (labelRessourcesPath != null) labelRessourcesPath.setText("Aucun fichier");
+                if (metriquesLabel != null) metriquesLabel.setText("Aucun dossier");
+                refreshUI();
+                return;
             }
-            // --- Chemins des fichiers ---
-            if (conf.getFichierRessourcesDisponibles() != null) {
+
+            if (labelRessourcesPath != null && conf.getFichierRessourcesDisponibles() != null)
                 labelRessourcesPath.setText(conf.getFichierRessourcesDisponibles());
-            }
 
-            if (conf.getFichierProcessus() != null) {
+            if (labelProcessPath != null && conf.getFichierProcessus() != null)
                 labelProcessPath.setText(conf.getFichierProcessus());
-            }
 
-            if (conf.getFichierMetriquesGlobales() != null) {
-                // On récupère juste le dossier parent des résultats
-                File parent = new File(conf.getFichierMetriquesGlobales()).getParentFile();
-                if (parent != null) {
-                    labelResultatPath.setText(parent.getAbsolutePath());
-                }
+            if (metriquesLabel != null && conf.getFichierMetriquesGlobales() != null) {
+                File metParent = new File(conf.getFichierMetriquesGlobales()).getParentFile();
+                if (metParent != null) metriquesLabel.setText(metParent.getAbsolutePath());
             }
-
-            // --- Algorithmes cochés ---
-            cbFifo.setSelected(false);
-            cbRR.setSelected(false);
-            cbPriorite.setSelected(false);
-            tfQuantum.setDisable(true);
 
             if (conf.getListeAlgorithmes() != null) {
-                conf.getListeAlgorithmes().forEach(a -> {
-
-                    switch (a.getNomAlgorithme().toUpperCase()) { //upper pour ignorer la casse
-
+                for (AlgoConfiguration a : conf.getListeAlgorithmes()) {
+                    switch (a.getNomAlgorithme().toUpperCase()) {
                         case "FIFO":
                             cbFifo.setSelected(true);
+                            fifoDet.setText(a.getFichierResultatsDetailles());
+                            fifoGlob.setText(a.getFichierResultatsGlobaux());
                             break;
-
                         case "PRIORITE":
                             cbPriorite.setSelected(true);
+                            prioriteDet.setText(a.getFichierResultatsDetailles());
+                            prioriteGlob.setText(a.getFichierResultatsGlobaux());
                             break;
-
                         case "ROUND ROBIN":
                             cbRR.setSelected(true);
+                            rrDet.setText(a.getFichierResultatsDetailles());
+                            rrGlob.setText(a.getFichierResultatsGlobaux());
                             if (a.getQuantum() != null) {
                                 tfQuantum.setDisable(false);
                                 tfQuantum.setText(String.valueOf(a.getQuantum()));
                             }
                             break;
                     }
-                    
-                });
-                prechargerFichiersResultats();
+                }
             }
-
-            checkReadyToSave();
-
-        } catch (Exception e) { //Si il y a une erreur de parsing, on affiche l'erreur et on met des champs vides à compléter.
-            AlertUtils.showError("Erreur", "Impossible de charger la configuration existante.\nRemplissez les champs pour créer une nouvelle configuration correcte.", btnEnregistrer.getScene().getWindow());
-
+            refreshUI();
+        } catch (Exception e) {
+            AlertUtils.showError("Erreur", "Impossible de charger la configuration existante.", getOwnerWindow());
         }
     }
 
-    /**
- * Précharge les fichiers de résultats depuis la config existante
- * en remplissant mapAlgoFichiersResultats puis met à jour l'affichage.
- */
-private void prechargerFichiersResultats() {
-
-    mapAlgoFichiersResultats.clear(); // On repart propre
-
-    List<AlgoConfiguration> algos = ConfigurationManager.getInstance()
-            .getFileConfiguration()
-            .getListeAlgorithmes();
-
-    for (AlgoConfiguration a : algos) {
-
-        // On crée les champs déjà remplis
-        TextField tfDet = new TextField(a.getFichierResultatsDetailles());
-        TextField tfGlob = new TextField(a.getFichierResultatsGlobaux());
-
-        List<TextField> fields = new ArrayList<>();
-        fields.add(tfDet);
-        fields.add(tfGlob);
-
-        // Nom algo normalisé
-        String nom = a.getNomAlgorithme().toUpperCase();
-
-        mapAlgoFichiersResultats.put(nom, fields);
+    private boolean canSave() {
+        if (labelProcessPath == null || labelRessourcesPath == null || metriquesLabel == null) return false;
+        if (labelProcessPath.getText() == null || labelProcessPath.getText().startsWith("Aucun")) return false;
+        if (labelRessourcesPath.getText() == null || labelRessourcesPath.getText().startsWith("Aucun")) return false;
+        if (metriquesLabel.getText() == null || metriquesLabel.getText().startsWith("Aucun")) return false;
+        return cbFifo.isSelected() || cbPriorite.isSelected() || cbRR.isSelected();
     }
-
-    // Mise à jour visuelle
-    updateResultatsPane();
-}
-
-    private List<TextField> creerListeChampsVides() {
-        List<TextField> l = new ArrayList<>();
-        l.add(new TextField());
-        l.add(new TextField());
-        return l;
-    }
-
-    /**
-     * Permet de recréer le titled pane des fichiers de résultats après
-     * changement sur les checkbox
-     *
-     */
-    private void updateResultatsPane() {
-    VBox contenu = new VBox(12);
-    contenu.setStyle("-fx-padding:10;");
-
-    if (cbFifo.isSelected()) {
-        ajouterBloc(contenu, "FIFO");
-    }
-    if (cbPriorite.isSelected()) {
-        ajouterBloc(contenu, "PRIORITE");
-    }
-    if (cbRR.isSelected()) {
-        ajouterBloc(contenu, "ROUND ROBIN");
-    }
-
-    boolean hasAlgo = !contenu.getChildren().isEmpty();
-    tpResultats.setManaged(hasAlgo);
-    tpResultats.setVisible(hasAlgo);
-    tpResultats.setContent(contenu);
-}
-
-private void ajouterBloc(VBox box, String algo) {
-    List<TextField> fields = mapAlgoFichiersResultats.get(algo);
-    if (fields != null) {
-        box.getChildren().add(
-            creerBlocResultats(algo, fields.get(0), fields.get(1))
-        );
-    }
-}
-
-    /**
-     * Crée un gird pane contenant les infos concernant les fichiers de
-     * résultats d'un algo
-     *
-     * @param nomAlgo
-     * @param fichierResultatsDetailles
-     * @param fichierResultatsGlobaux
-     * @return
-     */
-    private GridPane creerBlocResultats(String nomAlgo, TextField fieldDetailles, TextField fieldGlobaux) {
-
-        GridPane grid = new GridPane();
-        grid.setHgap(15);
-        grid.setVgap(8);
-
-        grid.add(new Label("Nom algo :"), 0, 0);
-        grid.add(new Label(nomAlgo), 1, 0);
-
-        grid.add(new Label("Résultats détaillés :"), 0, 1);
-        grid.add(fieldDetailles, 1, 1);
-
-        grid.add(new Label("Résultats globaux :"), 0, 2);
-        grid.add(fieldGlobaux, 1, 2);
-
-        return grid;
-    }
-
-    private FileChooser creerCorrectFileChooser(String title, String extension, Label labelPath) {
-
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle(title);
-
-        // Extension éventuelle
-        if (extension != null && !extension.isBlank()) {
-            chooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("*." + extension, "*." + extension)
-            );
-        }
-
-        // Si un fichier a déjà été sélectionné → utiliser son dossier
-        if (labelPath.getText() != null && !labelPath.getText().equals("Aucun fichier")) {
-            File previous = new File(labelPath.getText());
-            File parentDir = previous.isFile() ? previous.getParentFile() : previous;
-
-            if (parentDir != null && parentDir.exists()) {
-                chooser.setInitialDirectory(parentDir);
-            }
-        } else {
-            // Sinon → Home
-            chooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        }
-
-        return chooser;
-    }
-
-    private DirectoryChooser creerCorrectDirectoryChooser(String title, Label labelPath) {
-        DirectoryChooser chooser = new DirectoryChooser();
-        chooser.setTitle(title);
-
-        if (labelPath.getText() != null && !labelPath.getText().equals("Aucun fichier")) {
-            File previous = new File(labelPath.getText());
-            if (previous.exists() && previous.isDirectory()) {
-                chooser.setInitialDirectory(previous);
-            }
-        } else {
-            chooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        }
-
-        return chooser;
-    }
-
-    @FXML
-    public void choisirRessources() {
-
-        Stage stage = (Stage) btnRessources.getScene().getWindow();
-        FileChooser chooser = creerCorrectFileChooser(
-                "Choisir le fichier de ressources :",
-                "json",
-                labelRessourcesPath
-        );
-
-        File selected = chooser.showOpenDialog(stage);
-        if (selected != null) {
-            labelRessourcesPath.setText(selected.getAbsolutePath());
-            checkReadyToSave();
-        }
-    }
-
-    @FXML
-    public void choisirProcess() {
-
-        Stage stage = (Stage) btnProcess.getScene().getWindow();
-        FileChooser chooser = creerCorrectFileChooser(
-                "Choisir le fichier des processus initiaux :",
-                "csv",
-                labelProcessPath
-        );
-
-        File selected = chooser.showOpenDialog(stage);
-        if (selected != null) {
-            labelProcessPath.setText(selected.getAbsolutePath());
-            checkReadyToSave();
-        }
-    }
-
-    @FXML
-    private void choisirDossierResultats() {
-
-        Stage stage = (Stage) btnResultat.getScene().getWindow();
-        DirectoryChooser chooser = creerCorrectDirectoryChooser(
-                "Choisir le dossier résultat",
-                labelResultatPath
-        );
-
-        File selected = chooser.showDialog(stage);
-        if (selected != null) {
-            labelResultatPath.setText(selected.getAbsolutePath());
-            checkReadyToSave();
-        }
-    }
-
 }
