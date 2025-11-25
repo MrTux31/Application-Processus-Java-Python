@@ -50,7 +50,8 @@
                 <CheckBox fx:id="cbFifo" text="FIFO" />
                 <CheckBox fx:id="cbPriorite" text="Priorité" />
                 <CheckBox fx:id="cbRR" text="Round Robin" />
-                <TextField fx:id="tfQuantum" promptText="Quantum" />
+                <Label fx:id="labQuantum" text="Quantum : " />
+                <TextField fx:id="tfQuantum" text="Quantum" promptText="Quantum" />
             </HBox>
 
             <!-- TITLED PANE POUR LES RESULTATS DYNAMIQUES -->

@@ -36,6 +36,7 @@ public class ConfigController {
     @FXML private CheckBox cbPriorite;
     @FXML private CheckBox cbRR;
     @FXML private TextField tfQuantum;
+    @FXML private Label labQuantum;
     @FXML private TitledPane tpResultats;
     @FXML private VBox vBoxResultats;
 
