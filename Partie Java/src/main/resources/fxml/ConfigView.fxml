@@ -42,17 +42,19 @@
 
             <!-- ALGORITHMES -->
             <TitledPane expanded="true" text="Algorithmes">
-                <VBox fx:id="algoContainer" spacing="20" />
+                <VBox fx:id="algoContainer" spacing="20">
+               <children>
+         
+                              <!-- CHECKBOX + QUANTUM -->
+                     <HBox spacing="15">
+                         <CheckBox fx:id="cbFifo" text="FIFO" />
+                         <CheckBox fx:id="cbPriorite" text="Priorité" />
+                         <CheckBox fx:id="cbRR" text="Round Robin" />
+                         <Label fx:id="labQuantum" text="Quantum : " />
+                         <TextField fx:id="tfQuantum" />
+                     </HBox>
+               </children></VBox>
             </TitledPane>
-
-            <!-- CHECKBOX + QUANTUM -->
-            <HBox spacing="15">
-                <CheckBox fx:id="cbFifo" text="FIFO" />
-                <CheckBox fx:id="cbPriorite" text="Priorité" />
-                <CheckBox fx:id="cbRR" text="Round Robin" />
-                <Label fx:id="labQuantum" text="Quantum : " />
-                <TextField fx:id="tfQuantum" text="Quantum" promptText="Quantum" />
-            </HBox>
 
             <!-- TITLED PANE POUR LES RESULTATS DYNAMIQUES -->
             <TitledPane fx:id="tpResultats" expanded="true" text="Résultats">
@@ -61,11 +63,15 @@
                   <children>
             
                                     <!-- BOUTON METRIQUES -->
+                       <!-- BOUTON METRIQUES -->
+                    <VBox spacing="8" style="-fx-padding:10; -fx-border-color:#ddd; -fx-border-radius:6;">
+                        <Label style="-fx-font-weight: bold;" text="Dossier métriques :" />
+
                         <HBox spacing="10">
-                            <Label style="-fx-font-weight: bold;" text="Dossier métriques :" />
                             <Button onAction="#choisirDossierMetriques" text="Choisir..." />
                             <Label fx:id="metriquesLabel" style="-fx-text-fill:#666;" text="Aucun dossier" />
                         </HBox>
+                    </VBox>
                      <HBox fx:id="hboxResultatsAlgos">
                         <children>
                            <VBox fx:id="vBoxResultats" spacing="5.0" />

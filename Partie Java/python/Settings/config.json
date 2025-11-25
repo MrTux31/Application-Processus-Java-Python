@@ -1,13 +1,7 @@
 {
-  "fichierProcessus": "C:\\Users\\Pokem\\Desktop\\CC\\processusInitiaux.csv",
-  "fichierRessourcesDisponibles": "C:\\Users\\Pokem\\Desktop\\CC\\ressources.json",
-  "fichierMetriquesGlobales": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\Metriques\\metriquesGlobales.csv",
+  "fichierProcessus": "",
+  "fichierRessourcesDisponibles": "",
+  "fichierMetriquesGlobales": "",
   "listeAlgorithmes": [
-    {
-      "nomAlgorithme": "ROUND ROBIN",
-      "fichierResultatsDetailles": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\RR",
-      "fichierResultatsGlobaux": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\RR",
-      "quantum": 1
-    }
   ]
 }

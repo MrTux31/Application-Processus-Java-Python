@@ -113,7 +113,7 @@ public class ConfigController {
     @FXML
     private void doAnnuler() {
         if (mainController != null) {
-            boolean answer = AlertUtils.showConfirmation("Annulation","Êtes vous sûre de voulir annuler, cela vous renverra à l'accueil .", getOwnerWindow());
+            boolean answer = AlertUtils.showConfirmation("Annulation","Êtes-vous sûr de vouloir annuler ?\nCette action vous renverra à l'accueil.", getOwnerWindow());
             if(answer){
                 mainController.afficherHome();
             }
@@ -310,7 +310,7 @@ public class ConfigController {
             }
             refreshUI();
         } catch (Exception e) {
-            AlertUtils.showError("Erreur", "Impossible de charger la configuration existante.", getOwnerWindow());
+            AlertUtils.showError("Erreur", "Impossible de charger la configuration existante.\nVeuillez remplir les champs pour en créer une nouvelle.", getOwnerWindow());
         }
     }
 
