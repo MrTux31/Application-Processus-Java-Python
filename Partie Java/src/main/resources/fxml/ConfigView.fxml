@@ -65,10 +65,10 @@
                                     <!-- BOUTON METRIQUES -->
                        <!-- BOUTON METRIQUES -->
                     <VBox spacing="8" style="-fx-padding:10; -fx-border-color:#ddd; -fx-border-radius:6;">
-                        <Label style="-fx-font-weight: bold;" text="Dossier métriques :" />
+                        <Label style="-fx-font-weight: bold;" text="Fichier métriques" />
 
                         <HBox spacing="10">
-                            <Button onAction="#choisirDossierMetriques" text="Choisir..." />
+                            <Button onAction="#choisirFichierMetriques" text="Choisir..." />
                             <Label fx:id="metriquesLabel" style="-fx-text-fill:#666;" text="Aucun dossier" />
                         </HBox>
                     </VBox>
@@ -85,9 +85,18 @@
             <Pane VBox.vgrow="ALWAYS" />
 
             <!-- VALIDATION EN BAS A DROITE -->
-            <HBox alignment="BOTTOM_RIGHT" spacing="15">
-                <Button fx:id="btnEnregistrer" onAction="#doValider" text="Valider" />
-                <Button onAction="#doAnnuler" text="Annuler" />
+            <HBox alignment="CENTER_RIGHT" spacing="15">
+            <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="377.0">
+               <children>
+                  <Button fx:id="btnDefaut" alignment="BOTTOM_LEFT" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#doDefaut" text="Paramètres par défaut" />
+               </children>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                      <Button fx:id="btnEnregistrer" onAction="#doValider" text="Valider" />
+                      <Button onAction="#doAnnuler" text="Annuler" />
+               </children>
+            </HBox>
             </HBox>
 
         </VBox>

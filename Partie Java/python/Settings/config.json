@@ -1,7 +1,25 @@
 {
-  "fichierProcessus": "",
-  "fichierRessourcesDisponibles": "",
-  "fichierMetriquesGlobales": "",
+  "fichierProcessus": "python/Settings/processusInitiaux.csv",
+  "fichierRessourcesDisponibles": "python/Settings/ressources.json",
+  "fichierMetriquesGlobales": "python\\Settings\\fichierMetriquesGlobales.csv",
   "listeAlgorithmes": [
+    {
+      "nomAlgorithme": "FIFO",
+      "fichierResultatsDetailles": "python/Resultats/FIFO/rDetailled.csv",
+      "fichierResultatsGlobaux": "python/Resultats/FIFO/rGlobaux.csv",
+      "quantum": null
+    },
+    {
+      "nomAlgorithme": "PRIORITE",
+      "fichierResultatsDetailles": "python/Resultats/Priorite/rDetailled.csv",
+      "fichierResultatsGlobaux": "python/Resultats/Priorite/rGlobaux.csv",
+      "quantum": null
+    },
+    {
+      "nomAlgorithme": "ROUND ROBIN",
+      "fichierResultatsDetailles": "python/Resultats/RoundRobin/rDetailled.csv",
+      "fichierResultatsGlobaux": "python/Resultats/RoundRobin/rGlobaux.csv",
+      "quantum": 2
+    }
   ]
 }

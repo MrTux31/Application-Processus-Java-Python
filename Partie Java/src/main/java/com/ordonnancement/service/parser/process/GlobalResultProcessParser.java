@@ -64,7 +64,6 @@ public class GlobalResultProcessParser {
             if (ligne == null) {
                 throw new FileParsingException("Fichier CSV vide : " + cheminFichier);
             }
-
             // Vérification des colonnes attendues
             checkHeader(ligne);
 
@@ -94,15 +93,15 @@ public class GlobalResultProcessParser {
     private void checkHeader(String header) {
         String[] colonnesAttendues = {"idProcessus", "dateSoumission", "dateDebut", "dateFin", "requiredRam", "usedRam"};
         String[] colonnes = header.split(",");
-
+        
         if (colonnes.length != colonnesAttendues.length) {
-            throw new FileParsingException("Nombre de colonnes incorrect dans le CSV");
+            throw new FileParsingException("Nombre de colonnes incorrect dans le CSV des résultats globaux");
         }
 
         for (int i = 0; i < colonnesAttendues.length; i++) {
             if (!colonnes[i].trim().equals(colonnesAttendues[i])) {
                 throw new FileParsingException(
-                        "Colonne " + colonnesAttendues[i] + " introuvable dans le CSV");
+                        "Colonne " + colonnesAttendues[i] + " introuvable dans le CSV des résultats globaux");
             }
         }
     }
@@ -118,7 +117,7 @@ public class GlobalResultProcessParser {
     private void parseLine(String ligne, Map<String, Process> mapProcessus, String nomAlgorithme) {
         String[] valeurs = ligne.split(",");
         if (valeurs.length < 6) {
-            throw new FileParsingException("Ligne CSV incomplète : " + ligne);
+            throw new FileParsingException("Ligne CSV incomplète : " + ligne + " dans le fichier des résultats globaux de "+nomAlgorithme);
         }
 
         String idProcessus = valeurs[0].trim();

@@ -102,13 +102,13 @@ public class DetailedResultProcessParser {
         String[] colonnes = header.split(",");
 
         if (colonnes.length != colonnesAttendues.length) {
-            throw new FileParsingException("Nombre de colonnes incorrect dans le CSV");
+            throw new FileParsingException("Nombre de colonnes incorrect dans le CSV des résultats détaillés");
         }
 
         for (int i = 0; i < colonnesAttendues.length; i++) {
             if (!colonnes[i].trim().equals(colonnesAttendues[i])) {
                 throw new FileParsingException(
-                        "Colonne " + colonnesAttendues[i] + " introuvable dans le CSV");
+                        "Colonne " + colonnesAttendues[i] + " introuvable dans le CSV des résultats détaillés");
             }
         }
     }
@@ -124,7 +124,7 @@ public class DetailedResultProcessParser {
     private void parseLine(String ligne, Map<String, Process> mapProcessus, String nomAlgorithme) {
         String[] valeurs = ligne.split(",");
         if (valeurs.length < 4) {
-            throw new FileParsingException("Ligne CSV incomplète : " + ligne);
+            throw new FileParsingException("Ligne CSV incomplète : " + ligne +" dans le fichier des résultats détailés de "+ nomAlgorithme);
         }
 
         String idProcessus = valeurs[0].trim();

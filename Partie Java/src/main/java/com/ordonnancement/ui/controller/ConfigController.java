@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ordonnancement.config.ConfigurationManager;
+import com.ordonnancement.config.DefaultPaths;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.service.configuration.ConfigurationWriter;
@@ -26,19 +27,33 @@ import javafx.stage.Window;
 
 public class ConfigController {
 
-    @FXML private Label metriquesLabel;
-    @FXML private Label labelProcessPath;
-    @FXML private Label labelRessourcesPath;
-    @FXML private VBox algoContainer;
-    @FXML private Button btnEnregistrer;
+    @FXML
+    private Label metriquesLabel;
+    @FXML
+    private Label labelProcessPath;
+    @FXML
+    private Label labelRessourcesPath;
+    @FXML
+    private VBox algoContainer;
+    @FXML
+    private Button btnEnregistrer;
 
-    @FXML private CheckBox cbFifo;
-    @FXML private CheckBox cbPriorite;
-    @FXML private CheckBox cbRR;
-    @FXML private TextField tfQuantum;
-    @FXML private Label labQuantum;
-    @FXML private TitledPane tpResultats;
-    @FXML private VBox vBoxResultats;
+    @FXML
+    private CheckBox cbFifo;
+    @FXML
+    private CheckBox cbPriorite;
+    @FXML
+    private CheckBox cbRR;
+    @FXML
+    private TextField tfQuantum;
+    @FXML
+    private Label labQuantum;
+    @FXML
+    private TitledPane tpResultats;
+    @FXML
+    private VBox vBoxResultats;
+    @FXML
+    private Button btnDefaut;
 
     private final Label fifoDet = new Label("Aucun");
     private final Label fifoGlob = new Label("Aucun");
@@ -52,16 +67,24 @@ public class ConfigController {
 
     @FXML
     private void initialize() {
-        if (tfQuantum != null) tfQuantum.setDisable(true);
-        if (btnEnregistrer != null) btnEnregistrer.setDisable(true);
+        if (tfQuantum != null) {
+            tfQuantum.setDisable(true);
+        }
+        if (btnEnregistrer != null) {
+            btnEnregistrer.setDisable(true);
+        }
 
-        cbFifo.selectedProperty().addListener((obs,o,n) -> refreshUI());
-        cbPriorite.selectedProperty().addListener((obs,o,n) -> refreshUI());
-        cbRR.selectedProperty().addListener((obs,o,n) -> {
-            if (tfQuantum != null) tfQuantum.setDisable(!n);
+        cbFifo.selectedProperty().addListener((obs, o, n) -> refreshUI());
+        cbPriorite.selectedProperty().addListener((obs, o, n) -> refreshUI());
+        cbRR.selectedProperty().addListener((obs, o, n) -> {
+            if (tfQuantum != null) {
+                tfQuantum.setDisable(!n);
+            }
             refreshUI();
         });
-        if (tfQuantum != null) tfQuantum.textProperty().addListener((obs,o,n) -> refreshUI());
+        if (tfQuantum != null) {
+            tfQuantum.textProperty().addListener((obs, o, n) -> refreshUI());
+        }
 
         Platform.runLater(this::reloadExistingConfig);
     }
@@ -71,17 +94,23 @@ public class ConfigController {
     }
 
     @FXML
-    private void choisirDossierMetriques() {
-        Window owner = getOwnerWindow();
-        DirectoryChooser dc = new DirectoryChooser();
-        dc.setTitle("Choisir le dossier métriques");
-        if (metriquesLabel != null && metriquesLabel.getText() != null && !metriquesLabel.getText().equals("Aucun dossier")) {
+    private void choisirFichierMetriques() {
+
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Choisir le fichier des métriques globales");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+
+        // Si un chemin existe déjà → dossier initial
+        if (metriquesLabel != null && metriquesLabel.getText() != null && !metriquesLabel.getText().equals("Aucun fichier")) {
             File prev = new File(metriquesLabel.getText());
-            if (prev.exists()) dc.setInitialDirectory(prev.isDirectory() ? prev : prev.getParentFile());
+            if (prev.exists()) {
+                fc.setInitialDirectory(prev.isDirectory() ? prev : prev.getParentFile());
+            }
         }
-        File chosen = dc.showDialog(owner);
-        if (chosen != null) {
-            metriquesLabel.setText(chosen.getAbsolutePath());
+
+        File sel = fc.showSaveDialog(getOwnerWindow());
+        if (sel != null) {
+            metriquesLabel.setText(sel.getAbsolutePath());
             refreshUI();
         }
     }
@@ -113,31 +142,37 @@ public class ConfigController {
     @FXML
     private void doAnnuler() {
         if (mainController != null) {
-            boolean answer = AlertUtils.showConfirmation("Annulation","Êtes-vous sûr de vouloir annuler ?\nCette action vous renverra à l'accueil.", getOwnerWindow());
-            if(answer){
+            boolean answer = AlertUtils.showConfirmation("Annulation", "Êtes-vous sûr de vouloir annuler ?\nCette action vous renverra à l'accueil.", getOwnerWindow());
+            if (answer) {
                 mainController.afficherHome();
             }
 
         }
     }
 
-
-
     @FXML
     private void doValider() {
         Window owner = getOwnerWindow();
         List<AlgoConfiguration> algos = new ArrayList<>();
         try {
-            if (cbFifo.isSelected()) algos.add(new AlgoConfiguration("FIFO", fifoDet.getText(), fifoGlob.getText(), null));
-            if (cbPriorite.isSelected()) algos.add(new AlgoConfiguration("PRIORITE", prioriteDet.getText(), prioriteGlob.getText(), null));
+            if (cbFifo.isSelected()) {
+                algos.add(new AlgoConfiguration("FIFO", fifoDet.getText(), fifoGlob.getText(), null));
+            }
+            if (cbPriorite.isSelected()) {
+                algos.add(new AlgoConfiguration("PRIORITE", prioriteDet.getText(), prioriteGlob.getText(), null));
+            }
             if (cbRR.isSelected()) {
                 if (tfQuantum.getText() == null || tfQuantum.getText().isBlank()) {
                     AlertUtils.showError("Erreur", "Vous avez choisi Round Robin mais aucun quantum n'a été saisi.", owner);
                     return;
                 }
                 int q;
-                try { q = Integer.parseInt(tfQuantum.getText()); if(q<=0) throw new NumberFormatException(); }
-                catch(NumberFormatException ex) {
+                try {
+                    q = Integer.parseInt(tfQuantum.getText());
+                    if (q <= 0) {
+                        throw new NumberFormatException();
+                
+                    }} catch (NumberFormatException ex) {
                     AlertUtils.showError("Erreur", "Le quantum doit être un entier naturel non nul !", owner);
                     return;
                 }
@@ -167,10 +202,10 @@ public class ConfigController {
         FileConfiguration fileConfig;
         try {
             fileConfig = new FileConfiguration(
-                labelProcessPath.getText(),
-                new File(metDir,"metriquesGlobales.csv").getAbsolutePath(),
-                labelRessourcesPath.getText(),
-                algos
+                    labelProcessPath.getText(),
+                    metDir.toString(),
+                    labelRessourcesPath.getText(),
+                    algos
             );
         } catch (IllegalArgumentException e) {
             AlertUtils.showError("Erreur", "Configuration invalide : " + e.getMessage(), owner);
@@ -181,39 +216,48 @@ public class ConfigController {
             new ConfigurationWriter().writeConfiguration(fileConfig, destination);
             ConfigurationManager.getInstance().setFileConfiguration(fileConfig);
             AlertUtils.showInfo("Succès", "Configuration enregistrée !", owner);
-            if (mainController != null) mainController.afficherHome();
+            if (mainController != null) {
+                mainController.afficherHome();
+            }
         } catch (ConfigurationWriterException e) {
             AlertUtils.showError("Erreur", "Impossible d'enregistrer : " + e.getMessage(), owner);
         }
     }
 
     private Window getOwnerWindow() {
-        if (btnEnregistrer != null && btnEnregistrer.getScene() != null)
+        if (btnEnregistrer != null && btnEnregistrer.getScene() != null) {
             return btnEnregistrer.getScene().getWindow();
-        if (labelProcessPath != null && labelProcessPath.getScene() != null)
+        }
+        if (labelProcessPath != null && labelProcessPath.getScene() != null) {
             return labelProcessPath.getScene().getWindow();
+        }
         return null;
     }
 
     private void refreshUI() {
 
-    // Vider la zone des algos
-    vBoxResultats.getChildren().clear();
+        // Vider la zone des algos
+        vBoxResultats.getChildren().clear();
 
-    // Recréer dynamiquement les blocs d’algorithmes
-    if (cbFifo.isSelected()) vBoxResultats.getChildren().add(buildAlgoBlock("FIFO", fifoDet, fifoGlob));
-    if (cbPriorite.isSelected()) vBoxResultats.getChildren().add(buildAlgoBlock("PRIORITE", prioriteDet, prioriteGlob));
-    if (cbRR.isSelected()) vBoxResultats.getChildren().add(buildAlgoBlock("ROUND ROBIN", rrDet, rrGlob));
+        // Recréer dynamiquement les blocs d’algorithmes
+        if (cbFifo.isSelected()) {
+            vBoxResultats.getChildren().add(buildAlgoBlock("FIFO", fifoDet, fifoGlob));
+        }
+        if (cbPriorite.isSelected()) {
+            vBoxResultats.getChildren().add(buildAlgoBlock("PRIORITE", prioriteDet, prioriteGlob));
+        }
+        if (cbRR.isSelected()) {
+            vBoxResultats.getChildren().add(buildAlgoBlock("ROUND ROBIN", rrDet, rrGlob));
+        }
 
-    // Si aucune sélection → hboxResultatsAlgos vide, mais on NE TOUCHE PAS au reste du contenu
-    boolean hasAlgo = !vBoxResultats.getChildren().isEmpty();
-    vBoxResultats.setVisible(hasAlgo);
-    vBoxResultats.setManaged(hasAlgo);
+        // Si aucune sélection → hboxResultatsAlgos vide, mais on NE TOUCHE PAS au reste du contenu
+        boolean hasAlgo = !vBoxResultats.getChildren().isEmpty();
+        vBoxResultats.setVisible(hasAlgo);
+        vBoxResultats.setManaged(hasAlgo);
 
-    // Bouton valider activé ou pas
-    btnEnregistrer.setDisable(!canSave());
-}
-
+        // Bouton valider activé ou pas
+        btnEnregistrer.setDisable(!canSave());
+    }
 
     private VBox buildAlgoBlock(String nom, Label det, Label glob) {
         VBox box = new VBox(8);
@@ -228,8 +272,10 @@ public class ConfigController {
 
         Button bDet = new Button("Choisir...");
         bDet.setOnAction(e -> {
-            File chosen = chooseDirectoryForLabel(det);
-            if (chosen != null) det.setText(chosen.getAbsolutePath());
+            File chosen = chooseCsvFile(det);
+            if (chosen != null) {
+                det.setText(chosen.getAbsolutePath());
+            }
             refreshUI();
         });
         g.add(new Label("Résultats détaillés :"), 0, 0);
@@ -238,8 +284,10 @@ public class ConfigController {
 
         Button bGlob = new Button("Choisir...");
         bGlob.setOnAction(e -> {
-            File chosen = chooseDirectoryForLabel(glob);
-            if (chosen != null) glob.setText(chosen.getAbsolutePath());
+            File chosen = chooseCsvFile(glob);
+            if (chosen != null) {
+                glob.setText(chosen.getAbsolutePath());
+            }
             refreshUI();
         });
         g.add(new Label("Résultats globaux :"), 0, 1);
@@ -250,37 +298,96 @@ public class ConfigController {
         return box;
     }
 
+    private File chooseCsvFile(Label ref) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Choisir fichier CSV");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+
+        if (ref != null && ref.getText() != null && !ref.getText().startsWith("Aucun")) {
+            File prev = new File(ref.getText());
+            if (prev.exists()) {
+                fc.setInitialDirectory(prev.getParentFile());
+            }
+        }
+
+        return fc.showSaveDialog(getOwnerWindow());
+    }
+
     private File chooseDirectoryForLabel(Label ref) {
         DirectoryChooser dc = new DirectoryChooser();
         dc.setTitle("Choisir dossier");
         if (ref != null && ref.getText() != null && !ref.getText().startsWith("Aucun")) {
             File prev = new File(ref.getText());
-            if (prev.exists()) dc.setInitialDirectory(prev.isDirectory() ? prev : prev.getParentFile());
+            if (prev.exists()) {
+                dc.setInitialDirectory(prev.isDirectory() ? prev : prev.getParentFile());
+            }
         }
         return dc.showDialog(getOwnerWindow());
     }
+
+    @FXML
+/**
+ * Permet de charger les chemins par défaut
+ */
+private void doDefaut() {
+
+    // --- Forcer la sélection de tous les algorithmes ---
+    cbFifo.setSelected(true);
+    cbPriorite.setSelected(true);
+    cbRR.setSelected(true);
+
+    // --- Chemins généraux ---
+    labelProcessPath.setText(DefaultPaths.PROCESS_INIT.getPath());
+    labelRessourcesPath.setText(DefaultPaths.RESSOURCES_INIT.getPath());
+    metriquesLabel.setText(DefaultPaths.METRIQUES_GLOBAL.getPath());
+
+    // --- FIFO ---
+    fifoDet.setText(DefaultPaths.R_DETAILLED_FIFO.getPath());
+    fifoGlob.setText(DefaultPaths.R_GLOBAL_FIFO.getPath());
+
+    // --- Priorité ---
+    prioriteDet.setText(DefaultPaths.R_DETAILLED_PRIORITE.getPath());
+    prioriteGlob.setText(DefaultPaths.R_GLOBAL_PRIORITE.getPath());
+
+    // --- Round Robin ---
+    rrDet.setText(DefaultPaths.R_DETAILLED_RR.getPath());
+    rrGlob.setText(DefaultPaths.R_GLOBAL_RR.getPath());
+    tfQuantum.setDisable(false);
+    tfQuantum.setText("2"); // valeur par défaut
+
+    refreshUI();
+}
+
 
     private void reloadExistingConfig() {
         try {
             ConfigurationManager.getInstance().loadConfiguration();
             FileConfiguration conf = ConfigurationManager.getInstance().getFileConfiguration();
             if (conf == null) {
-                if (labelProcessPath != null) labelProcessPath.setText("Aucun fichier");
-                if (labelRessourcesPath != null) labelRessourcesPath.setText("Aucun fichier");
-                if (metriquesLabel != null) metriquesLabel.setText("Aucun dossier");
+                if (labelProcessPath != null) {
+                    labelProcessPath.setText("Aucun fichier");
+                }
+                if (labelRessourcesPath != null) {
+                    labelRessourcesPath.setText("Aucun fichier");
+                }
+                if (metriquesLabel != null) {
+                    metriquesLabel.setText("Aucun dossier");
+                }
                 refreshUI();
                 return;
             }
 
-            if (labelRessourcesPath != null && conf.getFichierRessourcesDisponibles() != null)
+            if (labelRessourcesPath != null && conf.getFichierRessourcesDisponibles() != null) {
                 labelRessourcesPath.setText(conf.getFichierRessourcesDisponibles());
+            }
 
-            if (labelProcessPath != null && conf.getFichierProcessus() != null)
+            if (labelProcessPath != null && conf.getFichierProcessus() != null) {
                 labelProcessPath.setText(conf.getFichierProcessus());
+            }
 
             if (metriquesLabel != null && conf.getFichierMetriquesGlobales() != null) {
-                File metParent = new File(conf.getFichierMetriquesGlobales()).getParentFile();
-                if (metParent != null) metriquesLabel.setText(metParent.getAbsolutePath());
+                metriquesLabel.setText(conf.getFichierMetriquesGlobales());
+
             }
 
             if (conf.getListeAlgorithmes() != null) {
@@ -315,10 +422,88 @@ public class ConfigController {
     }
 
     private boolean canSave() {
-        if (labelProcessPath == null || labelRessourcesPath == null || metriquesLabel == null) return false;
-        if (labelProcessPath.getText() == null || labelProcessPath.getText().startsWith("Aucun")) return false;
-        if (labelRessourcesPath.getText() == null || labelRessourcesPath.getText().startsWith("Aucun")) return false;
-        if (metriquesLabel.getText() == null || metriquesLabel.getText().startsWith("Aucun")) return false;
-        return cbFifo.isSelected() || cbPriorite.isSelected() || cbRR.isSelected();
+
+        // Vérif de base : chemins généraux
+        if (labelProcessPath == null || labelRessourcesPath == null || metriquesLabel == null) {
+            return false;
+        }
+
+        if (labelProcessPath.getText() == null || labelProcessPath.getText().startsWith("Aucun")) {
+            return false;
+        }
+
+        if (labelRessourcesPath.getText() == null || labelRessourcesPath.getText().startsWith("Aucun")) {
+            return false;
+        }
+
+        if (metriquesLabel.getText() == null || metriquesLabel.getText().startsWith("Aucun")) {
+            return false;
+        }
+
+        // --- Vérif FIFO ---
+        if (cbFifo.isSelected()) {
+
+            if (fifoDet.getText() == null || fifoDet.getText().startsWith("Aucun")) {
+                return false;
+            }
+
+            if (fifoGlob.getText() == null || fifoGlob.getText().startsWith("Aucun")) {
+                return false;
+            }
+
+        }
+
+        // --- Vérif Priorité ---
+        if (cbPriorite.isSelected()) {
+
+            if (prioriteDet.getText() == null || prioriteDet.getText().startsWith("Aucun")) {
+                return false;
+            }
+
+            if (prioriteGlob.getText() == null || prioriteGlob.getText().startsWith("Aucun")) {
+                return false;
+            }
+
+        }
+
+        // --- Vérif Round Robin ---
+        if (cbRR.isSelected()) {
+
+            if (rrDet.getText() == null || rrDet.getText().startsWith("Aucun")) {
+                return false;
+            }
+
+            if (rrGlob.getText() == null || rrGlob.getText().startsWith("Aucun")) {
+                return false;
+            }
+
+            // Quantum obligatoire
+            if (tfQuantum == null || tfQuantum.getText() == null || tfQuantum.getText().isBlank()) {
+                return false;
+            }
+
+            try {
+
+                int q = Integer.parseInt(tfQuantum.getText());
+
+                if (q <= 0) {
+                    return false;
+                }
+
+            } catch (NumberFormatException e) {
+
+                return false;
+
+            }
+
+        }
+
+        // Aucun algo sélectionné ?
+        if (!cbFifo.isSelected() && !cbPriorite.isSelected() && !cbRR.isSelected()) {
+            return false;
+        }
+
+        return true;
+
     }
 }
