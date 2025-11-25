@@ -4,18 +4,6 @@
   "fichierMetriquesGlobales": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\Metriques\\metriquesGlobales.csv",
   "listeAlgorithmes": [
     {
-      "nomAlgorithme": "FIFO",
-      "fichierResultatsDetailles": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\FIFO",
-      "fichierResultatsGlobaux": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\FIFO",
-      "quantum": null
-    },
-    {
-      "nomAlgorithme": "PRIORITE",
-      "fichierResultatsDetailles": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\PrioDet",
-      "fichierResultatsGlobaux": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\PrioGlob",
-      "quantum": null
-    },
-    {
       "nomAlgorithme": "ROUND ROBIN",
       "fichierResultatsDetailles": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\RR",
       "fichierResultatsGlobaux": "C:\\Users\\Pokem\\Desktop\\CC\\Res\\RR",

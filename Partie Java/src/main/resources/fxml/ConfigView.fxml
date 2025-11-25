@@ -53,15 +53,15 @@
                 <TextField fx:id="tfQuantum" promptText="Quantum" />
             </HBox>
 
-            <!-- TITLED PANE POUR LES RESULTATS DYNAMIQUES -->
-            <TitledPane fx:id="tpResultats" expanded="true" text="Résultats" />
-
-                        <!-- BOUTON METRIQUES déplacé juste au-dessus de résultats -->
+            <!-- BOUTON METRIQUES -->
             <HBox spacing="10">
                 <Label style="-fx-font-weight: bold;" text="Dossier métriques :" />
                 <Button onAction="#choisirDossierMetriques" text="Choisir..." />
                 <Label fx:id="metriquesLabel" style="-fx-text-fill:#666;" text="Aucun dossier" />
             </HBox>
+
+            <!-- TITLED PANE POUR LES RESULTATS DYNAMIQUES -->
+            <TitledPane fx:id="tpResultats" expanded="true" text="Résultats" />
 
             <!-- ESPACE VERTICAL FLEXIBLE -->
             <Pane VBox.vgrow="ALWAYS" />

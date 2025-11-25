@@ -187,7 +187,7 @@ public class ConfigController {
         VBox content = new VBox(12);
         content.setStyle("-fx-padding:10;");
 
-        // ALGORITHMES sélectionnés
+        // Algorithmes sélectionnés
         if (cbFifo.isSelected()) content.getChildren().add(buildAlgoBlock("FIFO", fifoDet, fifoGlob));
         if (cbPriorite.isSelected()) content.getChildren().add(buildAlgoBlock("PRIORITE", prioriteDet, prioriteGlob));
         if (cbRR.isSelected()) content.getChildren().add(buildAlgoBlock("ROUND ROBIN", rrDet, rrGlob));
@@ -198,6 +198,7 @@ public class ConfigController {
 
         btnEnregistrer.setDisable(!canSave());
     }
+
 
     private VBox buildAlgoBlock(String nom, Label det, Label glob) {
         VBox box = new VBox(8);
