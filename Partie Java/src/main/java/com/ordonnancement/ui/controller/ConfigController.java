@@ -112,10 +112,16 @@ public class ConfigController {
 
     @FXML
     private void doAnnuler() {
-        Window owner = getOwnerWindow();
-        if (owner != null) owner.hide();
-        if (mainController != null) mainController.afficherHome();
+        if (mainController != null) {
+            boolean answer = AlertUtils.showConfirmation("Annulation","Êtes vous sûre de voulir annuler, cela vous renverra à l'accueil .", getOwnerWindow());
+            if(answer){
+                mainController.afficherHome();
+            }
+
+        }
     }
+
+
 
     @FXML
     private void doValider() {
