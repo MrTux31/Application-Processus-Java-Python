@@ -5,18 +5,21 @@ import com.ordonnancement.model.gantt.IGanttTask;
 
 /**
  * Représente une tâche affichée dans un Gantt par processus.
- * Chaque tâche correspond à une allocation d'un CPU par processus.
+ * Chaque tâche correspond à une allocation d'un CPU par processus, ou une
+ * attente.
  * 
  * @author Olivencia Eliot
  */
 public class ProcessusTask implements IGanttTask {
 
-    private final Allocation allocation;
-    private final int colorId;
+    private final String id;
     private final String category;
+    private final int dateDebut;
+    private final int dateFin;
 
     /**
-     * Constructeur par défaut. La catégorie sera l'ID du processus.
+     * Constructeur par défaut à partir d'une allocation.
+     * La catégorie sera l'ID du processus.
      * 
      * @param allocation : l'allocation réalisée sur un CPU
      */
@@ -25,55 +28,51 @@ public class ProcessusTask implements IGanttTask {
     }
 
     /**
-     * Constructeur avec catégorie personnalisée.
+     * Constructeur avec catégorie personnalisée à partir d'une allocation.
      * 
      * @param allocation : l'allocation réalisée sur un CPU
      * @param category   : le nom de la catégorie à afficher (ex: "P1")
      */
     public ProcessusTask(Allocation allocation, String category) {
-        this.allocation = allocation;
+        this.id = allocation.getProcessor();
         this.category = category;
-        this.colorId = allocation.getProcessus().hashCode();
+        this.dateDebut = allocation.getDateDebutExecution();
+        this.dateFin = allocation.getDateFinExecution();
     }
 
     /**
-     * Retourne le CPU sur lequel la tâche est exécutée.
+     * Constructeur manuel pour créer une tâche sans allocation (ex: Attente).
      * 
-     * @return identifiant du CPU
+     * @param id        : Identifiant de la tâche (ex: "EN ATTENTE")
+     * @param category  : Catégorie (ex: "P01")
+     * @param dateDebut : Date de début
+     * @param dateFin   : Date de fin
      */
+    public ProcessusTask(String id, String category, int dateDebut, int dateFin) {
+        this.id = id;
+        this.category = category;
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+    }
+
     @Override
     public String getId() {
-        return allocation.getProcessor();
+        return id;
     }
 
-    /**
-     * Retourne l'identifiant du processus.
-     * 
-     * @return identifiant du processus
-     */
     @Override
     public String getCategorie() {
         return category;
     }
 
-    /**
-     * Retourne la date de début d'exécution de la tâche.
-     * 
-     * @return date de début en unité de temps
-     */
     @Override
     public int getDateDebut() {
-        return allocation.getDateDebutExecution();
+        return dateDebut;
     }
 
-    /**
-     * Retourne la date de fin d'exécution de la tâche.
-     * 
-     * @return date de fin en unité de temps
-     */
     @Override
     public int getDateFin() {
-        return allocation.getDateFinExecution();
+        return dateFin;
     }
 
 }
