@@ -2,6 +2,9 @@ package com.ordonnancement.service;
 
 import com.ordonnancement.model.Resultats;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 /**
  * Singleton responsable du stockage centralisé des résultats produits par
  * l'ordonnanceur Python. L'utilisation de ce singleton garantit qu'un unique
@@ -15,6 +18,11 @@ public class AppState {
      * Instance unique du singleton AppState
      */
     private static final AppState instance = new AppState();
+
+    /**
+     * Proproité listenable Permet de savoir si l'ordonnancement est terminé
+     */
+    private final BooleanProperty executionTerminee = new SimpleBooleanProperty(false);
 
     /*
      * Résultats complets retournés par l'exécution Python
@@ -58,6 +66,18 @@ public class AppState {
      */
     public void setResultats(Resultats resultats) {
         this.resultats = resultats;
+    }
+
+    public BooleanProperty executionTermineeProperty() {
+        return executionTerminee;
+    }
+
+    public boolean isExecutionTerminee() {
+        return executionTerminee.get();
+    }
+
+    public void setExecutionTerminee(boolean value) {
+        executionTerminee.set(value);
     }
 
 }

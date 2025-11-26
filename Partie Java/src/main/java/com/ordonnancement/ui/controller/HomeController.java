@@ -33,15 +33,15 @@ public class HomeController {
 
     @FXML
     public void initialize() {
-        // Au démarrage, désactiver tous les boutons secondaires
-        desactiverBoutons();
-    }
+        
+        //Binding boutons et état d'execution
+        btnProcessus.disableProperty().bind(AppState.getInstance().executionTermineeProperty().not()); //.not : si execution terminee = false alors on prends true pour disable
+        btnGanttCPU.disableProperty().bind(AppState.getInstance().executionTermineeProperty().not());
+        btnGanttProcessus.disableProperty().bind(AppState.getInstance().executionTermineeProperty().not());
+        btnComparaisonAlgos.disableProperty().bind(AppState.getInstance().executionTermineeProperty().not());
+        
 
-    private void desactiverBoutons(){
-        btnProcessus.setDisable(true);
-        btnGanttCPU.setDisable(true);
-        btnGanttProcessus.setDisable(true);
-        btnComparaisonAlgos.setDisable(true);
+
     }
 
     /**
@@ -56,13 +56,13 @@ public class HomeController {
             //on charge la configuration depuis le fichier de configuration précédent
             ConfigurationManager.getInstance().loadConfiguration(); //On parse le json
             FileConfiguration configuration = ConfigurationManager.getInstance().getFileConfiguration(); //On récup l'objet
-            desactiverBoutons();
+            AppState.getInstance().setExecutionTerminee(false); //pour faire réagir les boutons avec le binding
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Runner.runAsync(configuration,
                     fichierConfig,
                     () -> {
                         afficherResumeExecution();
-                        activerBoutons();
+                        AppState.getInstance().setExecutionTerminee(true);
                         AncienMain.AfficherResultats(); // TO DO : A SUPPRIMER
                     },
                     e -> { //Si une exception arrive lors de l'execution
@@ -106,15 +106,6 @@ public class HomeController {
 
     }
 
-
-    private void activerBoutons() {
-        btnConfig.setDisable(false);
-        btnProcessus.setDisable(false);
-        btnGanttCPU.setDisable(false);
-        btnGanttProcessus.setDisable(false);
-        btnComparaisonAlgos.setDisable(false);
-        
-}
 
     @FXML
     private void doAfficherConfig(){
