@@ -24,11 +24,7 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20231013</version>
-        </dependency>
+        
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -61,7 +57,26 @@
                 </configuration>
             </plugin>
 
-            
+            <!-- JavaDoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <!-- Ne fait pas échouer le build en cas de warning -->
+                    <failOnError>false</failOnError>
+                    <!-- Réduit les messages dans la console -->
+                    <quiet>true</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-javadoc-html</id>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- Plugin Shade uniquement pour créer un JAR exécutable -->
             <plugin>

@@ -85,7 +85,7 @@ public class AppMainFrameController {
      * @author ROMA Quentin
      */
     @FXML
-    private void doAfficherGanttCPU() {
+    public void doAfficherGanttCPU() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GanttProcessorView.fxml")); // Préparer le chargement du FXML
             BorderPane ganttProcessor = loader.load(); // Charger le fxml
@@ -118,7 +118,7 @@ public class AppMainFrameController {
      * Affiche le gantt par processus
      */
     @FXML
-    private void doAfficherGanttProcessus() {
+    public void doAfficherGanttProcessus() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GanttProcessusView.fxml"));
             BorderPane ganttProcessus = loader.load();
@@ -146,7 +146,7 @@ public class AppMainFrameController {
      * @author Antonin Le donné
      */
     @FXML
-    private void doAfficherComparaisonAlgos() {
+    public void doAfficherComparaisonAlgos() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MetricView.fxml"));
             BorderPane comparaisonPane = loader.load();
@@ -169,7 +169,7 @@ public class AppMainFrameController {
      * Affiche la liste des processus avec leurs détails
      */
     @FXML
-    private void doAfficherProcessus() {
+    public void doAfficherProcessus() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProcessView.fxml"));
             BorderPane processPane = loader.load();

@@ -19,29 +19,50 @@ public class HomeController {
     private Button btnStart;
     @FXML
     private Button btnConfig;
+    @FXML
+    private Button btnProcessus;
+    @FXML
+    private Button btnGanttCPU;
+    @FXML
+    private Button btnGanttProcessus;
+    @FXML
+    private Button btnComparaisonAlgos;
     private AppMainFrameController appMainFrameController;
     
+    
+
+    @FXML
+    public void initialize() {
+        // Au démarrage, désactiver tous les boutons secondaires
+        desactiverBoutons();
+    }
+
+    private void desactiverBoutons(){
+        btnProcessus.setDisable(true);
+        btnGanttCPU.setDisable(true);
+        btnGanttProcessus.setDisable(true);
+        btnComparaisonAlgos.setDisable(true);
+    }
 
     /**
      * S'occupe de démarre l'exécution du programme python avec la configuration fournie
      */
     @FXML
     private void doLancerExecution() {
-        // AncienMain.lancerExecution();//TO DO : A SUPPRIMER, TEMPORAIRE CAR ATTENTE DE LA PARTIE CONFIGURATION
-
+        
         try {
             //Récupérer les infos sur le fichier de config dans le singleton
             String fichierConfig = ConfigurationManager.getInstance().getCheminFichierConfig();
             //on charge la configuration depuis le fichier de configuration précédent
             ConfigurationManager.getInstance().loadConfiguration(); //On parse le json
             FileConfiguration configuration = ConfigurationManager.getInstance().getFileConfiguration(); //On récup l'objet
-            
-        
+            desactiverBoutons();
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Runner.runAsync(configuration,
                     fichierConfig,
                     () -> {
                         afficherResumeExecution();
+                        activerBoutons();
                         AncienMain.AfficherResultats(); // TO DO : A SUPPRIMER
                     },
                     e -> { //Si une exception arrive lors de l'execution
@@ -81,9 +102,19 @@ public class HomeController {
         sb.append("\nNombre de processus ordonnancés : ")
                 .append(resultats.getListeProcessus().size()).append("\n");
 
-        AlertUtils.showInfo("Fin de l'execution", sb.toString(), null);
+        AlertUtils.showInfo("Fin de l'execution", sb.toString(), btnStart.getParent().getScene().getWindow());
 
     }
+
+
+    private void activerBoutons() {
+        btnConfig.setDisable(false);
+        btnProcessus.setDisable(false);
+        btnGanttCPU.setDisable(false);
+        btnGanttProcessus.setDisable(false);
+        btnComparaisonAlgos.setDisable(false);
+        
+}
 
     @FXML
     private void doAfficherConfig(){
@@ -91,11 +122,28 @@ public class HomeController {
     }
 
 
-
-
-
     public void setAppMainFrameController(AppMainFrameController appMainFrameController) {
         this.appMainFrameController=appMainFrameController;
+    }
+
+    @FXML
+    private void doAfficherProcessus() {
+        appMainFrameController.doAfficherProcessus();
+    }
+
+    @FXML
+    private void doAfficherGanttCPU() {
+        appMainFrameController.doAfficherGanttCPU();
+    }
+
+    @FXML
+    private void doAfficherGanttProcessus() {
+        appMainFrameController.doAfficherGanttProcessus();
+    }
+
+    @FXML
+    private void doAfficherComparaisonAlgos() {
+        appMainFrameController.doAfficherComparaisonAlgos();
     }
 
 }

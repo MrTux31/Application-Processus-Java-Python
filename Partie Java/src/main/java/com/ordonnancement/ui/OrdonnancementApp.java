@@ -34,7 +34,7 @@ public class OrdonnancementApp extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AppMainFrame.fxml"));
             //Créer un border pane dans lequel on met la vue
             BorderPane mainFrame = loader.load();
-            Scene scene = new Scene(mainFrame, 800, 600);
+            Scene scene = new Scene(mainFrame, 1200, 800);
             mainFrameController = loader.getController(); //Récup le controller
             mainFrameController.afficherHome(); //Afficher le menu d'accueil
             //On met la scene dans le stage

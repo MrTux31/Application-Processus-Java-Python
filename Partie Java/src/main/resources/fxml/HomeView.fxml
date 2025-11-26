@@ -5,30 +5,49 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.HomeController">
+<BorderPane style="-fx-background-color: #f4f4f9;" stylesheets="@../css/home.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.HomeController">
 
-    <!-- Top : titre -->
-    <top>
-        <Label fx:id="labelTitle" alignment="CENTER" text="Application d'ordonnancement de processus" BorderPane.alignment="CENTER">
-            <font>
-                <Font size="20" />
-            </font>
-            <BorderPane.margin>
-                <Insets left="20" right="20" top="20" />
-            </BorderPane.margin>
-        </Label>
-    </top>
-  <center>
-    <StackPane BorderPane.alignment="CENTER">
-        <HBox alignment="CENTER" spacing="20">
-            <Button fx:id="btnStart" onAction="#doLancerExecution" text="Démarrer l'ordonnancement" />
-            <Button fx:id="btnConfig" onAction="#doAfficherConfig" text="Modifier la configuration" />
-        </HBox>
-    </StackPane>
-</center>
+    <center>
+        <VBox fx:id="centerBox" alignment="CENTER" spacing="${centerBox.width * 0.04}" BorderPane.alignment="CENTER">
 
+            <!-- Titre -->
+            <VBox fx:id="titleBox" alignment="CENTER" spacing="${titleBox.height * 0.10}">
+                <Label style="-fx-font-size: 2em; -fx-font-weight: bold;" text="Application d'ordonnancement de processus" />
+                <Label style="-fx-font-size: 1.1em; -fx-text-fill: #666;" text="Visualisez, configurez et exécutez vos algorithmes facilement" />
+            </VBox>
+
+            <!-- Carte responsive -->
+           <VBox fx:id="cardBox" alignment="CENTER" maxWidth="800" prefWidth="600" spacing="25" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 15;                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);">
+
+                <!-- Boutons principaux -->
+                <HBox alignment="CENTER" maxWidth="Infinity" spacing="20">
+                    <Button fx:id="btnStart" maxWidth="Infinity" onAction="#doLancerExecution" style="-fx-font-size: 14px; -fx-background-color: #4caf50; -fx-text-fill: white; -fx-padding: 10 25; -fx-background-radius: 10;" text="▶ Démarrer l'ordonnancement" />
+
+                    <Button fx:id="btnConfig" maxWidth="Infinity" onAction="#doAfficherConfig" style="-fx-font-size: 14px; -fx-background-color: #2196f3; -fx-text-fill: white; -fx-padding: 10 25; -fx-background-radius: 10;" text="⚙ Modifier la configuration" />
+                </HBox>
+
+                <!-- Boutons rapides -->
+                <HBox alignment="CENTER" maxWidth="Infinity" spacing="15">
+                    <Button fx:id="btnProcessus" maxWidth="Infinity" onAction="#doAfficherProcessus" style="-fx-font-size: 13px; -fx-background-color: #ff9800; -fx-text-fill: white; -fx-background-radius: 8;" text="Processus" />
+
+                    <Button fx:id="btnGanttCPU" maxWidth="Infinity" onAction="#doAfficherGanttCPU" style="-fx-font-size: 13px; -fx-background-color: #9c27b0; -fx-text-fill: white; -fx-background-radius: 8;" text="Gantt CPU" />
+
+                    <Button fx:id="btnGanttProcessus" maxWidth="Infinity" onAction="#doAfficherGanttProcessus" style="-fx-font-size: 13px; -fx-background-color: #009688; -fx-text-fill: white; -fx-background-radius: 8;" text="Gantt Processus" />
+
+                    <Button fx:id="btnComparaisonAlgos" maxWidth="Infinity" onAction="#doAfficherComparaisonAlgos" style="-fx-font-size: 13px; -fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 8;" text="Comparaison algos" />
+                </HBox>
+
+                <VBox.margin>
+                    <Insets top="50" />
+                </VBox.margin>
+
+            </VBox>
+        </VBox>
+    </center>
 
 </BorderPane>
+
+
+

@@ -81,7 +81,6 @@ public class ConfigurationWriter {
                 throw new ConfigurationWriterException(
                     "Impossible de créer le dossier : " + parentDir.getAbsolutePath());
             }
-            System.out.println("Creation du dossier parent : " + parentDir.getAbsolutePath());
         }
 
     }
