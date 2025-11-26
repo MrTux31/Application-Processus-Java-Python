@@ -24,10 +24,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.VBox;
 
@@ -38,9 +36,8 @@ public class GanttProcessusController {
 
     // Chargement elements fxml
     @FXML
-    private ScrollPane scrollPane;
-    @FXML
-    private ComboBox<String> algosComboBox;
+    private VBox vBoxParent;
+
     @FXML
     private ListView<String> listViewProcessus;
     @FXML
@@ -71,11 +68,7 @@ public class GanttProcessusController {
         try {
             this.listeProcessus = AppState.getInstance().getResultats().getListeProcessus();
 
-            // Masquer les éléments non utilisés (car on affiche tous les algos maintenant)
-            if (algosComboBox != null) {
-                algosComboBox.setVisible(false);
-                algosComboBox.setManaged(false);
-            }
+
             if (labelAlgo != null) {
                 labelAlgo.setVisible(false);
                 labelAlgo.setManaged(false);
@@ -184,7 +177,7 @@ public class GanttProcessusController {
         this.message.setMaxWidth(Double.MAX_VALUE);
         this.message.setAlignment(Pos.CENTER);
         this.message.setStyle("-fx-font-size: 20px; -fx-text-fill: black;");
-        scrollPane.setVisible(false);
+        vBoxParent.setVisible(false);
         this.message.setVisible(true);
     }
 
@@ -194,9 +187,8 @@ public class GanttProcessusController {
     private void setupGanttContainer() {
         vBoxGantts = new VBox();
         vBoxGantts.setAlignment(Pos.TOP_LEFT);
-        scrollPane.setContent(vBoxGantts);
+        vBoxParent.getChildren().add(vBoxGantts);
         afficherGantt();
-        scrollPane.setPannable(true);
     }
 
     /**
@@ -212,14 +204,18 @@ public class GanttProcessusController {
             GanttPresenter presenter = new GanttPresenter(a); // Créer le gantt presenter de l'algo
             vBoxGantts.getChildren().add(presenter); // Ajout du presenter dans la vbox
             listeGanttPresenters.add(presenter); // Ajout à l'array list
+            if(listeGanttPresenters.size() > 1){ //Si ce ne sont pas les premiers, on les fermes
+                presenter.setExpanded(false);
+            }
         }
+        
     }
 
     /**
      * Affiche le ScrollPane contenant les Gantts.
      */
     private void afficherGantt() {
-        scrollPane.setVisible(true);
+        vBoxParent.setVisible(true);
         message.setVisible(false);
     }
 
@@ -297,8 +293,6 @@ public class GanttProcessusController {
      */
     private void cacherElements() {
         this.listViewProcessus.setVisible(false);
-        if (this.algosComboBox != null)
-            this.algosComboBox.setVisible(false);
         if (this.labelAlgo != null)
             this.labelAlgo.setVisible(false);
         this.labelProcessus.setVisible(false);
