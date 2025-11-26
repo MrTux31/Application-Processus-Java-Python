@@ -67,6 +67,10 @@ public class ConfigController {
     private AppMainFrameController mainController;
 
     @FXML
+    /*
+        * Cette methode permet d'initialiser les composants graphiques, de configurer les listeners et de charger la configuration existante.
+    */
+
     private void initialize() {
         if (tfQuantum != null) {
             tfQuantum.setDisable(true);
@@ -90,11 +94,21 @@ public class ConfigController {
         Platform.runLater(this::reloadExistingConfig);
     }
 
+    /*
+        * Cette methode permet de definir le controleur principal de l'application.
+        * @param c Ce parametre de type AppMainFrameController représente le controleur principal.
+    */
+
     public void setAppMainFrameController(AppMainFrameController c) {
         this.mainController = c;
     }
 
     @FXML
+    /*
+        * Cette methode permet de choisir ou creer un fichier CSV pour les metriques globales.
+        * Cette methode affiche une fenetre de selection/sauvegarde de fichier.
+    */
+
     private void choisirFichierMetriques() {
 
         FileChooser fc = new FileChooser();
@@ -117,6 +131,11 @@ public class ConfigController {
     }
 
     @FXML
+    /*
+        * Cette methode permet de choisir un fichier CSV contenant la liste des processus.
+        * Cette methode affiche une fenetre de selection de fichier.
+    */
+
     private void choisirFichierProcess() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choisir le fichier des processus");
@@ -129,6 +148,11 @@ public class ConfigController {
     }
 
     @FXML
+    /*
+        * Cette methode permet de choisir un fichier JSON contenant la liste des ressources.
+        * Cette methode affiche une fenetre de selection de fichier.
+    */
+
     private void choisirFichierRessources() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choisir le fichier des ressources");
@@ -141,6 +165,11 @@ public class ConfigController {
     }
 
     @FXML
+    /*
+        * Cette methode permet d'annuler la creation de configuration et de retourner a l'accueil.
+        * Cette methode affiche une fenetre de confirmation.
+    */
+
     private void doAnnuler() {
         if (mainController != null) {
             boolean answer = AlertUtils.showConfirmation("Annulation", "Êtes-vous sûr de vouloir annuler ?\nCette action vous renverra à l'accueil.", getOwnerWindow());
@@ -152,6 +181,11 @@ public class ConfigController {
     }
 
     @FXML
+    /*
+        * Cette methode permet de valider les parametres, de generer la configuration et de l'enregistrer sur le disque.
+        * Cette methode affiche des boites de dialogue en cas d'erreur ou de succes.
+    */
+
     private void doValider() {
         Window owner = getOwnerWindow();
         List<AlgoConfiguration> algos = new ArrayList<>();
@@ -222,6 +256,11 @@ public class ConfigController {
         }
     }
 
+    /*
+        * Cette methode permet de recuperer la fenetre parente associée aux elements de l'interface.
+        * @return Cette methode retourne une valeur de type Window qui represente la fenetre proprietaire.
+    */
+
     private Window getOwnerWindow() {
         if (btnEnregistrer != null && btnEnregistrer.getScene() != null) {
             return btnEnregistrer.getScene().getWindow();
@@ -231,6 +270,12 @@ public class ConfigController {
         }
         return null;
     }
+
+
+    /*
+        * Cette methode permet de mettre a jour l'affichage en fonction des selections d'algorithmes.
+        * Cette methode affiche et met a jour dynamiquement les blocs d'algorithmes.
+    */
 
     private void refreshUI() {
 
@@ -256,6 +301,14 @@ public class ConfigController {
         // Bouton valider activé ou pas
         btnEnregistrer.setDisable(!canSave());
     }
+
+    /*
+        * Cette methode permet de construire dynamiquement un bloc UI pour un algorithme selectionné.
+        * @param nom Ce parametre de type String représente le nom de l'algorithme.
+        * @param det Ce parametre de type Label représente le label du fichier de resultats detailles.
+        * @param glob Ce parametre de type Label représente le label du fichier de resultats globaux.
+        * @return Cette methode retourne une valeur de type VBox qui represente le bloc graphique cree.
+    */
 
     private VBox buildAlgoBlock(String nom, Label det, Label glob) {
         VBox box = new VBox(8);
@@ -300,6 +353,13 @@ public class ConfigController {
         return box;
     }
 
+
+    /*
+        * Cette methode permet de choisir un fichier CSV a enregistrer via un FileChooser.
+        * @param ref Ce parametre de type Label représente le label contenant le chemin precedent.
+        * @return Cette methode retourne une valeur de type File qui represente le fichier choisi par l'utilisateur.
+    */
+
     private File chooseCsvFile(Label ref) {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choisir fichier CSV");
@@ -318,39 +378,43 @@ public class ConfigController {
 
 
     @FXML
-/**
- * Permet de charger les chemins par défaut
- */
-private void doDefaut() {
+    /*
+        * Cette methode permet de charger automatiquement les chemins et valeurs par defaut pour tous les parametres de configuration.
+        * Cette methode affiche et met a jour l'interface avec les valeurs par defaut.
+    */
+    private void doDefaut() {
 
-    // --- Forcer la sélection de tous les algorithmes ---
-    cbFifo.setSelected(true);
-    cbPriorite.setSelected(true);
-    cbRR.setSelected(true);
+        // --- Forcer la sélection de tous les algorithmes ---
+        cbFifo.setSelected(true);
+        cbPriorite.setSelected(true);
+        cbRR.setSelected(true);
 
-    // --- Chemins généraux ---
-    labelProcessPath.setText(DefaultPaths.PROCESS_INIT.getPath());
-    labelRessourcesPath.setText(DefaultPaths.RESSOURCES_INIT.getPath());
-    metriquesLabel.setText(DefaultPaths.METRIQUES_GLOBAL.getPath());
+        // --- Chemins généraux ---
+        labelProcessPath.setText(DefaultPaths.PROCESS_INIT.getPath());
+        labelRessourcesPath.setText(DefaultPaths.RESSOURCES_INIT.getPath());
+        metriquesLabel.setText(DefaultPaths.METRIQUES_GLOBAL.getPath());
 
-    // --- FIFO ---
-    fifoDet.setText(DefaultPaths.R_DETAILLED_FIFO.getPath());
-    fifoGlob.setText(DefaultPaths.R_GLOBAL_FIFO.getPath());
+        // --- FIFO ---
+        fifoDet.setText(DefaultPaths.R_DETAILLED_FIFO.getPath());
+        fifoGlob.setText(DefaultPaths.R_GLOBAL_FIFO.getPath());
 
-    // --- Priorité ---
-    prioriteDet.setText(DefaultPaths.R_DETAILLED_PRIORITE.getPath());
-    prioriteGlob.setText(DefaultPaths.R_GLOBAL_PRIORITE.getPath());
+        // --- Priorité ---
+        prioriteDet.setText(DefaultPaths.R_DETAILLED_PRIORITE.getPath());
+        prioriteGlob.setText(DefaultPaths.R_GLOBAL_PRIORITE.getPath());
 
-    // --- Round Robin ---
-    rrDet.setText(DefaultPaths.R_DETAILLED_RR.getPath());
-    rrGlob.setText(DefaultPaths.R_GLOBAL_RR.getPath());
-    tfQuantum.setDisable(false);
-    tfQuantum.setText("2"); // valeur par défaut
+        // --- Round Robin ---
+        rrDet.setText(DefaultPaths.R_DETAILLED_RR.getPath());
+        rrGlob.setText(DefaultPaths.R_GLOBAL_RR.getPath());
+        tfQuantum.setDisable(false);
+        tfQuantum.setText("2"); // valeur par défaut
 
-    refreshUI();
-}
+        refreshUI();
+    }
 
-
+    /*
+        * Cette methode permet de charger une configuration existante depuis le disque et de mettre a jour l'affichage en consequence.
+        * Cette methode affiche une alerte en cas d'erreur de chargement.
+    */
     private void reloadExistingConfig() {
         try {
             ConfigurationManager.getInstance().loadConfiguration();
@@ -413,6 +477,11 @@ private void doDefaut() {
         }
     }
 
+
+    /*
+        * Cette methode permet de verifier si tous les champs obligatoires pour l'enregistrement d'une configuration sont correctement renseignes.
+        * @return Cette methode retourne une valeur de type boolean qui represente la possibilite ou non de sauvegarder la configuration.
+    */
     private boolean canSave() {
 
         // Vérif de base : chemins généraux
