@@ -34,9 +34,9 @@ def enregistrer_resultats(nom_algo,processus, infos_allocations_processeur,param
     params_algos : dict
         Paramètres de l'algorithme. Exemple :
         {
-            "fichierResultatsDetailles": "rDetailedROUNDROBIN.csv",
-            "fichierResultatsGlobaux": "rGlobauxROUNDROBIN.csv",
-            "quantum": 2
+          'fichierResultatsDetailles': Path('Resultats/RoundRobin'),
+                'fichierResultatsGlobaux': Path('Resultats/RoundRobin'),
+                'quantum': 2
         }
     """
     

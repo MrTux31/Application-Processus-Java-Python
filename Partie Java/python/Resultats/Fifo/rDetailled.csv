@@ -1,0 +1,6 @@
+idProcessus,dateDebut,dateFin,idProcesseur
+1,0,5,CPU1
+2,5,8,CPU1
+3,8,14,CPU1
+4,14,18,CPU1
+5,18,20,CPU1

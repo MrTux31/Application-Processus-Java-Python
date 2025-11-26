@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 
 /**
@@ -42,6 +43,15 @@ public class ConfigurationWriter {
 
         creerDossiersParentsFichier(destination); // Création des dossiers parents nécessaires
 
+        //Création de l'arborescence des dossiers avec les dossiers et les sous dossiers correspondants pour les résultats de chaque algos
+        for(AlgoConfiguration a : configuration.getListeAlgorithmes()){
+            String cheminFichierResultatsDetailles = a.getFichierResultatsDetailles();
+            String cheminFichierResultatsGlobaux = a.getFichierResultatsGlobaux();
+            creerDossiersParentsFichier(cheminFichierResultatsDetailles);
+            creerDossiersParentsFichier(cheminFichierResultatsGlobaux);
+        }
+        String fichierConfig = configuration.getFichierMetriquesGlobales(); //Création des dossiers parent pour le ficher des metriques globales
+        creerDossiersParentsFichier(fichierConfig);
 
         //Try with ressources pour fermer automatiquement le writer en cas d'erreur
         try (FileWriter writer = new FileWriter(destination.trim())) { //L'objet FileWriter permet d'écrire dans le fichier de destination et le créer si il n'existe pas encore
@@ -71,6 +81,7 @@ public class ConfigurationWriter {
                 throw new ConfigurationWriterException(
                     "Impossible de créer le dossier : " + parentDir.getAbsolutePath());
             }
+            System.out.println("Creation du dossier parent : " + parentDir.getAbsolutePath());
         }
 
     }

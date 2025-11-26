@@ -1,13 +1,12 @@
 package com.ordonnancement.ui.controller;
 
-import java.nio.file.Path;
-
 import com.ordonnancement.AncienMain;
 import com.ordonnancement.config.ConfigurationManager;
 import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.model.Resultats;
 import com.ordonnancement.service.AppState;
+import com.ordonnancement.service.parser.FileParsingException;
 import com.ordonnancement.service.runner.Runner;
 import com.ordonnancement.ui.Alert.AlertUtils;
 
@@ -20,6 +19,7 @@ public class HomeController {
     private Button btnStart;
     @FXML
     private Button btnConfig;
+    private AppMainFrameController appMainFrameController;
     
 
     /**
@@ -27,26 +27,34 @@ public class HomeController {
      */
     @FXML
     private void doLancerExecution() {
-        AncienMain.lancerExecution();//TO DO : A SUPPRIMER, TEMPORAIRE CAR ATTENTE DE LA PARTIE CONFIGURATION
+        // AncienMain.lancerExecution();//TO DO : A SUPPRIMER, TEMPORAIRE CAR ATTENTE DE LA PARTIE CONFIGURATION
 
         try {
             //Récupérer les infos sur le fichier de config dans le singleton
-            Path fichierConfig = ConfigurationManager.getInstance().getCheminFichierConfig();
-            FileConfiguration configuration = ConfigurationManager.getInstance().getFileConfiguration();
+            String fichierConfig = ConfigurationManager.getInstance().getCheminFichierConfig();
+            //on charge la configuration depuis le fichier de configuration précédent
+            ConfigurationManager.getInstance().loadConfiguration(); //On parse le json
+            FileConfiguration configuration = ConfigurationManager.getInstance().getFileConfiguration(); //On récup l'objet
             
+        
             //Lancer l'execution / écriture fichier config + récup des résultats de python
             Runner.runAsync(configuration,
-                    fichierConfig.toString(),
+                    fichierConfig,
                     () -> {
                         afficherResumeExecution();
                         AncienMain.AfficherResultats(); // TO DO : A SUPPRIMER
                     },
                     e -> { //Si une exception arrive lors de l'execution
-                            AlertUtils.showError("Erreur", e.getMessage(), null);
+                            AlertUtils.showError("Erreur", e.getMessage(), btnStart.getParent().getScene().getWindow());
+                            e.printStackTrace();
+                        
                         });
                 
-        }catch(IllegalStateException e){
-            AlertUtils.showError("Erreur","Impossible de lancer l'exécution, aucune configuration n'est définie.",null);
+        }catch(FileParsingException e){
+            AlertUtils.showError("Erreur de configuration", e.getMessage(),btnStart.getParent().getScene().getWindow());
+        }
+        catch(Exception e){
+            AlertUtils.showError("Erreur",e.getMessage(),btnStart.getParent().getScene().getWindow());
         }
 
     }
@@ -75,6 +83,19 @@ public class HomeController {
 
         AlertUtils.showInfo("Fin de l'execution", sb.toString(), null);
 
+    }
+
+    @FXML
+    private void doAfficherConfig(){
+        appMainFrameController.doAfficherConfig();
+    }
+
+
+
+
+
+    public void setAppMainFrameController(AppMainFrameController appMainFrameController) {
+        this.appMainFrameController=appMainFrameController;
     }
 
 }

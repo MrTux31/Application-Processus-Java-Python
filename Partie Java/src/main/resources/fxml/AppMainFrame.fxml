@@ -16,6 +16,7 @@
                <Menu mnemonicParsing="false" text="Fichier">
                  <items>
                    <MenuItem mnemonicParsing="false" onAction="#afficherHome" text="Accueil" />
+                     <MenuItem fx:id="configMenu" mnemonicParsing="false" onAction="#doAfficherConfig" text="Configuration" />
                      <MenuItem fx:id="btnQuitter" mnemonicParsing="false" onAction="#doQuitter" text="Quitter" />
                  </items>
                </Menu>
