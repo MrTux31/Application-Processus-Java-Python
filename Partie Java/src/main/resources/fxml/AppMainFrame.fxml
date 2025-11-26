@@ -27,7 +27,7 @@
                     </Menu>
                     <Menu fx:id="ganttMenu" text="Gantt">
                         <MenuItem fx:id="ganttCpuMenu" onAction="#doAfficherGanttCPU" text="Gantt CPU" />
-                        <MenuItem fx:id="ganttProcessMenu" text="Gantt Processus" />
+                        <MenuItem fx:id="ganttProcessMenu" onAction="#doAfficherGanttProcessus" text="Gantt Processus" />
                     </Menu>
 
                                 <Menu fx:id="metricsMenu" text="Métriques">
