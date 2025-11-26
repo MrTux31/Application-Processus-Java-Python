@@ -23,7 +23,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
@@ -316,17 +315,7 @@ public class ConfigController {
         return fc.showSaveDialog(getOwnerWindow());
     }
 
-    private File chooseDirectoryForLabel(Label ref) {
-        DirectoryChooser dc = new DirectoryChooser();
-        dc.setTitle("Choisir dossier");
-        if (ref != null && ref.getText() != null && !ref.getText().startsWith("Aucun")) {
-            File prev = new File(ref.getText());
-            if (prev.exists()) {
-                dc.setInitialDirectory(prev.isDirectory() ? prev : prev.getParentFile());
-            }
-        }
-        return dc.showDialog(getOwnerWindow());
-    }
+
 
     @FXML
 /**
