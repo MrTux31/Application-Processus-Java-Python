@@ -7,23 +7,34 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="50.0" prefWidth="322.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.AppMainFrameController">
+<BorderPane prefHeight="50.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ordonnancement.ui.controller.AppMainFrameController">
     <!-- Menu principal en haut -->
     <top>
         <VBox>
             <MenuBar fx:id="menuBar">
                 <menus>
+               <Menu mnemonicParsing="false" text="Fichier">
+                 <items>
+                   <MenuItem mnemonicParsing="false" onAction="#afficherHome" text="Accueil" />
+                     <MenuItem fx:id="btnQuitter" mnemonicParsing="false" onAction="#doQuitter" text="Quitter" />
+                 </items>
+               </Menu>
                     <Menu fx:id="configMenu" text="Configuration" />
-                    <Menu fx:id="processMenu" text="Processus" />
+                    <Menu fx:id="processMenu" text="Processus">
+                        <items>
+                            <MenuItem fx:id="processListMenu" mnemonicParsing="false" onAction="#doAfficherProcessus" text="Liste des processus" />
+                        </items>
+                    </Menu>
                     <Menu fx:id="ganttMenu" text="Gantt">
                         <MenuItem fx:id="ganttCpuMenu" onAction="#doAfficherGanttCPU" text="Gantt CPU" />
                         <MenuItem fx:id="ganttProcessMenu" onAction="#doAfficherGanttProcessus" text="Gantt Processus" />
                     </Menu>
 
-                    <Menu fx:id="metricsMenu" text="Métriques">
+                                <Menu fx:id="metricsMenu" text="Métriques">
                   <items>
                      <MenuItem fx:id="graphMetric" mnemonicParsing="false" onAction="#doAfficherComparaisonAlgos" text="Comparer les métriques" />
-                  </items></Menu>
+                  </items>
+               </Menu>
                 </menus>
             </MenuBar>
         </VBox>

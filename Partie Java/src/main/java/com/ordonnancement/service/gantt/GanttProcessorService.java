@@ -18,6 +18,7 @@ import com.ordonnancement.util.ProcessUtils;
  * Classe service pour le controller GanttProcessorController
  * Service permettant de gérer les algorithmes d'ordonnancement et de générer les tâches Gantt correspondantes.
  * Fournit les données nécessaires au contrôleur pour afficher le diagramme de Gantt.
+ * @author ROMA Quentin
  */
 
 

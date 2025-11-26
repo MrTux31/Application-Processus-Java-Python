@@ -19,14 +19,16 @@ public class PythonLauncher {
      */
     public static void runPythonScript(Path cheminScript, String cheminConfig){
 
-        //TO DO : Faire en sorte que ca marche pour linux: python3 et faire en sorte que ca marche sur windows avec juste "python" : attention variable path non configurée
+        
 
-        String commande[] = {"python", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python;
+        String commande[] = {"python3", "-X", "utf8", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python;
         ProcessBuilder builder = new ProcessBuilder(commande); //Construction de la commande
         
         try {
             //Démarrage du processus
             Process process = builder.start();
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> process.destroy())); //Arreter le python si on arrete l'app java
+
 
             // Variable pour stocker les erreurs
             StringBuilder erreurs = new StringBuilder(); //Stringbuilder pour stocker les lignes d'erreurs de manière plus performante
@@ -51,5 +53,9 @@ public class PythonLauncher {
             Thread.currentThread().interrupt();
             throw new PythonException("Exécution du script Python interrompue.", e);
         }
+
+        
     }
+
+
 }

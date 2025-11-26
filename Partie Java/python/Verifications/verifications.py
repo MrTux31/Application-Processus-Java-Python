@@ -1,6 +1,7 @@
 
+from multiprocessing import process
 import sys
-
+import re
 def verifierRessources(ressources : dict):
     """
     Vérifie la cohérence des ressources pour l’ordonnancement.
@@ -38,6 +39,9 @@ def verifierRessources(ressources : dict):
         #Gestion de l'unicité de chaque id CPU
         id_vus = set()
         for p in liste_processeurs:
+            if not re.fullmatch(r'CPU\d+', p): #Format : CPUNombre
+                print(f"Erreur dans le fichier des ressources, le CPU avec l'id {p} ne respecte pas le format attendu.", file=sys.stderr)
+                sys.exit(8)
             if not p.strip(): #Si le nom cpu est "    "
                 print("Erreur dans le fichier des ressources,il y a un CPU avec un ID vide", file=sys.stderr)
                 sys.exit(8)
@@ -117,9 +121,16 @@ def verifierProcessus(processus: list[dict], ram_dispo: int):
     
     try:
         ids_vus = set() #Création d'un ensemble pour stocker les id (on vérif si ils sont uniques)
+        if len(processus) == 0:
+            print("Erreur dans le fichier des processus, il n'y a aucun processus à ordonnancer.", file=sys.stderr)
+            sys.exit(8)
+        
         for p in processus:
             if not p["idProcessus"].strip(): #Si l'id du processus est  "    "
-                print("Erreur dans le fichier des ressources, il y a un Processus avec un ID vide", file=sys.stderr)
+                print("Erreur dans le fichier des processus, il y a un Processus avec un ID vide", file=sys.stderr)
+                sys.exit(8)
+            if not (re.fullmatch(r'P\d+', p['idProcessus']) or re.fullmatch(r'\d+', p['idProcessus'])): #Format : un nombre ou P Nombre
+                print(f"Erreur dans le fichier des processus, le processus avec l'id { p["idProcessus"]} ne respecte pas le format attendu.", file=sys.stderr)
                 sys.exit(8)
             if p["idProcessus"] in ids_vus: #Test de l'unicité de l'id du processus
                 print(f"Erreur : doublon d'idProcessus détecté ({p['idProcessus']})", file=sys.stderr)

@@ -4,7 +4,6 @@
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 
@@ -12,71 +11,82 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.ordonnancement.ui.controller.MetricController">
 
-    <!-- Zone centrale : deux BarChart pour comparer les graphiques -->
+    <!-- Zone centrale -->
     <center>
-        <HBox spacing="10" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets top="10" right="10" bottom="0" left="10"/>
-            </padding>
+        <StackPane alignment="CENTER">
+            <!-- VBox contenant les graphiques -->
+            <VBox fx:id="vBoxCharts" spacing="10" alignment="CENTER">
+                <HBox spacing="10" alignment="CENTER">
+                    <padding>
+                        <Insets top="10" right="10" bottom="0" left="10"/>
+                    </padding>
 
-            <!-- Graphique de gauche -->
-            <BarChart fx:id="barChartGauche" title="Comparaison gauche">
-                <xAxis>
-                    <CategoryAxis fx:id="xAxisGauche" label="Scénario"/>
-                </xAxis>
-                <yAxis>
-                    <NumberAxis fx:id="yAxisGauche" label="Valeur"/>
-                </yAxis>
-            </BarChart>
+                    <!-- Graphique de gauche -->
+                    <BarChart fx:id="barChartGauche" title="Comparaison gauche">
+                        <xAxis>
+                            <CategoryAxis fx:id="xAxisGauche" label="Scénario"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis fx:id="yAxisGauche" label="Valeur"/>
+                        </yAxis>
+                    </BarChart>
 
-            <!-- Graphique de droite -->
-            <BarChart fx:id="barChartDroite" title="Comparaison droite">
-                <xAxis>
-                    <CategoryAxis fx:id="xAxisDroite" label="Scénario"/>
-                </xAxis>
-                <yAxis>
-                    <NumberAxis fx:id="yAxisDroite" label="Valeur"/>
-                </yAxis>
-            </BarChart>
-        </HBox>
+                    <!-- Graphique de droite -->
+                    <BarChart fx:id="barChartDroite" title="Comparaison droite">
+                        <xAxis>
+                            <CategoryAxis fx:id="xAxisDroite" label="Scénario"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis fx:id="yAxisDroite" label="Valeur"/>
+                        </yAxis>
+                    </BarChart>
+                </HBox>
+            </VBox>
+
+            <!-- Label message central -->
+            <Label fx:id="messageLabel"
+                   text="Aucun résultat disponible"
+                   visible="false"
+                   alignment="CENTER"
+                   style="-fx-font-size: 18px; -fx-text-fill: black;"
+                   StackPane.alignment="CENTER"/>
+        </StackPane>
     </center>
 
-    <!-- Bas de la fenêtre : choix des algos pour chaque graphique -->
+    <!-- Bas : choix des algorithmes -->
     <bottom>
         <HBox spacing="20" alignment="CENTER">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <!-- Choix pour le graphique de gauche -->
+            <!-- Choix du graphique gauche -->
             <VBox spacing="5" alignment="CENTER_LEFT">
-                <Label text="Algorithme (graphique gauche)"/>
+                <Label fx:id="labelAlgoGauche" text="Algorithme (graphique gauche)"/>
                 <ComboBox fx:id="comboAlgoGauche" prefWidth="150">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="FIFO"/>
-                            <String fx:value="Round Robin"/>
-                            <String fx:value="Priorité"/>
+                            <String fx:value="ROUND ROBIN"/>
+                            <String fx:value="PRIORITE"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
             </VBox>
 
-            <!-- Choix pour le graphique de droite -->
+            <!-- Choix du graphique droit -->
             <VBox spacing="5" alignment="CENTER_LEFT">
-                <Label text="Algorithme (graphique droit)"/>
+                <Label fx:id="labelAlgoDroite" text="Algorithme (graphique droit)"/>
                 <ComboBox fx:id="comboAlgoDroite" prefWidth="150">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="FIFO"/>
-                            <String fx:value="Round Robin"/>
-                            <String fx:value="Priorité"/>
+                            <String fx:value="ROUND ROBIN"/>
+                            <String fx:value="PRIORITE"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
             </VBox>
-
         </HBox>
     </bottom>
-
 </BorderPane>

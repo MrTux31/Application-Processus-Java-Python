@@ -1,7 +1,7 @@
 package com.ordonnancement.ui;
 
-import com.ordonnancement.AncienMain;
 import com.ordonnancement.ui.Alert.AlertUtils;
+import com.ordonnancement.ui.controller.AppMainFrameController;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +22,7 @@ public class OrdonnancementApp extends Application {
     * Utilisée pour afficher les différentes vues (scènes) de l'application.
     */
     private Stage primaryStage;
-    
+    private AppMainFrameController mainFrameController;
 
 
     @Override
@@ -35,15 +35,14 @@ public class OrdonnancementApp extends Application {
             //Créer un border pane dans lequel on met la vue
             BorderPane mainFrame = loader.load();
             Scene scene = new Scene(mainFrame, 800, 600);
+            mainFrameController = loader.getController(); //Récup le controller
+            mainFrameController.afficherHome(); //Afficher le menu d'accueil
             //On met la scene dans le stage
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            //TO DO : ENLEVER, ESSAI TEMPORAIRE
-            AncienMain.lancerExecution();
-
         } catch (Exception e) {
-            AlertUtils.showError("Erreur", "Erreur d'execution ordonnancement :\n"+e.getMessage(), primaryStage);
+            AlertUtils.showError("Erreur", "Erreur innatendue :\n"+e.getMessage(), null);
             e.printStackTrace();
         
         }
