@@ -20,6 +20,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -189,21 +191,18 @@ public class ConfigController {
         }
 
         if (metriquesLabel == null || metriquesLabel.getText() == null || metriquesLabel.getText().equals("Aucun dossier")) {
-            AlertUtils.showError("Erreur", "Le dossier métriques n'est pas renseigné.", owner);
+            AlertUtils.showError("Erreur", "Le fichier des métriques n'est pas renseigné.", owner);
             return;
         }
 
-        File metDir = new File(metriquesLabel.getText());
-        if (!metDir.exists() && !metDir.mkdirs()) {
-            AlertUtils.showError("Erreur", "Impossible de créer le dossier Métriques : " + metDir.getAbsolutePath(), owner);
-            return;
-        }
+        
+       
 
         FileConfiguration fileConfig;
         try {
             fileConfig = new FileConfiguration(
                     labelProcessPath.getText(),
-                    metDir.toString(),
+                    metriquesLabel.getText(),
                     labelRessourcesPath.getText(),
                     algos
             );
@@ -238,16 +237,16 @@ public class ConfigController {
 
         // Vider la zone des algos
         vBoxResultats.getChildren().clear();
-
+        HBox.setHgrow(vBoxResultats, Priority.ALWAYS);
         // Recréer dynamiquement les blocs d’algorithmes
         if (cbFifo.isSelected()) {
             vBoxResultats.getChildren().add(buildAlgoBlock("FIFO", fifoDet, fifoGlob));
         }
         if (cbPriorite.isSelected()) {
-            vBoxResultats.getChildren().add(buildAlgoBlock("PRIORITE", prioriteDet, prioriteGlob));
+            vBoxResultats.getChildren().add(buildAlgoBlock("Priorité", prioriteDet, prioriteGlob));
         }
         if (cbRR.isSelected()) {
-            vBoxResultats.getChildren().add(buildAlgoBlock("ROUND ROBIN", rrDet, rrGlob));
+            vBoxResultats.getChildren().add(buildAlgoBlock("Round Robin", rrDet, rrGlob));
         }
 
         // Si aucune sélection → hboxResultatsAlgos vide, mais on NE TOUCHE PAS au reste du contenu
@@ -270,7 +269,7 @@ public class ConfigController {
         g.setHgap(10);
         g.setVgap(8);
 
-        Button bDet = new Button("Choisir...");
+        Button bDet = new Button("Enregistrer sous...");
         bDet.setOnAction(e -> {
             File chosen = chooseCsvFile(det);
             if (chosen != null) {
@@ -282,7 +281,7 @@ public class ConfigController {
         g.add(bDet, 1, 0);
         g.add(det, 2, 0);
 
-        Button bGlob = new Button("Choisir...");
+        Button bGlob = new Button("Enregistrer sous...");
         bGlob.setOnAction(e -> {
             File chosen = chooseCsvFile(glob);
             if (chosen != null) {
@@ -293,6 +292,10 @@ public class ConfigController {
         g.add(new Label("Résultats globaux :"), 0, 1);
         g.add(bGlob, 1, 1);
         g.add(glob, 2, 1);
+
+        
+
+
 
         box.getChildren().add(g);
         return box;
@@ -371,7 +374,7 @@ private void doDefaut() {
                     labelRessourcesPath.setText("Aucun fichier");
                 }
                 if (metriquesLabel != null) {
-                    metriquesLabel.setText("Aucun dossier");
+                    metriquesLabel.setText("Aucun fichier");
                 }
                 refreshUI();
                 return;
