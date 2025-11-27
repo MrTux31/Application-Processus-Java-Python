@@ -224,10 +224,10 @@ public class GanttProcessusController {
             // Parcourir chaque processus pour récupérer ses allocations et calculer les
             // attentes
             for (Process p : listeProcessus) {
-                String formattedId = p.getId();
+                String idProcess = p.getId();
 
                 // Si le processus n'est pas sélectionné, on passe
-                if (!listeProcessusSelectionnes.contains(formattedId)) {
+                if (!listeProcessusSelectionnes.contains(idProcess)) {
                     continue;
                 }
 
@@ -241,7 +241,7 @@ public class GanttProcessusController {
 
                 // Si on a des allocations, on ajoute ce processus à la liste des catégories à
                 // afficher pour cet algo
-                processusAffichesPourCetAlgo.add(formattedId);
+                processusAffichesPourCetAlgo.add(idProcess);
 
                 // Trier les allocations par date de début pour calculer les trous (attentes)
                 allocations.sort(Comparator.comparingInt(Allocation::getDateDebutExecution));
@@ -253,11 +253,11 @@ public class GanttProcessusController {
                     // début de l'allocation
                     if (a.getDateDebutExecution() > currentTime) {
                         tachesGantt.add(
-                                new ProcessusTask("EN ATTENTE", formattedId, currentTime, a.getDateDebutExecution()));
+                                new ProcessusTask("EN ATTENTE", idProcess, currentTime, a.getDateDebutExecution()));
                     }
 
                     // Ajouter la tâche d'exécution (allocation)
-                    tachesGantt.add(new ProcessusTask(a, formattedId));
+                    tachesGantt.add(new ProcessusTask(a, idProcess));
 
                     // Mettre à jour le temps courant et la date de fin max
                     currentTime = a.getDateFinExecution();
