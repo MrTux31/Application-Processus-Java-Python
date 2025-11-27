@@ -2,7 +2,7 @@ package com.ordonnancement.model;
 
 /**
  * Représente les métriques globales obtenues par algorithme d'ordonnacement
- * @author ROMA Quentin
+ * @author Antonin Le Donné
  */
 
 public class Metrics {
@@ -25,53 +25,6 @@ public class Metrics {
         this.makespan = makespan;
 
     }
-
-
-
-    // /** 
-    //  * Méthode permettant de calculer toutes les moyennes et la date de fin (makespan)
-    //  */
-    // private void calculerMetrics(List<Process> listeProcessus){
-    //     double tempsAttenteMoyenTotal = 0;
-    //     int tempsReponseTotal = 0;
-    //     int dateFinTemporaire = 0;
-
-    //     //Pour chacun des processus de la liste
-    //     for(Process p : listeProcessus){
-    //         int tempsAttenteProcessus = 0;
-    //         tempsReponseTotal += p.getDateDebut() - p.getDateSoumission(); //On calcule le délais entre le moment où le processus est soumis et le moment où il démarre réllement.
-
-    //         if(p.getDateFin() > dateFinTemporaire){ //On cherche la date de fin du dernier processus
-    //             dateFinTemporaire = p.getDateFin();
-    //         }
-
-    //         List<Schedule> listeSchedules = p.getListSchedules(); //Récupération de la liste des assignation du processus aux processeurs
-    //         //Pour chacune des assignation des processus de la liste
-    //         for(int i = 0; i< listeSchedules.size(); i++){
-    //             if(i == 0){ //Cas spécial si c'est la première assignation
-    //                 // Temps entre la soumission du processus et le début de sa première exécution
-    //                 tempsAttenteProcessus += listeSchedules.get(i).getDateDebutExecution() - p.getDateSoumission(); //(date de début - date de soumission)
-    //             }
-    //             else{
-    //                 //Le temps d'attente correspond au délai entre deux assignations du processus. On prends la date de début de l'assignation i 
-    //                 //et on soustrait à la date de fin de l'assignation i-1
-    //                 tempsAttenteProcessus += listeSchedules.get(i).getDateDebutExecution() - listeSchedules.get(i-1).getDateFinExecution(); 
-    //             }   
-    //         }
-    //         if(!listeSchedules.isEmpty()){ //Sécurité
-    //             //On fait la moyenne des temps d'attente entre chaque Schedule du Processus actuel
-    //             tempsAttenteMoyenTotal += (double) tempsAttenteProcessus / listeSchedules.size(); 
-    //         }
-      
-    //     }
-
-    //     //Calcul des moyennes
-    //     this.tempsReponseMoyen = (double) tempsReponseTotal/listeProcessus.size(); 
-    //     this.tempsAttenteMoyen = (double) tempsAttenteMoyenTotal/listeProcessus.size(); //On prends la moyenne des temps d'attente et on divise par le nombre de processus
-        
-    //     //On enregistre la bonne date de fin
-    //     this.makespan = dateFinTemporaire;
-    // }
 
     /**
      * Permet de récupérer le temps de réponse moyen
