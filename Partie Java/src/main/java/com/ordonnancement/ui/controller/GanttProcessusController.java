@@ -68,7 +68,6 @@ public class GanttProcessusController {
         try {
             this.listeProcessus = AppState.getInstance().getResultats().getListeProcessus();
 
-
             if (labelAlgo != null) {
                 labelAlgo.setVisible(false);
                 labelAlgo.setManaged(false);
@@ -128,20 +127,6 @@ public class GanttProcessusController {
     }
 
     /**
-     * Formate l'ID du processus pour l'affichage et le tri.
-     * Utilise un format "P01", "P02" pour garantir un tri alphabétique correct qui
-     * correspond au tri numérique.
-     */
-    private String formatId(String id) {
-        try {
-            int val = Integer.parseInt(id);
-            return String.format("P%02d", val); // P01, P02, P10...
-        } catch (NumberFormatException e) {
-            return "P" + id;
-        }
-    }
-
-    /**
      * Met à jour les listes de Processus disponibles et sélectionnés pour tous les
      * algos.
      */
@@ -152,7 +137,7 @@ public class GanttProcessusController {
             for (Process p : listeProcessus) {
                 List<Allocation> allocs = ProcessUtils.getAllocations(p, nomAlgo);
                 if (allocs != null && !allocs.isEmpty()) {
-                    ensembleProcessus.add(formatId(p.getId()));
+                    ensembleProcessus.add(p.getId());
                 }
             }
         }
@@ -204,11 +189,11 @@ public class GanttProcessusController {
             GanttPresenter presenter = new GanttPresenter(a); // Créer le gantt presenter de l'algo
             vBoxGantts.getChildren().add(presenter); // Ajout du presenter dans la vbox
             listeGanttPresenters.add(presenter); // Ajout à l'array list
-            if(listeGanttPresenters.size() > 1){ //Si ce ne sont pas les premiers, on les fermes
+            if (listeGanttPresenters.size() > 1) { // Si ce ne sont pas les premiers, on les fermes
                 presenter.setExpanded(false);
             }
         }
-        
+
     }
 
     /**
@@ -239,7 +224,7 @@ public class GanttProcessusController {
             // Parcourir chaque processus pour récupérer ses allocations et calculer les
             // attentes
             for (Process p : listeProcessus) {
-                String formattedId = formatId(p.getId());
+                String formattedId = p.getId();
 
                 // Si le processus n'est pas sélectionné, on passe
                 if (!listeProcessusSelectionnes.contains(formattedId)) {
