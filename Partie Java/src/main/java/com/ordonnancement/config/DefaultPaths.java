@@ -8,8 +8,8 @@ public enum DefaultPaths {
     RESSOURCES_INIT("python/Settings/ressources.json"), //Le fichier des ressources dispos
     METRIQUES_GLOBAL("python/Settings/fichierMetriquesGlobales.csv"), //Le fichier des métriques globales
     // ===================== FIFO =====================
-    R_DETAILLED_FIFO("python/Resultats/FIFO/rDetailled.csv"),
-    R_GLOBAL_FIFO("python/Resultats/FIFO/rGlobaux.csv"),
+    R_DETAILLED_FIFO("python/Resultats/Fifo/rDetailled.csv"),
+    R_GLOBAL_FIFO("python/Resultats/Fifo/rGlobaux.csv"),
 
     // ===================== PRIORITÉ =====================
     R_DETAILLED_PRIORITE("python/Resultats/Priorite/rDetailled.csv"),

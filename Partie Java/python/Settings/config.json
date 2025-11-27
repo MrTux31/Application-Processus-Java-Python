@@ -5,8 +5,8 @@
   "listeAlgorithmes": [
     {
       "nomAlgorithme": "FIFO",
-      "fichierResultatsDetailles": "python/Resultats/FIFO/rDetailled.csv",
-      "fichierResultatsGlobaux": "python/Resultats/FIFO/rGlobaux.csv",
+      "fichierResultatsDetailles": "python/Resultats/Fifo/rDetailled.csv",
+      "fichierResultatsGlobaux": "python/Resultats/Fifo/rGlobaux.csv",
       "quantum": null
     },
     {
