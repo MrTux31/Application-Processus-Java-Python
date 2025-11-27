@@ -6,6 +6,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 /**
+ * @author Antonin Le Donné
  * Singleton responsable du stockage centralisé des résultats produits par
  * l'ordonnanceur Python. L'utilisation de ce singleton garantit qu'un unique
  * jeu de résultats est manipulé dans l'application après l'exécution du
