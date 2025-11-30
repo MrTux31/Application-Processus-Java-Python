@@ -85,7 +85,7 @@ public class MetricsParser {
         for (int i = 0; i < colonnesAttendues.length; i++) {
             if (!colonnes[i].trim().equals(colonnesAttendues[i])) {
                 throw new FileParsingException(
-                        "Colonne " + colonnesAttendues[i] + " introuvable dans le fichier des métriques globales");
+                        "Colonne " + colonnesAttendues[i] + " introuvable ou mal placée dans le fichier des métriques globales");
             }
         }
     }

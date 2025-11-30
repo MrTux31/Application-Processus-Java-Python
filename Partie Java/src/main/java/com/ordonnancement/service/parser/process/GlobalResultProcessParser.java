@@ -101,7 +101,7 @@ public class GlobalResultProcessParser {
         for (int i = 0; i < colonnesAttendues.length; i++) {
             if (!colonnes[i].trim().equals(colonnesAttendues[i])) {
                 throw new FileParsingException(
-                        "Colonne " + colonnesAttendues[i] + " introuvable dans le CSV des résultats globaux");
+                        "Colonne " + colonnesAttendues[i] + " introuvable ou mal placée dans le CSV des résultats globaux");
             }
         }
     }

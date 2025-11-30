@@ -93,7 +93,7 @@ public class InitialProcessParser {
         for (int i = 0; i < colonnesAttendues.length; i++) {
             if (!colonnesAttendues[i].equals(colonnes[i].trim())) {
                 throw new FileParsingException(
-                        "Colonne " + colonnesAttendues[i] + " introuvable dans le fichier des processus initiaux");
+                        "Colonne " + colonnesAttendues[i] + " introuvable ou mal placée dans le fichier des processus initiaux");
             }
         }
     }

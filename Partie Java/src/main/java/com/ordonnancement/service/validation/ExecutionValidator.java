@@ -16,7 +16,7 @@ import com.ordonnancement.util.ProcessUtils;
 public class ExecutionValidator {
 
     /**
-     * Permet de vérifier si les ExecutionsInfo d'un Process sont cohérentes
+     * Permet de vérifier si les Allocations et ExecutionsInfo d'un Process sont cohérentes
      *
      * @param p : Le Process
      * 

@@ -6,7 +6,7 @@ public enum DefaultPaths {
 
     PROCESS_INIT("python/Settings/processusInitiaux.csv"), //Les processus initiaux
     RESSOURCES_INIT("python/Settings/ressources.json"), //Le fichier des ressources dispos
-    METRIQUES_GLOBAL("python/Settings/fichierMetriquesGlobales.csv"), //Le fichier des métriques globales
+    METRIQUES_GLOBAL("python/Resultats/Metriques/MetriquesGlobales.csv"), //Le fichier des métriques globales
     // ===================== FIFO =====================
     R_DETAILLED_FIFO("python/Resultats/Fifo/rDetailled.csv"),
     R_GLOBAL_FIFO("python/Resultats/Fifo/rGlobaux.csv"),

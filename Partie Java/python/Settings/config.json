@@ -1,7 +1,7 @@
 {
   "fichierProcessus": "python/Settings/processusInitiaux.csv",
   "fichierRessourcesDisponibles": "python/Settings/ressources.json",
-  "fichierMetriquesGlobales": "python/Settings/fichierMetriquesGlobales.csv",
+  "fichierMetriquesGlobales": "python/Resultats/Metriques/MetriquesGlobales.csv",
   "listeAlgorithmes": [
     {
       "nomAlgorithme": "FIFO",

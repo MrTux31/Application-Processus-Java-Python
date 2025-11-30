@@ -12,7 +12,6 @@ import com.ordonnancement.model.Metrics;
 import com.ordonnancement.model.Process;
 import com.ordonnancement.model.Resultats;
 import com.ordonnancement.service.AppState;
-import com.ordonnancement.service.configuration.ConfigurationWriter;
 import com.ordonnancement.service.parser.metrics.MetricsParser;
 import com.ordonnancement.service.parser.process.DetailedResultProcessParser;
 import com.ordonnancement.service.parser.process.GlobalResultProcessParser;
@@ -61,13 +60,13 @@ public class Runner {
     }
 
     /**
-     * Réalise les différentes étapes : - écrit le fichier de config - lance
+     * Réalise les différentes étapes : lance
      * Python - parse les fichiers résultats - retourne les résultats obtenus
      * après l'exxécution de python
      *
      * @param fileConfiguration : Les paramètres du fichier de config
      * @param destinationFichierConfig: La destination du fichier de
-     * configuration à créer
+     * configuration à utiliser
      * @return Resultats : les résultats obtenus
      * @throws RunnerException Si une erreur de lancement survient
      */

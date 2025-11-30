@@ -108,7 +108,7 @@ public class DetailedResultProcessParser {
         for (int i = 0; i < colonnesAttendues.length; i++) {
             if (!colonnes[i].trim().equals(colonnesAttendues[i])) {
                 throw new FileParsingException(
-                        "Colonne " + colonnesAttendues[i] + " introuvable dans le CSV des résultats détaillés");
+                        "Colonne " + colonnesAttendues[i] + " introuvable ou mal placée dans le CSV des résultats détaillés");
             }
         }
     }
@@ -141,7 +141,7 @@ public class DetailedResultProcessParser {
         }
         
     
-        // Création de l'allocation pour cette ligne et ajout à l'ExecutionInfo
+        // Création de l'allocation pour cette ligne
         Allocation a = new Allocation(p,idProcesseur, dateDebut, dateFin);
 
 
