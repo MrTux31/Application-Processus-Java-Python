@@ -167,6 +167,8 @@ public class AppMainFrameController {
 
     /**
      * Affiche la liste des processus avec leurs détails
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     @FXML
     public void doAfficherProcessus() {

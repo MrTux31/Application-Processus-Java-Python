@@ -21,6 +21,8 @@ import javafx.scene.layout.VBox;
 /**
  * Contrôleur pour l'affichage de la liste des processus et de leurs détails.
  * Affiche une ListView des processus à gauche et les détails du processus sélectionné à droite.
+ * 
+ * @author : Nino Ribeiro--Vaur
  */
 public class ProcessController {
     @FXML
@@ -51,6 +53,8 @@ public class ProcessController {
 
     /**
      * Initialise le contrôleur et configure les composants graphiques.
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     @FXML
     private void initialize() {
@@ -71,6 +75,8 @@ public class ProcessController {
 
     /**
      * Configure la ListView avec la liste des processus.
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     private void setupListView() {
         listeProcessusObservable = FXCollections.observableArrayList(listeProcessus);
@@ -92,6 +98,8 @@ public class ProcessController {
 
     /**
      * Configure l'écouteur de sélection pour afficher les détails du processus sélectionné.
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     private void setupSelectionListener() {
         listViewProcessus.getSelectionModel().selectedItemProperty().addListener(
@@ -109,6 +117,8 @@ public class ProcessController {
      * Affiche les détails du processus sélectionné.
      * 
      * @param process Le processus dont on veut afficher les détails
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     private void afficherDetailsProcessus(Process process) {
         // Afficher les informations générales
@@ -131,6 +141,8 @@ public class ProcessController {
      * Affiche les informations d'exécution du processus pour chaque algorithme.
      * 
      * @param process Le processus dont on veut afficher les informations d'exécution
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     private void afficherInformationsExecution(Process process) {
         executionInfoContainer.getChildren().clear();
@@ -219,6 +231,8 @@ public class ProcessController {
 
     /**
      * Masque la zone de détails et affiche le message par défaut.
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     private void masquerDetails() {
         labelTitre.setVisible(true);
@@ -229,6 +243,8 @@ public class ProcessController {
      * Affiche un message d'erreur dans la zone de détails.
      * 
      * @param message Le message d'erreur à afficher
+     * 
+     * @author : Nino Ribeiro--Vaur
      */
     private void afficherMessageErreur(String message) {
         labelTitre.setText(message);
