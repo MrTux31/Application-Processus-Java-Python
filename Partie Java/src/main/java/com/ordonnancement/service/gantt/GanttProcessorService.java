@@ -26,7 +26,6 @@ public class GanttProcessorService {
     private String nomAlgo;
     private List<String> algosDispos;
     private final List<Process> processus;
-    private List<String> listeCpusDisponibles; //Liste de tous les cpus utilisés dans l'algo d'ordonnancement courant
     private int dateFinMax;
     private List<IGanttTask> listeTachesGantt;
     private List<String> allCpus; //Tous les cpus dispos
@@ -37,7 +36,6 @@ public class GanttProcessorService {
      */
     public GanttProcessorService(List<Process> processus) {
         this.processus = processus;
-        this.listeCpusDisponibles = new ArrayList<>();
         trouverAlgosDisponibles();
         trouverTousLesCpus();
         
@@ -50,7 +48,6 @@ public class GanttProcessorService {
      */
     public void changerAlgo(String nomAlgo){
         this.nomAlgo = nomAlgo;
-        rechargerListeCpu();        
         rechargerTachesGantt();
     };
 
@@ -74,15 +71,6 @@ public class GanttProcessorService {
     
     
 
-    /**
-     * Retourne la liste des CPUs disponibles pour l'algorithme courant.
-     *
-     * @return Liste des CPUs disponibles.
-     */
-    public List<String> getCpusDisponibles(){
-        return this.listeCpusDisponibles;
-    };
-
 
     /**
      * Retourne renvoie la liste des tous les cpus pour tous les algos
@@ -96,17 +84,6 @@ public class GanttProcessorService {
 
 
     /**
-     * Recharge la liste des CPUs utilisés pour l'algorithme courant.
-     * Met à jour l'attribut interne listeCpusDisponibles.
-     */
-    private void rechargerListeCpu() {
-        //On charge la liste des cpus qui ont été utilisé dans l'algo d'ordonnacement
-        listeCpusDisponibles = ProcessUtils.getAllCpus(processus, nomAlgo);
-               
-
-    }
-
-    /**
      * Recharge la liste des tâches Gantt pour l'algorithme courant et calcule la date de fin maximale.
      * Met à jour les attributs internes listeTachesGantt et dateFinMax.
      */
@@ -118,11 +95,9 @@ public class GanttProcessorService {
         int max = 0;
         //Pour chaque allocation, conversion en IGanttTask
         for (Allocation a : allocations) {
-            if (listeCpusDisponibles.contains(a.getProcessor())) {
-                IGanttTask tache = new CpuTask(a); //(CPU task car gantt par CPU en Y)
-                tachesGantt.add(tache);
-                
-            }
+            IGanttTask tache = new CpuTask(a); //(CPU task car gantt par CPU en Y)
+            tachesGantt.add(tache);
+            
             if (a.getDateFinExecution() > max) {
                     max = a.getDateFinExecution();
             }
