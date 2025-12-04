@@ -1,4 +1,4 @@
 algo,tempsAttenteMoyen,tempsReponseMoyen,makespan
 FIFO,7.0,27.4,65
 PRIORITE,7.0,27.4,65
-ROUND ROBIN,0.6,30.8,51
+ROUND ROBIN,4.6,28.0,53

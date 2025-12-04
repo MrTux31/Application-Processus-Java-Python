@@ -110,8 +110,7 @@ public class GanttProcessorService {
 
 
     /**
-     * Retourne la liste des de tous les noms d'algorithmes
-     *
+     * Retourne la liste des de tous les noms d'algorithmes ayant été exécuté par python
      * @return Liste des noms d'algorithmes.
      */
     public List<String> getNomAlgosDisponibles(){
@@ -130,8 +129,7 @@ public class GanttProcessorService {
 
     /**
      * Permet de trouver tous les cpus pour tous les algos
-     *
-     * @return Listede tous les cpus
+     * @return Liste de tous les cpus
      */
     private void trouverTousLesCpus(){
         Set<String> cpus = new HashSet<>();

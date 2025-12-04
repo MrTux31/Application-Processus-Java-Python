@@ -19,6 +19,8 @@ import com.ordonnancement.service.validation.ProcessValidator;
  * Elle vérifie que le CSV possède bien les colonnes attendues dans le bon
  * ordre. Les lignes vides sont ignorées. Si une ligne a moins de 6 colonnes,
  * une exception est levée.
+ * 
+ * @author ROMA Quentin
  *
  */
 public class InitialProcessParser {

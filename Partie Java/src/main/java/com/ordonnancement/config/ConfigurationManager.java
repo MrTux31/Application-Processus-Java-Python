@@ -8,6 +8,7 @@ import com.ordonnancement.service.parser.config.ConfigParser;
  * Singleton responsable de la gestion du fichier de configuration de
  * l'ordonnanceur. Permet d'assurer qu'une seule configuration est utilisée dans
  * l'application.
+ * @author Allemane Axel
  */
 public class ConfigurationManager {
 

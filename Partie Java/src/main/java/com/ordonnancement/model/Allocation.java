@@ -45,10 +45,19 @@ public class Allocation {
         return dateFinExecution;
     }
 
+    /**
+     * Renvoie l'identifiant du processus associé à cette allocation.
+     *
+     * @return l'identifiant du processus
+     */
     public String getIdProcessus(){
         return this.processus.getId();
     }
-
+    /**
+     * Renvoie le processus exécuté durant l'allocation.
+     *
+     * @return le processus concerné
+     */
     public Process getProcessus(){
         return this.processus;
     }

@@ -19,6 +19,11 @@ import javafx.stage.Stage;
  * Contrôleur principal de l'application.
  * Gère la fenêtre principale et la navigation entre les différentes
  * fonctionnalités.
+ * @author ROMA Quentin
+ * @author Allemane Axel
+ * @author Olivencia Eliot
+ * @author Le Donné Antonin
+ * @author Ribeiro--Vaur Nino 
  */
 public class AppMainFrameController {
 
@@ -71,7 +76,7 @@ public class AppMainFrameController {
                     "Erreur affichage du menu :\n" + e.getMessage(),
                     (Stage) mainContentPane.getScene().getWindow());
             
-            e.printStackTrace();
+            
         }
 
     }
@@ -109,13 +114,14 @@ public class AppMainFrameController {
                     "Erreur",
                     "Erreur affichange Gantt CPU :\n" + cleanMessage,
                     (Stage) mainContentPane.getScene().getWindow());
-            e.printStackTrace();
+            
         }
 
     }
 
     /**
      * Affiche le gantt par processus
+     * @author Olivencia Eliot
      */
     @FXML
     public void doAfficherGanttProcessus() {
@@ -136,7 +142,7 @@ public class AppMainFrameController {
                     "Erreur",
                     "Erreur affichage Gantt Processus :\n" + cleanMessage,
                     (Stage) mainContentPane.getScene().getWindow());
-            e.printStackTrace();
+            
         }
     }
 
@@ -183,7 +189,7 @@ public class AppMainFrameController {
                     "Erreur",
                     "Erreur affichage des processus :\n" + e.getMessage(),
                     (Stage) mainContentPane.getScene().getWindow());
-            e.printStackTrace();
+            
         }
     }
 
@@ -201,7 +207,7 @@ public class AppMainFrameController {
 
         } catch (Exception e) {
             AlertUtils.showError("Erreur", "Impossible d'ouvrir la configuration :\n" + e.getMessage(),(Stage) mainContentPane.getScene().getWindow());
-            e.printStackTrace();
+            
         }
     }
 

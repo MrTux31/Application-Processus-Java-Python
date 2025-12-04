@@ -9,6 +9,7 @@ import com.ordonnancement.service.parser.FileParsingException;
 
 /**
  * Classe permettant de vérifier si un objet Process construit est cohérent
+ * @author ROMA Quentin
  */
 public class ProcessValidator {
 
@@ -38,7 +39,7 @@ public class ProcessValidator {
                 throw new FileParsingException("Le processus " + p.getId() + " a une priorité <= 0");
             }
            
-            ExecutionValidator.valider(p); //Vérifier les assignations du processus (les schedules)
+            ExecutionValidator.valider(p); //Vérifier les assignations du processus
             
         }
     }

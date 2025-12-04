@@ -26,12 +26,11 @@ import javafx.stage.Stage;
 
 /**
  * Controleur pour l'affichage du diagramme de gantt par processeur
+ * @author ROMA Quentin
  */
 public class GanttProcessorController extends Application {
 
     //Chargement elements fxml
-    
-    
     @FXML
     private ListView<String> listViewCpu;
     @FXML
@@ -57,8 +56,8 @@ public class GanttProcessorController extends Application {
     }
 
     /**
-     * Initialise le contrôleur et configure les composants graphiques. Lance le
-     * premier dessin du gantt
+     * Initialise le contrôleur et configure les composants graphiques.
+     * Lance le premier dessin des Gantt si des résultats sont disponibles.
      */
     @FXML
     private void initialize() {

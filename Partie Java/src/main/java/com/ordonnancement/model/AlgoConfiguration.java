@@ -3,6 +3,7 @@ package com.ordonnancement.model;
  * Classe permettant représentant un algorithme 
  * d'ordonnancement qui va etre executé par python.
  * Permet de regrouper toutes les informations concernant cet algorithme.
+ * @author ROMA Quentin
  */
 public class AlgoConfiguration {
 
@@ -39,24 +40,39 @@ public class AlgoConfiguration {
         this.quantum = quantum;
     }
 
+    /**
+     * Renvoie le nom de l'algorithme d'ordonnancement.
+     *
+     * @return le nom de l'algorithme
+     */
     public String getNomAlgorithme() {
         return nomAlgorithme;
     }
-
+    /**
+     * Renvoie le chemin du fichier contenant les résultats détaillés.
+     *
+     * @return le chemin du fichier des résultats détaillés
+     */
     public String getFichierResultatsDetailles() {
         return fichierResultatsDetailles;
     }
-
+    /**
+     * Renvoie le chemin du fichier contenant les résultats globaux.
+     *
+     * @return le chemin du fichier des résultats globaux
+     */
     public String getFichierResultatsGlobaux() {
         return fichierResultatsGlobaux;
     }
-
+    /**
+     * Renvoie le quantum utilisé par l'algorithme.
+     * Peut être null si l'algorithme n'en nécessite pas.
+     *
+     * @return le quantum, ou null si non applicable
+     */
     public Integer getQuantum() {
         return quantum;
     }
-
-
-
-     
+  
 
 }

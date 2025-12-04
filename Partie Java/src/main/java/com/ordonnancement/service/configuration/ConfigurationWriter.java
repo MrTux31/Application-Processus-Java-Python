@@ -12,6 +12,7 @@ import com.ordonnancement.model.FileConfiguration;
 /**
  * Classe qui s'occupe d'écrire le fichier de
  * configuration de l'ordonnanceur pour python en JSON
+ * @author Allemane Axel
  */
 
 public class ConfigurationWriter {

@@ -25,7 +25,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-
+/**
+ * Controleur pour l'affichage de la configuration 
+ * @author Allemane Axel
+ */
 public class ConfigController {
 
     @FXML
@@ -67,7 +70,7 @@ public class ConfigController {
     private AppMainFrameController mainController;
 
     @FXML
-    /*
+    /** 
         * Cette methode permet d'initialiser les composants graphiques, de configurer les listeners et de charger la configuration existante.
     */
 
@@ -94,7 +97,7 @@ public class ConfigController {
         Platform.runLater(this::reloadExistingConfig);
     }
 
-    /*
+    /**
         * Cette methode permet de definir le controleur principal de l'application.
         * @param c Ce parametre de type AppMainFrameController représente le controleur principal.
     */
@@ -104,7 +107,7 @@ public class ConfigController {
     }
 
     @FXML
-    /*
+    /**
         * Cette methode permet de choisir ou creer un fichier CSV pour les metriques globales.
         * Cette methode affiche une fenetre de selection/sauvegarde de fichier.
     */
@@ -131,7 +134,7 @@ public class ConfigController {
     }
 
     @FXML
-    /*
+    /**
         * Cette methode permet de choisir un fichier CSV contenant la liste des processus.
         * Cette methode affiche une fenetre de selection de fichier.
     */
@@ -148,7 +151,7 @@ public class ConfigController {
     }
 
     @FXML
-    /*
+    /**
         * Cette methode permet de choisir un fichier JSON contenant la liste des ressources.
         * Cette methode affiche une fenetre de selection de fichier.
     */
@@ -165,7 +168,7 @@ public class ConfigController {
     }
 
     @FXML
-    /*
+    /**
         * Cette methode permet d'annuler la creation de configuration et de retourner a l'accueil.
         * Cette methode affiche une fenetre de confirmation.
     */
@@ -181,7 +184,7 @@ public class ConfigController {
     }
 
     @FXML
-    /*
+    /**
         * Cette methode permet de valider les parametres, de generer la configuration et de l'enregistrer sur le disque.
         * Cette methode affiche des boites de dialogue en cas d'erreur ou de succes.
     */
@@ -256,7 +259,7 @@ public class ConfigController {
         }
     }
 
-    /*
+    /**
         * Cette methode permet de recuperer la fenetre parente associée aux elements de l'interface.
         * @return Cette methode retourne une valeur de type Window qui represente la fenetre proprietaire.
     */
@@ -272,7 +275,7 @@ public class ConfigController {
     }
 
 
-    /*
+    /**
         * Cette methode permet de mettre a jour l'affichage en fonction des selections d'algorithmes.
         * Cette methode affiche et met a jour dynamiquement les blocs d'algorithmes.
     */
@@ -302,7 +305,7 @@ public class ConfigController {
         btnEnregistrer.setDisable(!canSave());
     }
 
-    /*
+    /**
         * Cette methode permet de construire dynamiquement un bloc UI pour un algorithme selectionné.
         * @param nom Ce parametre de type String représente le nom de l'algorithme.
         * @param det Ce parametre de type Label représente le label du fichier de resultats detailles.
@@ -354,7 +357,7 @@ public class ConfigController {
     }
 
 
-    /*
+    /**
         * Cette methode permet de choisir un fichier CSV a enregistrer via un FileChooser.
         * @param ref Ce parametre de type Label représente le label contenant le chemin precedent.
         * @return Cette methode retourne une valeur de type File qui represente le fichier choisi par l'utilisateur.
@@ -378,7 +381,7 @@ public class ConfigController {
 
 
     @FXML
-    /*
+    /**
         * Cette methode permet de charger automatiquement les chemins et valeurs par defaut pour tous les parametres de configuration.
         * Cette methode affiche et met a jour l'interface avec les valeurs par defaut.
     */
@@ -411,7 +414,7 @@ public class ConfigController {
         refreshUI();
     }
 
-    /*
+    /**
         * Cette methode permet de charger une configuration existante depuis le disque et de mettre a jour l'affichage en consequence.
         * Cette methode affiche une alerte en cas d'erreur de chargement.
     */
@@ -478,7 +481,7 @@ public class ConfigController {
     }
 
 
-    /*
+    /**
         * Cette methode permet de verifier si tous les champs obligatoires pour l'enregistrement d'une configuration sont correctement renseignes.
         * @return Cette methode retourne une valeur de type boolean qui represente la possibilite ou non de sauvegarder la configuration.
     */

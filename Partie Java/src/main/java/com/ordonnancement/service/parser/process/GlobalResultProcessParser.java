@@ -18,6 +18,7 @@ import com.ordonnancement.service.validation.ProcessValidator;
  * Permet de compléter les objets Process : en mettant à jour leur date de début et leur date de fin,
  * ainsi que la RAM utilisée.
  *
+ * @author Ribeiro--Vaur Nino 
  * Format attendu du CSV :
  *
  * idProcessus,dateSoumission,dateDebut,dateFin,requiredRam,usedRam

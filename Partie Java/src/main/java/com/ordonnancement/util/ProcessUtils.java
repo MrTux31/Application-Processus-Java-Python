@@ -14,6 +14,7 @@ import com.ordonnancement.model.ExecutionInfo;
 import com.ordonnancement.model.Process;
 /**
  * Classe utilitaire permettant de récupérer plus facilement des éléments d'un processus
+ * @author ROMA Quentin
  */
 public class ProcessUtils {
 

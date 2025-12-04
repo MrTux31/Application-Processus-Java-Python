@@ -13,6 +13,10 @@ import com.ordonnancement.ui.Alert.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
+/**
+ * Controleur pour l'affichage du menu principal
+ * @author ROMA Quentin
+ */
 public class HomeController {
 
     @FXML
@@ -29,8 +33,10 @@ public class HomeController {
     private Button btnComparaisonAlgos;
     private AppMainFrameController appMainFrameController;
     
-    
-
+    /**
+     * Initialise le contrôleur après le chargement du FXML.
+     * Lie l'état d'exécution aux boutons pour activer/désactiver selon la fin de l'exécution.
+     */
     @FXML
     public void initialize() {
         
@@ -45,7 +51,9 @@ public class HomeController {
     }
 
     /**
-     * S'occupe de démarre l'exécution du programme python avec la configuration fournie
+     * Démarre l'exécution du programme Python avec la configuration actuelle.
+     * Récupère les paramètres depuis le fichier de configuration, lance l'exécution
+     * et affiche un résumé à la fin.
      */
     @FXML
     private void doLancerExecution() {
@@ -67,7 +75,7 @@ public class HomeController {
                     },
                     e -> { //Si une exception arrive lors de l'execution
                             AlertUtils.showError("Erreur", e.getMessage(), btnStart.getParent().getScene().getWindow());
-                            e.printStackTrace();
+                            
                         
                         });
                 
@@ -85,7 +93,8 @@ public class HomeController {
 
 
     /**
-     * Affiche une fenetre d'information pour dire que l'execution est terminée
+     * Affiche une fenêtre d'information indiquant que l'exécution est terminée.
+     * Affiche également la liste des algorithmes exécutés et le nombre de processus ordonnancés.
      */
     private void afficherResumeExecution() {
         Resultats resultats = AppState.getInstance().getResultats();
@@ -106,32 +115,45 @@ public class HomeController {
 
     }
 
-
+    /**
+     * Affiche l'interface de configuration dans la fenêtre principale.
+     */
     @FXML
     private void doAfficherConfig(){
         appMainFrameController.doAfficherConfig();
     }
 
-
+    /**
+     * Définit le contrôleur principal de l'application pour permettre la communication entre vues.
+     * @param appMainFrameController le contrôleur principal de l'application
+     */
     public void setAppMainFrameController(AppMainFrameController appMainFrameController) {
         this.appMainFrameController=appMainFrameController;
     }
-
+    /**
+     * Affiche la liste des processus dans la fenêtre principale.
+     */
     @FXML
     private void doAfficherProcessus() {
         appMainFrameController.doAfficherProcessus();
     }
-
+    /**
+     * Affiche le diagramme de Gantt pour les processeurs dans la fenêtre principale.
+     */
     @FXML
     private void doAfficherGanttCPU() {
         appMainFrameController.doAfficherGanttCPU();
     }
-
+    /**
+     * Affiche le diagramme de Gantt pour les processus dans la fenêtre principale.
+     */
     @FXML
     private void doAfficherGanttProcessus() {
         appMainFrameController.doAfficherGanttProcessus();
     }
-
+    /**
+     * Affiche la comparaison des algorithmes d'ordonnancement dans la fenêtre principale.
+     */
     @FXML
     private void doAfficherComparaisonAlgos() {
         appMainFrameController.doAfficherComparaisonAlgos();

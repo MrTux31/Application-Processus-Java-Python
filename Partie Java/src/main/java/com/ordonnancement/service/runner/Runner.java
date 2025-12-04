@@ -24,6 +24,7 @@ import javafx.application.Platform;
 /**
  * Classe permettant de lancer la création du fichier de configuration, lancer
  * python, récupérer les résultats et les stocker
+ * @author ROMA Quentin
  */
 public class Runner {
 
@@ -33,6 +34,7 @@ public class Runner {
      * @param fileConfig Configuration du fichier
      * @param destinationConfigJson Chemin du fichier JSON de config à créer
      * @param callback : L'action à exécuter après l'excecution du runner.
+     * @param onExceptio action appelée en cas d'exception, également exécutée sur le thread JavaFX
      */
     public static void runAsync(FileConfiguration fileConfig,
             String destinationConfigJson, Runnable callBack, Consumer<Exception> onException) {

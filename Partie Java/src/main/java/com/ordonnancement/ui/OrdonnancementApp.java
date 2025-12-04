@@ -13,6 +13,11 @@ import javafx.stage.Stage;
  * Classe principale de l'application de gestion de tournois.
  * Charge l'interface graphique principale et gère le cycle de vie 
  * de l'application JavaFX.
+ * @author ROMA Quentin
+ * @author Allemane Axel
+ * @author Olivencia Eliot
+ * @author Le Donné Antonin
+ * @author Ribeiro--Vaur Nino 
  */
 
 public class OrdonnancementApp extends Application {
@@ -43,7 +48,6 @@ public class OrdonnancementApp extends Application {
 
         } catch (Exception e) {
             AlertUtils.showError("Erreur", "Erreur innatendue :\n"+e.getMessage(), null);
-            e.printStackTrace();
         
         }
     

@@ -11,7 +11,7 @@ import com.ordonnancement.util.ProcessUtils;
 
 /**
  * Classe permetant une vérification minimale des executions réalisées par un processus
- * 
+ * @author ROMA Quentin
  */
 public class ExecutionValidator {
 

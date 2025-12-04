@@ -16,9 +16,9 @@ import com.ordonnancement.service.validation.ProcessValidator;
 
 /**
  * Cette classe lit un fichier CSV contenant les exécutions de chaque processus
- * sur un processeur donné et met à jour les Process existants avec les objets
- * Schedule correspondants.
- *
+ * sur un processeur donné et met à jour les Process existants avec les allocations correspondantes.
+ * @author  ROMA Quentin
+ * 
  * Le CSV doit avoir le format suivant :
  *
  * idProcessus,dateDebut,dateFin,idProcesseur
@@ -36,8 +36,8 @@ public class DetailedResultProcessParser {
     private List<Process> listeProcessus;
 
     /**
-     *
-     * @param listeProcessus
+     *Constructeur
+     * @param listeProcessus : la liste des processus
      */
     public DetailedResultProcessParser(List<Process> listeProcessus) {
         this.listeProcessus = listeProcessus;
@@ -46,11 +46,11 @@ public class DetailedResultProcessParser {
    
     /**
      * Parse le fichier CSV décrivant les résultats détaillés d'un algorithme et
-     * met à jour chaque Process avec ses schedules correspondants.
+     * met à jour chaque Process avec ses Allocations correspondantes.
      *
      * @param cheminFichier chemin vers le fichier CSV
      * @param nomAlgorithme : le nom de l'algorithme ayant réalisé l'ordonnancement
-     * @return la liste des Process mise à jour avec les schedules
+     * @return la liste des Process mise à jour avec les allocations
      * @throws FileParsingException si le fichier est vide, mal formé, ou si un
      *                              processus du CSV n'existe pas dans la liste initiale
      */
@@ -114,7 +114,7 @@ public class DetailedResultProcessParser {
     }
 
     /**
-     * Convertit une ligne du CSV en Schedule et met à jour le Process correspondant.
+     * Convertit une ligne du CSV en Allocation et met à jour le Process correspondant.
      *
      * @param ligne du CSV contenant les valeurs des colonnes
      * @param mapProcessus map des Process pour retrouver le Process par son ID

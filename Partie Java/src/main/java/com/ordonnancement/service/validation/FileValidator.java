@@ -9,6 +9,7 @@ import com.ordonnancement.service.parser.FileParsingException;
 /**
  * Classe qui permet de vérifier que le chemin spécifié d'un fichier à lire est 
  * correct
+ * @author ROMA Quentin
  */
 public class FileValidator {
 

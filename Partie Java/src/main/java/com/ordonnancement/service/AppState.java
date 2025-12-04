@@ -69,14 +69,32 @@ public class AppState {
         this.resultats = resultats;
     }
 
+    /**
+     * Renvoie la propriété observable indiquant si l'ordonnancement
+     * est terminé. Cette propriété peut être utilisée pour mettre à jour
+     * l'interface via des bindings JavaFX.
+     *
+     * @return la propriété listenable représentant l'état d'exécution
+     */
     public BooleanProperty executionTermineeProperty() {
         return executionTerminee;
     }
 
+    /**
+     * Indique si l'ordonnancement Python est terminé.
+     *
+     * @return true si l'ordonnancement est terminé, false sinon
+     */
     public boolean isExecutionTerminee() {
         return executionTerminee.get();
     }
 
+    /**
+     * Définit l'état d'exécution de l'ordonnancement.
+     * Permet notamment de déclencher les réactions liées aux bindings JavaFX.
+     *
+     * @param value true si l'ordonnancement est terminé, false sinon
+     */
     public void setExecutionTerminee(boolean value) {
         executionTerminee.set(value);
     }

@@ -6,6 +6,7 @@ import java.util.List;
  * Classe représentant le fichier de configuration json utilisée dans python.
  * Elle de répertorier toutes les informations nécessaires à la
  * génération du fichier de configuration pour python
+ * @author Allemane Axel
  */
 public class FileConfiguration {
 
@@ -57,25 +58,40 @@ public class FileConfiguration {
         this.listeAlgorithmes = List.copyOf(listeAlgorithmes); //Faire une copie de la liste pour empecher toutes modifs après
 
     }
-
+    /**
+     * Renvoie le chemin du fichier contenant la liste des processus à ordonnancer.
+     *
+     * @return le chemin du fichier des processus
+     */
     public String getFichierProcessus() {
         return fichierProcessus;
     }
-
+    /**
+     * Renvoie le chemin du fichier décrivant les ressources disponibles
+     * (processeurs, RAM).
+     *
+     * @return le chemin du fichier des ressources disponibles
+     */
     public String getFichierRessourcesDisponibles() {
         return fichierRessourcesDisponibles;
     }
 
-    /**
-     * Permet de récupérer la liste des algos d'ordonnancement qui vont seront
-     * utilisés par python ainsi que leur diverses configurations
+     /**
+     * Renvoie la liste des algorithmes d'ordonnancement à exécuter,
+     * accompagnés de leurs configurations (fichiers de sortie, quantum, etc.).
      *
-     * @return List<AlgoConfiguration>
+     * @return la liste des configurations d'algorithmes
      */
     public List<AlgoConfiguration> getListeAlgorithmes() {
         return this.listeAlgorithmes;
     }
 
+    /**
+     * Renvoie le chemin du fichier contenant les métriques globales
+     * produites par les ordonnancements.
+     *
+     * @return le chemin du fichier des métriques globales
+     */
     public String getFichierMetriquesGlobales() {
         return fichierMetriquesGlobales;
     }

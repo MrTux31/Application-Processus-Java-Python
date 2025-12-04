@@ -16,14 +16,15 @@ import com.ordonnancement.service.validation.FileValidator;
  * Cette classe lit un fichier CSV contenant les métriques globales calculées
  * pour chaque algorithme d'ordonnancement. Chaque ligne correspond aux valeurs
  * moyennes calculées pour un algorithme donné.
- *
+ *  @author ROMA Quentin
+ * 
  * Format attendu du CSV :
  *
  * algo,tempsAttenteMoyen,tempsReponseMoyen,makespan
  * ROUND ROBIN,0.0,5.0,9
  * FIFO,0.0,5.0,9
  * PRIORITE,0.0,5.0,9
- *
+ *  
  */
 public class MetricsParser {
 

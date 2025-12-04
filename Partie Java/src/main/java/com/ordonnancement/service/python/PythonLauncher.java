@@ -7,6 +7,7 @@ import java.nio.file.Path;
 
 /**
  * Classe permettant de lancer le script python
+ * @author ROMA Quentin
  */
 
 public class PythonLauncher {
@@ -18,8 +19,6 @@ public class PythonLauncher {
      * @param cheminConfig fichier de configuration JSON à passer en argument
      */
     public static void runPythonScript(Path cheminScript, String cheminConfig){
-
-        
 
         String commande[] = {"python", "-X", "utf8", cheminScript.toString(), cheminConfig}; //Commande à exécuter pour lancer le script python;
         ProcessBuilder builder = new ProcessBuilder(commande); //Construction de la commande

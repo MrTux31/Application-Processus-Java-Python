@@ -69,7 +69,7 @@ public class ProcessController {
                     "Erreur",
                     "Erreur lors du chargement des processus :\n" + e.getMessage(),
                     null);
-            e.printStackTrace();
+            
         }
     }
 

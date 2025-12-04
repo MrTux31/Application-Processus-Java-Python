@@ -31,6 +31,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * Controleur pour l'affichage du diagramme de gantt par processus
+ * @author Olivencia Eliot
  */
 public class GanttProcessusController {
 
