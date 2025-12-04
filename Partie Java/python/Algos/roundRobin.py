@@ -47,6 +47,40 @@ def enregistrer_date_fin_alloc(infos_allocations_processeur,pe, date):
 def initialiser_processus(processus: list[dict], quantum: int) -> list[dict]:
     """
     Transforme la liste brute de processus en une liste enrichie pour Round-Robin.
+
+    Chaque processus reçoit des champs supplémentaires pour suivre son exécution :
+    - tempsTotalExecution : temps déjà exécuté
+    - tempsRestQuantum : quantum restant avant retour en file d'attente
+    - dateDebut / dateFin : dates de début et de fin d'exécution
+    - usedRam : RAM utilisée par le processus
+
+    Paramètres :
+    ----------
+    processus : list[dict]
+        Liste des processus à initialiser. Chaque élément est un dictionnaire
+        Exemple :
+        [
+            {'idProcessus': '1', 'dateSoumission': '0', 'tempsExecution': '6', 'requiredRam': '1024', 'deadline': '20', 'priority': '1'},
+            {'idProcessus': '2', 'dateSoumission': '0', 'tempsExecution': '3', 'requiredRam': '1024', 'deadline': '21', 'priority': '2'},
+            {'idProcessus': '3', 'dateSoumission': '0', 'tempsExecution': '5', 'requiredRam': '1024', 'deadline': '22', 'priority': '3'}
+        ]
+
+    quantum : int
+        Quantum de temps alloué à chaque processus pour l’algorithme Round-Robin.
+        Exemple : 2
+
+    Retour :
+    -------
+    list[dict]
+        Liste des processus enrichis et triés par date de soumission, avec les champs supplémentaires pour l'exécution :
+        [
+            {'idProcessus': '1', 'dateSoumission': 0, 'tempsExecution': 6, 'requiredRam': 1024,
+             'priority': 1, 'tempsTotalExecution': 0, 'tempsRestQuantum': 2,
+             'dateDebut': None, 'dateFin': None, 'usedRam': None},
+            {'idProcessus': '2', 'dateSoumission': 0, 'tempsExecution': 3, 'requiredRam': 1024,
+             'priority': 2, 'tempsTotalExecution': 0, 'tempsRestQuantum': 2,
+             'dateDebut': None, 'dateFin': None, 'usedRam': None}..... etc
+        ]
     """
     nouvelle_liste = []
     
@@ -71,7 +105,41 @@ def initialiser_processus(processus: list[dict], quantum: int) -> list[dict]:
 
 def soumettre_processus(date: int, processus_attente_soumission: list, processus_file_attente: list):
     """
-    Ajoute les processus dont la date de soumission est atteinte à la file d'attente.
+    Ajoute à la file d'attente tous les processus dont la date de soumission
+    est atteinte à la date courante et les trie par priorité décroissante.
+
+    Paramètres :
+    ----------
+    date : int
+        Date actuelle (unité de temps) dans la simulation.
+        Exemple : 0
+
+    processus_attente_soumission : list
+        Liste des processus en attente de soumission. Chaque processus est un dictionnaire :
+        Exemple initial :
+        [
+            {'idProcessus': '1', 'dateSoumission': 0, 'tempsExecution': 6, 'requiredRam': 1024,
+             'priority': 1, 'tempsTotalExecution': 0, 'tempsRestQuantum': 2, 'dateDebut': None,
+             'dateFin': None, 'usedRam': None},
+            {'idProcessus': '2', 'dateSoumission': 0, 'tempsExecution': 3, 'requiredRam': 1024,
+             'priority': 2, 'tempsTotalExecution': 0, 'tempsRestQuantum': 2, 'dateDebut': None,
+             'dateFin': None, 'usedRam': None},
+            {'idProcessus': '3', 'dateSoumission': 0, 'tempsExecution': 5, 'requiredRam': 1024,
+             'priority': 3, 'tempsTotalExecution': 0, 'tempsRestQuantum': 2, 'dateDebut': None,
+             'dateFin': None, 'usedRam': None}
+        ]
+
+    processus_file_attente : list
+        Liste des processus en attente d'exécution sur un CPU. Les processus soumis à la date courante y sont ajoutés.
+        Exemple après soumission à la date 0 :
+        [
+            {'idProcessus': '1', 'dateSoumission': 0, 'tempsExecution': 6, 'requiredRam': 1024,
+             'priority': 1, 'tempsTotalExecution': 0, 'tempsRestQuantum': 2, 'dateDebut': None,
+             'dateFin': None, 'usedRam': None},
+            {'idProcessus': '3', 'dateSoumission': 0, 'tempsExecution': 5, 'requiredRam': 1024,
+             'priority': 3, 'tempsTotalExecution': 2, 'tempsRestQuantum': 2, 'dateDebut': 0,
+             'dateFin': None, 'usedRam': 1024}
+        ]
     """
     nouveaux_processus = [] #Liste des processus qui vont être soumis et rentrer dans la file d'attente
     #Parcours de tous les processus en attente de soumission
@@ -91,7 +159,61 @@ def soumettre_processus(date: int, processus_attente_soumission: list, processus
 def allouer_cpu(processus_file_attente: list, processeurs_dispos: list, processus_elus: list,
                 infos_allocations_processeur: list, date: int, ram_dispo : int) -> int:
     """
-    Alloue les CPU libres aux processus en attente. (renvoie qte ram restante)
+        Alloue les CPU disponibles aux processus en attente et met à jour les allocations.
+        Si un processus n'a pas encore de RAM allouée, celle-ci est réservée.
+        Renvoie la quantité de RAM restante après les allocations.
+
+        Paramètres :
+        ----------
+        processus_file_attente : list
+            Liste des processus en attente de CPU. Chaque élément est un dictionnaire de type :
+            Exemple :
+            [
+                {'idProcessus': '1', 'dateSoumission': 0, 'tempsExecution': 6,
+                    'requiredRam': 1024, 'priority': 1, 'tempsTotalExecution': 0,
+                    'tempsRestQuantum': 2, 'dateDebut': None, 'dateFin': None, 'usedRam': None},
+                {'idProcessus': '2', 'dateSoumission': 0, 'tempsExecution': 3,
+                    'requiredRam': 1024, 'priority': 2, 'tempsTotalExecution': 0,
+                    'tempsRestQuantum': 2, 'dateDebut': None, 'dateFin': None, 'usedRam': None}
+            ]
+
+        processeurs_dispos : list
+            Liste des CPU disponibles pour l'allocation.
+            Exemple : ['CPU1', 'CPU2']
+
+        processus_elus : list
+            Liste des processus qui ont été élus et sont en cours d'exécution.
+            Chaque élément est un dictionnaire de la forme :
+            {"processus": {...}, "processeur": "CPUx"}
+            Exemple :
+            [
+                {'processus': {'idProcessus': '1', 'dateSoumission': 0, 'tempsExecution': 6,
+                                'requiredRam': 1024, 'priority': 1, 'tempsTotalExecution': 0,
+                                'tempsRestQuantum': 2, 'dateDebut': None, 'dateFin': None,
+                                'usedRam': 1024}, 'processeur': 'CPU1'}
+            ]
+
+        infos_allocations_processeur : list
+            Historique des allocations CPU pour chaque processus.
+            Exemple :
+            [
+                {'idProcessus': '1', 'dateDebut': 0, 'dateFin': None, 'idProcesseur': 'CPU1'},
+                {'idProcessus': '2', 'dateDebut': 0, 'dateFin': None, 'idProcesseur': 'CPU2'}
+            ]
+
+        date : int
+            Date actuelle (unité de temps) dans la simulation.
+            Exemple : 0
+
+        ram_dispo : int
+            Quantité de RAM disponible avant l'allocation.
+            Exemple : 8192
+
+        Retour :
+        -------
+        int
+            Quantité de RAM restante après l'allocation des CPU et la réservation de la RAM pour les processus élus.
+            Exemple : 6144 si deux processus de 1024 ont été alloués.
     """
     ram_restante = ram_dispo #On stocke la qte de ram disponible
 
@@ -128,7 +250,64 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
                             infos_allocations_processeur: list, date: int, quantum: int) -> int:
     """
     Met à jour le temps d'exécution des processus élus, gère la fin ou le quantum. Renvoie la qte de ram libérée par les processus finis
+
+    Paramètres :
+    ----------
+    processus_elus : list
+        Liste des dictionnaires représentant les processus actuellement en cours d'exécution. Exemple : 
+        [
+                {'processus': {'idProcessus': '2', 'dateSoumission': 0, 'tempsExecution': 3,
+                            'requiredRam': 1024, 'priority': 2, 'tempsTotalExecution': 0,
+                            'tempsRestQuantum': 2, 'dateDebut': None, 'dateFin': None,
+                            'usedRam': 1024}, 'processeur': 'CPU1'},
+                {'processus': {'idProcessus': '1', 'dateSoumission': 0, 'tempsExecution': 6,
+                            'requiredRam': 1024, 'priority': 1, 'tempsTotalExecution': 0,
+                            'tempsRestQuantum': 2, 'dateDebut': None, 'dateFin': None,
+                            'usedRam': 1024}, 'processeur': 'CPU2'}
+            ]
+    
+    processus_file_attente : list
+        Liste des processus en attente d'exécution. Les processus qui ont épuisé leur quantum
+        mais ne sont pas terminés y sont renvoyés. Exemple : 
+        [
+
+        {'idProcessus': '1', 'dateSoumission': 0, 'tempsExecution': 6, 'requiredRam': 1024, 
+        'priority': 1, 'tempsTotalExecution': 0, 'tempsRestQuantum': 2, 'dateDebut': None, 'dateFin': None, 'usedRam': None}
+        
+        ]
+
+    processus_termines : list
+        Liste des processus terminés. Les processus finis pendant cet appel y sont ajoutés.
+    
+    processeurs_dispos : list
+        Exemple : ['CPU1', 'CPU2']
+
+    infos_allocations_processeur : list
+        Liste contenant l'historique des allocations processeur pour chaque processus.    
+        Exemple : 
+        [
+            {'idProcessus': '2', 'dateDebut': 0, 'dateFin': None, 'idProcesseur': 'CPU1'},
+            {'idProcessus': '1', 'dateDebut': 0, 'dateFin': None, 'idProcesseur': 'CPU2'}
+        ]
+    date : int
+        Date actuelle (unité de temps) dans la simulation d'ordonnancement.
+        Exemple initial : 0
+
+    quantum : int
+        Quantum de temps alloué pour chaque processus élu. Si un processus épuise ce quantum
+        sans terminer, il est renvoyé dans la file d'attente avec le quantum réinitialisé.
+        Exemple : 2
+    
+    Retour :
+    -------
+    int
+        Quantité totale de RAM libérée par les processus qui se sont terminés
+        pendant cet appel de fonction.
+        Exemple : 1024 si un processus terminant libère 1024 de RAM.
+    
     """
+    
+
     ram_liberee = 0 #Variable qui stocke la quantitée de ram libérée par les processus terminés
 
     #Parcours de tous les processus élus
@@ -150,7 +329,7 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
             enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 sur la date pour avoir la VRAIE date de fin)
             ram_liberee += pe["processus"]["usedRam"] #On récupère la ram rendue par le processus fini
             processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
-            processus_elus.remove(pe) #Supression des processus élus
+            processus_elus.remove(pe) #Suppression des processus élus
         else:
             #Si le processus élu à épuisé le quantum de temps
             if pe["processus"]["tempsRestQuantum"] == 0:
@@ -159,7 +338,7 @@ def executer_processus_elus(processus_elus: list, processus_file_attente: list,
                 pe["processus"]["tempsRestQuantum"] = quantum
                 enregistrer_date_fin_alloc(infos_allocations_processeur,pe,date+1) #Enregistrement de la date de fin de l'alloc (+1 sur la date pour avoir la VRAIE date de fin)
                 processeurs_dispos.append(pe["processeur"]) #Le processeur utilisé est à nouveau disponible
-                processus_elus.remove(pe) #Supression du processus de la liste des élus
+                processus_elus.remove(pe) #Suppression du processus de la liste des élus
         
     return ram_liberee    #On return la qte de ram libérée par les processus terminés
 
@@ -197,6 +376,12 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
             "ram_tot": 8192
         }
 
+        
+    Retour :
+    -------
+    dict
+        Dictionnaire contenant les métriques globales de l'ordonnancement 
+        Exemple : {"algo": "ROUND ROBIN", "tempsAttenteMoyen": 2.5, "tempsReponseMoyen": 1.5, "makespan": 10}
     """
     
     
@@ -204,9 +389,6 @@ def round_robin(params_algo : dict, processus : list[dict], ressources_dispo : d
     processeurs_dispos = list(ressources_dispo["processeurs"]) #Copie de la liste pour ma modifier la vraie
     ram_dispo = ressources_dispo["ram_tot"]
     infos_allocations_processeur = [] #Liste permettant de sauvegarder toutes les allocations qui ont été réalisées
-
-
-
 
     date = 0 #Variable permettant de sauvegarder la date courante de l'ordonnancement
 
