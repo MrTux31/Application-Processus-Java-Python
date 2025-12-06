@@ -31,19 +31,17 @@ public class ExecutionValidator {
 
 
             //Vérification des dates de début et de fin de l'execution
-            if (execution.getDateDebut() != -1 && execution.getDateFin() != -1) {
-                if (execution.getDateDebut() > execution.getDateFin()) {
-                    throw new FileParsingException("Le processus " + p.getId() + " a une date de début supérieure à la date de fin");
-                }
-                if((execution.getDateFin() - execution.getDateDebut()) < p.getTempsExecution()){
-                    throw new FileParsingException("Le processus " + p.getId() + " a une date de début  : "+execution.getDateDebut() +" et de fin "+execution.getDateFin()+ " inchohérente. "+
-                    "Ce n'est pas assez pour un temps d'execution de total "+p.getTempsExecution());
-
-                }
+           
+            if (execution.getDateDebut() > execution.getDateFin()) {
+                throw new FileParsingException("Le processus " + p.getId() + " a une date de début supérieure à la date de fin");
+            }
+            if((execution.getDateFin() - execution.getDateDebut()) < p.getTempsExecution()){
+                throw new FileParsingException("Le processus " + p.getId() + " a une date de début  : "+execution.getDateDebut() +" et de fin "+execution.getDateFin()+ " inchohérente. "+
+                "Ce n'est pas assez pour un temps d'execution de total "+p.getTempsExecution());
 
             }
 
-
+           
             List<Allocation> listeAllocations = ProcessUtils.getAllocations(p,algo); //Récupérer la liste des assignation processeur pour le processus
             if (!listeAllocations.isEmpty()) { //Si les assignations sont présentes dans la liste
                 int tempsTotalExecution = 0;

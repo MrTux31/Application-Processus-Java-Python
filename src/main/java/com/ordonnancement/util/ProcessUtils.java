@@ -93,7 +93,11 @@ public class ProcessUtils {
         return listeComplete;
     }
 
-
+     /** Permet de récupérer la liste de tous les CPUs ayant exécuté des processus sur un algo donné
+     * @param listeProcessus : tous les processus
+     * @param nomAlgo : Le nom de l'algo sur lequel les exécutions ont eu lieu
+     * @return la liste de tous les CPUs
+     */
     public static List<String> getAllCpus(List<Process> listeProcessus, String nomAlgo){
 
         Set<String> ensembleCpu = new HashSet<>();
@@ -110,22 +114,6 @@ public class ProcessUtils {
 
     }
 
-    // public static List<String> getAllCpus(List<Process> listeProcessus){
-
-    //     Set<String> ensembleCpu = new HashSet<>();
-    //     for(Process p : listeProcessus){ //Pour chaque processus
-    //         for(String algo : p.getAllAllocations().keySet()){ //Récupération de l'alloc réalisée sur l'algo
-    //             List<Allocation> a = p.getAllAllocations().get(algo);
-    //             for(Allocation)     
-    //         ensembleCpu.add(al.getProcessor()); //Ajout de l'id cpu à l'ensemble
-    //         }
-
-    //     }
-    //     List<String> cpus = new ArrayList<>(ensembleCpu);
-    //     Collections.sort(cpus); //Trie croissant
-    //     return cpus;
-
-    // }
-
+    
 
 }

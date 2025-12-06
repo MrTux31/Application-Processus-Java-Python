@@ -30,13 +30,13 @@
 
                 <!-- Boutons rapides -->
                 <HBox alignment="CENTER" maxWidth="Infinity" spacing="15">
-                    <Button fx:id="btnProcessus" maxWidth="Infinity" onAction="#doAfficherProcessus" style="-fx-font-size: 13px; -fx-background-color: #ff9800; -fx-text-fill: white; -fx-background-radius: 8;" text="Processus" />
+                    <Button fx:id="btnProcessus" maxWidth="Infinity" onAction="#doAfficherProcessus" style="-fx-font-size: 13px; -fx-background-color: #ff9800; -fx-text-fill: white; -fx-background-radius: 8;" text="Liste Processus" />
 
                     <Button fx:id="btnGanttCPU" maxWidth="Infinity" onAction="#doAfficherGanttCPU" style="-fx-font-size: 13px; -fx-background-color: #9c27b0; -fx-text-fill: white; -fx-background-radius: 8;" text="Gantt CPU" />
 
                     <Button fx:id="btnGanttProcessus" maxWidth="Infinity" onAction="#doAfficherGanttProcessus" style="-fx-font-size: 13px; -fx-background-color: #009688; -fx-text-fill: white; -fx-background-radius: 8;" text="Gantt Processus" />
 
-                    <Button fx:id="btnComparaisonAlgos" maxWidth="Infinity" onAction="#doAfficherComparaisonAlgos" style="-fx-font-size: 13px; -fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 8;" text="Comparaison algos" />
+                    <Button fx:id="btnComparaisonAlgos" maxWidth="Infinity" onAction="#doAfficherComparaisonAlgos" style="-fx-font-size: 13px; -fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 8;" text="Métriques" />
                 </HBox>
 
                 <VBox.margin>
