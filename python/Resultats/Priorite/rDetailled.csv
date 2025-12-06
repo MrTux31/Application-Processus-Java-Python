@@ -1,0 +1,6 @@
+idProcessus,dateDebut,dateFin,idProcesseur
+P1,0,5,CPU1
+P5,5,7,CPU2
+P3,5,11,CPU1
+P4,7,11,CPU2
+P2,11,14,CPU1

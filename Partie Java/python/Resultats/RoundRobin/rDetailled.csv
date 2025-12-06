@@ -1,9 +1,0 @@
-idProcessus,dateDebut,dateFin,idProcesseur
-2,0,3,CPU1
-1,0,6,CPU2
-5,3,23,CPU1
-4,6,26,CPU2
-3,23,43,CPU1
-5,26,38,CPU2
-4,38,49,CPU2
-3,43,53,CPU1

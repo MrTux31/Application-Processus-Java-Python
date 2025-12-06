@@ -1,0 +1,6 @@
+idProcessus,dateSoumission,tempsExecution,requiredRam,deadline,priority
+P1,0,5,2048,20,2
+P2,0,3,1024,21,1
+P3,2,6,1024,25,3
+P4,4,4,1024,22,2
+P5,5,2,1024,23,5

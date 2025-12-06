@@ -1,4 +1,0 @@
-
-     [  {"idProcessus": 1, "dateSoumission": 0, "tempsExecution": 5, "requiredRam": 1024, "deadline": 20, "priority": 3},
-       {"idProcessus": 2, "dateSoumission": 3, "tempsExecution": 4, "requiredRam": 512, "deadline": 15, "priority": 1}
-   ]
