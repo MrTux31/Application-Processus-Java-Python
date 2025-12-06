@@ -13,6 +13,10 @@ import com.ordonnancement.model.AlgoConfiguration;
 import com.ordonnancement.model.FileConfiguration;
 import com.ordonnancement.service.parser.FileParsingException;
 
+/**
+ * Classe permetant de lire le fichier JSON de la configuration
+ * @author Allemane Axel
+ */
 public class ConfigParser {
 
     /**

@@ -34,7 +34,7 @@ public class Runner {
      * @param fileConfig Configuration du fichier
      * @param destinationConfigJson Chemin du fichier JSON de config à créer
      * @param callback : L'action à exécuter après l'excecution du runner.
-     * @param onExceptio action appelée en cas d'exception, également exécutée sur le thread JavaFX
+     * @param onException : action appelée en cas d'exception, également exécutée sur le thread JavaFX
      */
     public static void runAsync(FileConfiguration fileConfig,
             String destinationConfigJson, Runnable callBack, Consumer<Exception> onException) {

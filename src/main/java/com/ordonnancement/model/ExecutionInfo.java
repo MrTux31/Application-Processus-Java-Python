@@ -44,6 +44,7 @@ public class ExecutionInfo {
 
     /**
      * Renvoie le makeSpan
+     * @return le makespan
      */
     public int getDateFin() {
         return dateFin;

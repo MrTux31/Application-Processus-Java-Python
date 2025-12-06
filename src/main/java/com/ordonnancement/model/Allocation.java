@@ -27,6 +27,7 @@ public class Allocation {
 
     /**
      * Permet d'obtenir le processeur qui à traité le processus
+     * @return l'id processeur
      */
     public String getProcessor(){
         return this.idProcessor;
@@ -34,12 +35,14 @@ public class Allocation {
 
     /**
      * Permet d'obtenir la date de début d'éxecution sur le processeur.
+     * @return la date de debut
      */
     public int getDateDebutExecution() {
         return dateDebutExecution;
     }
     /**
      * Permet d'obtenir la date de fin d'exécution sur le processeur
+     * @return la date de fin
      */
     public int getDateFinExecution() {
         return dateFinExecution;

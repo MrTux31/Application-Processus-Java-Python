@@ -29,6 +29,7 @@ public class Metrics {
     /**
      * Permet de récupérer le temps de réponse moyen
      * Temps réponse = délai entre la soummussion du processus et le moment où il commence à s'executer pour la première fois
+     * @return le temps de réponse moyen
      */
     public double getTempsReponseMoyen() {
         return tempsReponseMoyen;
@@ -37,6 +38,7 @@ public class Metrics {
     /**
     * Permet de récupérer le temps d'attente moyen
     * Attente = le processus est pret mais il attends de disposer d'un processeur pour s'executer 
+    * @return le temps d'attente moyen
     */
     public double getTempsAttenteMoyen() {
         return tempsAttenteMoyen;
@@ -45,6 +47,7 @@ public class Metrics {
     /**
      * Permet de récupérer le makespan
      * Le makespan : la date de fin du dernier processus executé
+     * @return le makespan
      */
     public int getMakespan() {
         return makespan;
@@ -52,6 +55,7 @@ public class Metrics {
 
     /**
      * Permet de récupérer le nom de l'algorithme d'ordonnacement utilisé
+     * @return le nom de l'algo
      */
     public String getNomAlgorithme(){
         return this.nomAlgo;
