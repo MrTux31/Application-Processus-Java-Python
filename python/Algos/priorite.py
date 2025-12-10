@@ -80,6 +80,19 @@ def initialiser_processus(processus):
 def soumettre_processus_priorite(date: int, processus_attente_soumission: list, processus_file_attente: list):
     """
     Retourne la liste des processus soumis à la date donnée pour l'algorithme priorite.
+    
+    Paramètres
+    ----------
+    date : int
+        La date (unité de temps) à enregistrer comme date de fin pour l'allocation.
+    processus_attente_soumission : list
+        Liste des processus en attente de soumission.
+    processus_file_attente : list
+        Liste des processus en attente d'allocation CPU.
+
+    Retour
+    ------
+    None
     """
 
     # Parcours de tous les processus en attente de soumission
@@ -96,6 +109,26 @@ def allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
                 infos_allocations_processeur, date, etat_ram ):
     """
     Alloue les CPU libres aux processus en attente.
+    
+    Paramètres
+    ----------
+    processus_file_attente : list
+        Liste des processus en attente d'allocation CPU.
+    processeurs_dispos : list
+        Liste des processeurs disponibles.
+    processus_elus : list
+        Liste des processus élus.
+    infos_allocations_processeur : list
+        Liste des allocations CPU.
+    date : int
+        La date (unité de temps) à enregistrer comme date de fin pour l'allocation.
+    etat_ram : dict
+        Etat de la RAM.
+
+    Retour
+    ------
+    None
+
     """
 
     #Parcours de tous les processus en file attente
@@ -120,6 +153,25 @@ def executer_processus_elus(processus_elus: list, processus_termines: list,
                             processeurs_dispos: list, infos_allocations_processeur: list, date: int, etat_ram ):
     """
     Met à jour le temps d'exécution des processus élus, gère la fin ou le quantum.
+    
+    Paramètres
+    ----------
+    processus_elus : list
+        Liste des processus élus.
+    processus_termines : list
+        Liste des processus terminés.
+    processeurs_dispos : list
+        Liste des processeurs disponibles.
+    infos_allocations_processeur : list
+        Liste des allocations CPU.
+    date : int
+        La date (unité de temps) à enregistrer comme date de fin pour l'allocation.
+    etat_ram : dict
+        Etat de la RAM.
+
+    Retour
+    ------
+    None
     """
     #Parcours de tous les processus élus
     for pe in list(processus_elus):
@@ -151,6 +203,21 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict):
     Exécute l'algorithme de planification par priorité (priorité la plus élevée d'abord).
     - Pas de quantum.
     - La RAM n'est pas gérée ici : un processus prêt s'exécute dès qu'un CPU est libre.
+
+    Paramètres
+    ----------
+    params_algo : dict
+        Paramètres de l'algorithme.
+    processus : list[dict]
+        Liste des processus.
+    ressources_dispo : dict
+        Ressources disponibles.
+
+    Retour
+    ------
+    dict
+        Résultats de l'algorithme.
+
     """
     # Copie de la liste des CPU disponibles (mutable pendant la simulation)
     processeurs_dispos = list(ressources_dispo["processeurs"])
