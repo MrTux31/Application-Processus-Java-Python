@@ -133,19 +133,16 @@ def allouer_cpu(processus_file_attente, processeurs_dispos, processus_elus,
 
     #Parcours de tous les processus en file attente
     for pfa in list(processus_file_attente):
-        # Recalcul de la RAM restante à chaque itération
-        ram_restante = etat_ram["totale"] - etat_ram["utilisee"]
-        #Si au moins un processeur est dispo 
-        if len(processeurs_dispos) > 0 and  pfa["requiredRam"] <= ram_restante :
-            cpu = processeurs_dispos.pop(0) #On prends un cpu dispo dans la liste (le premier) 
-            # Gestion effective de la RAM
-            pfa["usedRam"] = int(pfa["requiredRam"])
-            etat_ram["utilisee"] += pfa["usedRam"]
-            #Allocation a un CPU
-            processus_elus.append({"processus" : pfa, "processeur" : cpu }) #On peut alors élire le processus, sur un cpu 
-            processus_file_attente.remove(pfa) #On supprime le processus de la fil d'attente
-            #Enregistrement des premières infos sur l'allocation
-            infos_allocations_processeur.append({"idProcessus" : pfa["idProcessus"],
+        
+        ram_restante = etat_ram["totale"] - etat_ram["utilisee"]                     # Recalcul de la RAM restante à chaque itération
+        
+        if len(processeurs_dispos) > 0 and  pfa["requiredRam"] <= ram_restante :     #Si au moins un processeur est dispo 
+            cpu = processeurs_dispos.pop(0)                                          #On prends un cpu dispo dans la liste (le premier)  
+            pfa["usedRam"] = int(pfa["requiredRam"])                                 #Gestion effective de la RAM
+            etat_ram["utilisee"] += pfa["usedRam"]            
+            processus_elus.append({"processus" : pfa, "processeur" : cpu })          #Allocation a un CPU, élection du processus sur un CPU 
+            processus_file_attente.remove(pfa)                                       #On supprime le processus de la file d'attente 
+            infos_allocations_processeur.append({"idProcessus" : pfa["idProcessus"], #Enregistrement des premières infos sur l'allocation
             "dateDebut" : date, "dateFin" : None, "idProcesseur": cpu})
 
 
