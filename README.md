@@ -31,7 +31,7 @@ L’objectif du projet est de simuler et comparer plusieurs politiques d’ordon
 
 ### Partie Python
 - Lecture du fichier de configuration généré par la partie Java.  
-- Exécution d’un ou plusieurs algorithmes d’ordonnancement (FIFO, Round Robin, Priorité, EDF, etc.).  
+- Exécution d’un ou plusieurs algorithmes d’ordonnancement (FIFO, Round Robin, Priorité).  
 - Écriture des résultats et des métriques dans des fichiers au format JSON ou CSV.
 
 ### Partie Java

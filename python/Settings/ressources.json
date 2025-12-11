@@ -1,0 +1,9 @@
+{
+  "nombreTotalProcesseurs": 2,
+  "ramTotale": 2048,
+  "processeurs": [
+    {"idProcesseur": "CPU1"},
+    {"idProcesseur": "CPU2"}
+
+  ]
+}
