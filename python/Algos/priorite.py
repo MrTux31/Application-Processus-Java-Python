@@ -177,7 +177,7 @@ def executer_processus_elus(processus_elus: list, processus_termines: list,
         if pe["processus"]["dateDebut"] is None: 
             pe["processus"]["dateDebut"] = date 
         
-        #On incrémente le temps pendant lequel le processus s'est exécuté
+        #Incrementation du temps pendant lequel le processus s'est exécuté
         pe["processus"]["tempsTotalExecution"] +=1
 
         #Si le processus s'est executé pendant le temps qui était prévu, on le met dans la liste des processus terminés
@@ -216,9 +216,9 @@ def priorite(params_algo: dict, processus: list[dict], ressources_dispo: dict):
         Résultats de l'algorithme.
 
     """
-    # Copie de la liste des CPU disponibles (mutable pendant la simulation)
+    # Copie de la liste des CPU disponibles 
     processeurs_dispos = list(ressources_dispo["processeurs"])
-    # La RAM n'est pas utilisée dans la logique priorite, mais on la conserve pour homogénéité d'interface
+    # La RAM n'est pas utilisée dans la logique priorite, mais je la conserve pour homogénéité d'interface
     ram_totale = int(ressources_dispo.get("ram_tot", 0))
     # Initialisation de la ram
     etat_ram = {"totale": ram_totale, "utilisee": 0}
